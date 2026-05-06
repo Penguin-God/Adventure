@@ -31,3 +31,6 @@ MonoBehaviour:
   - buttonIndex: 6
     dialogueLines:
     - "\uD14C\uC774\uD504\uB97C \uAD6C\uB9E4\uD588\uB2E4"
+  - buttonIndex: 3
+    dialogueLines:
+    - "\uC9D1\uC5D0 \uC788\uB294 \uC7A1\uB3D9\uC0AC\uB2C8\uB4E4\uC744 \uBC84\uB838\uB2E4"
