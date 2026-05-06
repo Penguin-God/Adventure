@@ -425,7 +425,7 @@ MonoBehaviour:
       sizeOverridden: 0
     - dockPosition: 0
       containerId: overlay-toolbar__top
-      displayed: 1
+      displayed: 0
       id: Services/Unity Version Control
       index: 6
       contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
@@ -554,12 +554,12 @@ MonoBehaviour:
       displayed: 1
       id: Play Mode Controls
       index: 0
-      contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":0.0,"y":0.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":0,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
+      contents: '{"m_Layout":4,"m_Collapsed":false,"m_Folded":false,"m_Floating":false,"m_FloatingSnapOffset":{"x":-1285.0,"y":-36.0},"m_SnapOffsetDelta":{"x":0.0,"y":0.0},"m_FloatingSnapCorner":3,"m_Size":{"x":0.0,"y":0.0},"m_SizeOverridden":false}'
       floating: 0
       collapsed: 0
-      snapOffset: {x: 0, y: 0}
+      snapOffset: {x: -1285, y: -36}
       snapOffsetDelta: {x: 0, y: 0}
-      snapCorner: 0
+      snapCorner: 3
       layout: 4
       size: {x: 0, y: 0}
       sizeOverridden: 0
@@ -1218,7 +1218,7 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: -2.2132058, y: 0.4598103, z: 0.4563447}
+    m_Target: {x: 778.19336, y: 395.0287, z: -4.9041386}
     speed: 2
     m_Value: {x: -2.2132058, y: 0.4598103, z: 0.4563447}
   m_RenderMode: 0
@@ -1270,7 +1270,7 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 5.5902605
+    m_Target: 593.4914
     speed: 2
     m_Value: 5.5902605
   m_Ortho:
@@ -1551,29 +1551,29 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 137662
-    - m_Data: 137802
-    - m_Data: 138014
-    - m_Data: 138670
-    - m_Data: 140034
-    - m_Data: 140458
-    - m_Data: 140634
-    - m_Data: 140742
-    - m_Data: 140962
-    - m_Data: 141002
-    - m_Data: 141160
-    - m_Data: 141362
-    - m_Data: 141966
-    - m_Data: 142110
-    - m_Data: 142194
-    - m_Data: 142262
-    - m_Data: 147932
-    - m_Data: 148920
-    - m_Data: 149550
-    - m_Data: 150536
-    - m_Data: 150538
-    - m_Data: 150554
-    - m_Data: 151778
+    - m_Data: 121752
+    - m_Data: 121754
+    - m_Data: 121756
+    - m_Data: 121758
+    - m_Data: 121760
+    - m_Data: 121762
+    - m_Data: 121764
+    - m_Data: 121766
+    - m_Data: 121768
+    - m_Data: 121770
+    - m_Data: 121772
+    - m_Data: 121774
+    - m_Data: 121776
+    - m_Data: 121778
+    - m_Data: 121780
+    - m_Data: 121782
+    - m_Data: 121784
+    - m_Data: 121786
+    - m_Data: 121788
+    - m_Data: 121790
+    - m_Data: 121792
+    - m_Data: 121794
+    - m_Data: 121796
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1606,29 +1606,29 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 137662
-    - m_Data: 137802
-    - m_Data: 138014
-    - m_Data: 138670
-    - m_Data: 140034
-    - m_Data: 140458
-    - m_Data: 140634
-    - m_Data: 140742
-    - m_Data: 140962
-    - m_Data: 141002
-    - m_Data: 141160
-    - m_Data: 141362
-    - m_Data: 141966
-    - m_Data: 142110
-    - m_Data: 142194
-    - m_Data: 142262
-    - m_Data: 147932
-    - m_Data: 148920
-    - m_Data: 149550
-    - m_Data: 150536
-    - m_Data: 150538
-    - m_Data: 150554
-    - m_Data: 151778
+    - m_Data: 121752
+    - m_Data: 121754
+    - m_Data: 121756
+    - m_Data: 121758
+    - m_Data: 121760
+    - m_Data: 121762
+    - m_Data: 121764
+    - m_Data: 121766
+    - m_Data: 121768
+    - m_Data: 121770
+    - m_Data: 121772
+    - m_Data: 121774
+    - m_Data: 121776
+    - m_Data: 121778
+    - m_Data: 121780
+    - m_Data: 121782
+    - m_Data: 121784
+    - m_Data: 121786
+    - m_Data: 121788
+    - m_Data: 121790
+    - m_Data: 121792
+    - m_Data: 121794
+    - m_Data: 121796
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
