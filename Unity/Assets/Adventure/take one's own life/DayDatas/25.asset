@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6fb8d4d313252048a44a9c1a0cc49e9, type: 3}
+  m_Name: 25
+  m_EditorClassIdentifier: Assembly-CSharp::DayData
+  dateName: 12/25
+  activeButtons:
+  - buttonIndex: 1
+    dialogueLines:
+    - "\uC190\uBAA9\uC5D0 \uC0C1\uCC98\uAC00 \uD558\uB098 \uC0DD\uACBC\uB2E4"
+  - buttonIndex: 6
+    dialogueLines:
+    - "\uBC88\uAC1C\uD0C4\uC744 \uAD6C\uB9E4\uD588\uB2E4"
+  - buttonIndex: 0
+    dialogueLines:
+    - "\uC194\uC9C1\uD788 \uC77C \uC548\uD558\uB294 \uBC31\uC218\uB4E4\uB9CC \uB4A4\uC838\uB3C4
+      \uC138\uC0C1 \uD6E8\uC52C \uC88B\uC544\uC9C8 \uB4EF \u314B\u314B"
+    - "\uB300\uCCB4 \uC65C \uADF8\uB7F0 \uC4F0\uB808\uAE30\uB4E4\uD55C\uD14C \uB3C8\uB0AD\uBE44\uD558\uB294\uC9C0
+      \uC6D0."
+    - .....
+    - "\uC774 \uAE00\uC744 \uC4F4 \uC0AC\uB78C\uC758 \uAFC8\uC774 \uACE7 \uC774\uB904\uC9C8
+      \uAC83\uC774\uB2E4"
+  - buttonIndex: 2
+    dialogueLines:
+    - D-6
