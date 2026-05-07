@@ -1,6 +1,7 @@
 ﻿<Solution>
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="FangAutoTile.csproj" />
+  <Project Path="Codependency.csproj" />
   <Project Path="FangAutoTile.Editor.csproj" />
   <Project Path="TakeOne'sOneLife.csproj" />
 </Solution>

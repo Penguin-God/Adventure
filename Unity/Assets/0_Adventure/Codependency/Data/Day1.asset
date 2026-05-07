@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef2134198e1bba647819b1a09343ca94, type: 3}
+  m_Name: Day1
+  m_EditorClassIdentifier: Codependency::DayData
+  choices:
+  - choiceID: A
+    buttonText: "\uC124\uAC70\uC9C0"
+    defaultDialogue:
+    - "\uC57C \uC774\uAC83\uB3C4 \uC81C\uB300\uB85C \uBABB\uD574?"
+    - "\uB611\uBC14\uB85C \uC880 \uD574. \uBB50 \uC798\uD558\uB294\uAC8C \uC5C6\uB0D0"
+  - choiceID: B
+    buttonText: "\uAE00\uC4F0\uAE30"
+    defaultDialogue:
+    - "\uB610 \uC4F8\uB370\uC5C6\uC774 \uAE00\uC774\uB098 \uC4F0\uACE0 \uC788\uC5B4?"
+    - "\uC548\uB418\uACA0\uB2E4 \uC624\uB298 \uC880 \uB9DE\uC790"
+  - choiceID: C
+    buttonText: "\uC790\uD574"
+    defaultDialogue:
+    - "\uC544, \uB610 \uADF8 \uC9C0\uB784\uC774\uC57C?"
+    - "....\uC77C\uB85C\uC640 \uC0C1\uCC98 \uBCF4\uC5EC\uC918"
+    - "\uC544\uD504\uB2C8\uAE4C \uCC38\uC544"
+    - "\uB9CC\uC57D \uB610 \uC774\uB7EC\uBA74 \uC55E\uC73C\uB85C \uB108 \uC190\uBC1C
+      \uBB36\uACE0 \uCD9C\uADFC\uD560\uAC70\uC57C"
