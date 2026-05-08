@@ -1,9 +1,8 @@
 {
-    "name": "Codependency",
+    "name": "LegIron",
     "rootNamespace": "",
     "references": [
-        "Unity.TextMeshPro",
-        "Framework"
+        "GUID:7a7d9d3e2bfaf50409a3fa2ba0b35ade"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
