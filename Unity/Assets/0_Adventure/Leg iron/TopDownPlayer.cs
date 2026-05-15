@@ -22,8 +22,7 @@ public class TopDownPlayer : MonoBehaviour
     private Vector2 movement;
 
     [Header("Interaction Settings")]
-    public float interactionCooldown = 0.5f;
-    private float lastInteractTime;
+    [SerializeField] bool isInteract;
 
     IInteractable currentTarget;
 
@@ -40,7 +39,7 @@ public class TopDownPlayer : MonoBehaviour
         movement.y = Input.GetAxisRaw("Vertical");
         movement = movement.normalized;
 
-        if (currentTarget != null)
+        if (currentTarget != null && isInteract == false)
         {
             if (currentTarget.Type == InteractType.Collision) ExecuteInteraction();
             else if (currentTarget.Type == InteractType.Input && Input.GetKeyDown(KeyCode.Space)) ExecuteInteraction();
@@ -54,11 +53,8 @@ public class TopDownPlayer : MonoBehaviour
 
     void ExecuteInteraction()
     {
-        if (Time.time - lastInteractTime >= interactionCooldown)
-        {
-            currentTarget.Interact();
-            lastInteractTime = Time.time;
-        }
+        currentTarget.Interact();
+        isInteract = true;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -72,6 +68,9 @@ public class TopDownPlayer : MonoBehaviour
     {
         IInteractable interactable = collision.collider.GetComponent<IInteractable>();
         if (interactable != null && interactable == currentTarget)
+        {
+            isInteract = false;
             currentTarget = null;
+        }
     }
 }
