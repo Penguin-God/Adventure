@@ -18,8 +18,8 @@ public class TopDownPlayer : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed = 5f;
-    private Rigidbody2D rb;
-    private Vector2 movement;
+    Rigidbody2D rb;
+    Vector2 movement;
 
     [Header("Interaction Settings")]
     [SerializeField] bool isInteract;

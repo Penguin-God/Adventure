@@ -523,6 +523,37 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &144657957
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 144657958}
+  m_Layer: 0
+  m_Name: Out
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &144657958
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144657957}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.04, y: -0.85, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1018583956}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &164215879
 GameObject:
   m_ObjectHideFlags: 0
@@ -568,7 +599,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2792f953843d194489af6866fb207e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LegIron::TeleportInteract
-  targetPosition: {fileID: 2088025263}
+  targetPosition: {fileID: 565423145}
 --- !u!61 &164215882
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1395,7 +1426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2792f953843d194489af6866fb207e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LegIron::TeleportInteract
-  targetPosition: {fileID: 1952580430}
+  targetPosition: {fileID: 301838973}
 --- !u!61 &298610920
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1442,6 +1473,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &301838972
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 301838973}
+  m_Layer: 0
+  m_Name: In
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &301838973
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301838972}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.89, y: -2.49, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 710685432}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &370312336
 GameObject:
   m_ObjectHideFlags: 0
@@ -1473,6 +1535,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 298610918}
+  - {fileID: 814828865}
   m_Father: {fileID: 1268648824}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &370312338
@@ -1534,6 +1597,37 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &454172369
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 454172370}
+  m_Layer: 0
+  m_Name: In
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &454172370
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454172369}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5.57, y: 0.74, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1176920413}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &461198699
 GameObject:
   m_ObjectHideFlags: 0
@@ -1948,6 +2042,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &565423144
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 565423145}
+  m_Layer: 0
+  m_Name: In
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &565423145
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565423144}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.87, y: -2.49, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 667607930}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &577921942
 GameObject:
   m_ObjectHideFlags: 0
@@ -2355,6 +2480,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1443590139}
+  - {fileID: 565423145}
   - {fileID: 2088025263}
   - {fileID: 255815544}
   - {fileID: 1588837643}
@@ -2498,6 +2624,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &676649708
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 676649709}
+  m_Layer: 0
+  m_Name: "From\uC218\uAC10\uC18C"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &676649709
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676649708}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.28, y: 10.49, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1401646698}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &710685431
 GameObject:
   m_ObjectHideFlags: 0
@@ -2528,6 +2685,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1724602138}
+  - {fileID: 301838973}
   - {fileID: 1952580430}
   - {fileID: 116532637}
   - {fileID: 877296406}
@@ -2809,6 +2967,37 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &814828864
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 814828865}
+  m_Layer: 0
+  m_Name: Out
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &814828865
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814828864}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.03, y: -0.86, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 370312337}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &815359212
 GameObject:
   m_ObjectHideFlags: 0
@@ -2974,7 +3163,7 @@ Transform:
   m_GameObject: {fileID: 862895521}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.16, y: -11.64, z: 0}
+  m_LocalPosition: {x: -3.16, y: -12.73, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2992,7 +3181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2792f953843d194489af6866fb207e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LegIron::TeleportInteract
-  targetPosition: {fileID: 1532368185}
+  targetPosition: {fileID: 454172370}
 --- !u!61 &862895524
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3039,6 +3228,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 3, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &866465325
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 866465326}
+  m_Layer: 0
+  m_Name: FromHome
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &866465326
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866465325}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.22, y: -11.01, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1401646698}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &877296405
 GameObject:
   m_ObjectHideFlags: 0
@@ -3048,8 +3268,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 877296406}
-  - component: {fileID: 877296408}
   - component: {fileID: 877296407}
+  - component: {fileID: 877296408}
   m_Layer: 0
   m_Name: talk
   m_TagString: Untagged
@@ -3127,14 +3347,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 877296405}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce98fc72b4032c94fb77f15821f8bfe6, type: 3}
+  m_Script: {fileID: 11500000, guid: 2e74850a3335aee49900e678f40e425d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: LegIron::DialogueInteract
+  m_EditorClassIdentifier: LegIron::SO_DialogueInteract
   interactType: 0
-  npcDialogues:
-  - "\uADF8.. \uADF8\uAC8C..\uC5B4,,,\uC544..\uC548\uB155\uD558\uC138\uC694"
-  - "\uB2E4.. \uC81C \uC798\uBABB\uC774\uC5D0\uC694..\uC81C\uAC00 \uC804\uBD80...."
+  dialogueData: {fileID: 11400000, guid: 3fe13434a41219646b5e9213c99d23c1, type: 2}
   dialogueManager: {fileID: 1587174089}
+  dayManager: {fileID: 2069271334}
 --- !u!1 &894905646
 GameObject:
   m_ObjectHideFlags: 0
@@ -3611,6 +3830,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 164215880}
+  - {fileID: 144657958}
   m_Father: {fileID: 1268648824}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1018583957
@@ -3918,7 +4138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: LegIron::TopDownPlayer
   moveSpeed: 5
-  interactionCooldown: 0.5
+  isInteract: 0
 --- !u!50 &1096590421
 Rigidbody2D:
   serializedVersion: 5
@@ -4023,6 +4243,7 @@ Transform:
   m_Children:
   - {fileID: 1668198795}
   - {fileID: 1345111512}
+  - {fileID: 454172370}
   - {fileID: 1532368185}
   - {fileID: 251919583}
   m_Father: {fileID: 0}
@@ -4679,7 +4900,7 @@ Transform:
   m_GameObject: {fileID: 1388748524}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.17, y: 10.61, z: 0}
+  m_LocalPosition: {x: -3.09, y: 11.87, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4775,7 +4996,9 @@ Transform:
   m_Children:
   - {fileID: 84189567}
   - {fileID: 862895522}
+  - {fileID: 866465326}
   - {fileID: 1388748525}
+  - {fileID: 676649709}
   - {fileID: 1463682278}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4999,9 +5222,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: LegIron::DialogueInteract
   interactType: 0
-  npcDialogues:
-  - "\uC774\uACF3\uC740 \uC81C\uD55C\uAD6C\uC5ED\uC785\uB2C8\uB2E4"
-  - "\uB354 \uC811\uADFC \uC2DC \uC2E0\uACBD\uB3C5\uC774 \uC8FC\uC785\uB429\uB2C8\uB2E4"
+  dialogues:
+  - "\uC81C\uD55C \uAD6C\uC5ED\uC5D0 \uC811\uADFC\uD588\uC2B5\uB2C8\uB2E4"
+  - "\uB354 \uC811\uADFC\uD558\uBA74 \uC2E0\uACBD\uB3C5\uC774 \uC8FC\uC785\uB429\uB2C8\uB2E4"
   dialogueManager: {fileID: 1587174089}
 --- !u!61 &1463682280
 BoxCollider2D:
@@ -5337,7 +5560,7 @@ GameObject:
   - component: {fileID: 1532368186}
   - component: {fileID: 1532368187}
   m_Layer: 8
-  m_Name: InOutTP
+  m_Name: OutTP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5416,7 +5639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2792f953843d194489af6866fb207e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LegIron::TeleportInteract
-  targetPosition: {fileID: 862895522}
+  targetPosition: {fileID: 866465326}
 --- !u!1 &1544725568
 GameObject:
   m_ObjectHideFlags: 0
@@ -5793,8 +6016,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1588837643}
-  - component: {fileID: 1588837645}
   - component: {fileID: 1588837644}
+  - component: {fileID: 1588837645}
   m_Layer: 0
   m_Name: talk
   m_TagString: Untagged
@@ -5872,23 +6095,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1588837642}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce98fc72b4032c94fb77f15821f8bfe6, type: 3}
+  m_Script: {fileID: 11500000, guid: 2e74850a3335aee49900e678f40e425d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: LegIron::DialogueInteract
+  m_EditorClassIdentifier: LegIron::SO_DialogueInteract
   interactType: 0
-  npcDialogues:
-  - "\uD798\uB4E4\uC5B4\uBCF4\uC774\uB124?"
-  - "\uD558\uAE34 \uCD5C\uADFC\uC5D0 \uC77C\uC5B4\uB09C \uC77C\uC774 \uC880 \uD06C\uAE34\uD558\uC9C0?"
-  - "\uC2E4\uC885\uC5D0 \uC0B4\uC778\uC774\uB77C\uB2C8 \uCC38 \uD798\uB4E4\uACA0\uC5B4...."
-  - "\uADF8\uB798......"
-  - ............
-  - "\uADFC\uB370 \uB09C \uB108\uD55C\uD14C \uC0B4\uC778\uC774\uB77C\uB294 \uB9D0\uC744
-    \uD55C \uC801\uC774 \uC5C6\uB294\uB370?"
-  - "........\uC544 \uBBF8\uC548, \uADF8\uAC74 \uBAB0\uB790\uB124"
-  - "\uB108, \uC5B4\uB5BB\uAC8C \uC548\uAC70\uC57C?"
-  - "\uAE00\uC384, \uADF8\uAC78 \uB0B4\uAC00 \uB9D0\uD574\uC8FC\uBA74 \uC7AC\uBBF8
-    \uC5C6\uC9C0 \uC54A\uC544?"
+  dialogueData: {fileID: 11400000, guid: 266d779faebe1ce4891bf4e31a5c12e5, type: 2}
   dialogueManager: {fileID: 1587174089}
+  dayManager: {fileID: 2069271334}
 --- !u!1 &1606603467
 GameObject:
   m_ObjectHideFlags: 0
@@ -5934,7 +6147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2792f953843d194489af6866fb207e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LegIron::TeleportInteract
-  targetPosition: {fileID: 1388748525}
+  targetPosition: {fileID: 676649709}
 --- !u!61 &1606603470
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5991,10 +6204,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1668198795}
   - component: {fileID: 1668198794}
-  - component: {fileID: 1668198796}
   - component: {fileID: 1668198797}
+  - component: {fileID: 1668198798}
   m_Layer: 8
-  m_Name: Square
+  m_Name: Note
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6074,24 +6287,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1176920413}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1668198796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1668198793}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce98fc72b4032c94fb77f15821f8bfe6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: LegIron::DialogueInteract
-  interactType: 0
-  npcDialogues:
-  - "\uAE30\uC0AC\uB2E4"
-  - "\uB2A5\uB825\uC790 \uC218\uAC10\uC18C \uC8FC\uBCC0 \uC8FC\uBBFC\uB4E4 \uBD88\uD3B8
-    \uD638\uC18C"
-  dialogueManager: {fileID: 1587174089}
 --- !u!61 &1668198797
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6138,6 +6333,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1668198798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668198793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e74850a3335aee49900e678f40e425d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LegIron::SO_DialogueInteract
+  interactType: 0
+  dialogueData: {fileID: 11400000, guid: 3a314f080d3eb5443a19771a5a7f6dc7, type: 2}
+  dialogueManager: {fileID: 1587174089}
+  dayManager: {fileID: 2069271334}
 --- !u!1 &1677118506
 GameObject:
   m_ObjectHideFlags: 0
@@ -6638,7 +6849,7 @@ GameObject:
   - component: {fileID: 1952580432}
   - component: {fileID: 1952580431}
   m_Layer: 0
-  m_Name: InOut
+  m_Name: Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6671,7 +6882,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2792f953843d194489af6866fb207e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LegIron::TeleportInteract
-  targetPosition: {fileID: 370312337}
+  targetPosition: {fileID: 814828865}
 --- !u!212 &1952580432
 SpriteRenderer:
   serializedVersion: 2
@@ -6835,7 +7046,7 @@ GameObject:
   - component: {fileID: 2088025265}
   - component: {fileID: 2088025266}
   m_Layer: 0
-  m_Name: InOut
+  m_Name: Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6973,7 +7184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2792f953843d194489af6866fb207e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LegIron::TeleportInteract
-  targetPosition: {fileID: 1018583956}
+  targetPosition: {fileID: 144657958}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
