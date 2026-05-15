@@ -16,15 +16,14 @@ public interface IInteractable
 [RequireComponent(typeof(Rigidbody2D))]
 public class TopDownPlayer : MonoBehaviour
 {
-    [Header("Movement")]
     public float moveSpeed = 5f;
     Rigidbody2D rb;
     Vector2 movement;
 
-    [Header("Interaction Settings")]
     [SerializeField] bool isInteract;
-
     IInteractable currentTarget;
+
+    public bool canMove = true;
 
     void Start()
     {
@@ -35,6 +34,12 @@ public class TopDownPlayer : MonoBehaviour
 
     void Update()
     {
+        if (canMove == false)
+        {
+            movement = Vector2.zero;
+            return;
+        }
+
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         movement = movement.normalized;
@@ -51,6 +56,12 @@ public class TopDownPlayer : MonoBehaviour
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
     }
 
+    public void SetDreamMode(bool isDreaming)
+    {
+        canMove = !isDreaming; // 꿈꾸는 중이면 조작 불가
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr != null) sr.enabled = !isDreaming; // 꿈꾸는 중이면 투명하게
+    }
     void ExecuteInteraction()
     {
         currentTarget.Interact();

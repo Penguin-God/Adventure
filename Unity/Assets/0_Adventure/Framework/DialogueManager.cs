@@ -10,7 +10,8 @@ public class DialogueManager : MonoBehaviour
 
     private List<string> currentLines = new List<string>();
     private int currentLineIndex = 0;
-    public Action OnDialogueFinished;
+    public event Action OnDialogueFinished;
+    public event Action onLineAdvanced;
 
     void Update()
     {
@@ -30,18 +31,18 @@ public class DialogueManager : MonoBehaviour
         ShowNextLine();
     }
 
-    private void ShowNextLine()
+    void ShowNextLine()
     {
         if (currentLineIndex < currentLines.Count)
         {
             dialogueText.text = currentLines[currentLineIndex];
             currentLineIndex++;
+            onLineAdvanced?.Invoke();
         }
         else
         {
-            // 대사 종료
             dialoguePanel.SetActive(false);
-            OnDialogueFinished?.Invoke(); // 구독하고 있는 로직 실행
+            OnDialogueFinished?.Invoke();
         }
     }
 }
