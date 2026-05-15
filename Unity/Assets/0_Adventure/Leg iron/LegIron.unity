@@ -1244,8 +1244,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2792f953843d194489af6866fb207e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LegIron::TeleportInteract
-  targetPosition: {fileID: 1096590419}
-  playerTransform: {fileID: 1952580430}
+  targetPosition: {fileID: 1952580430}
+  playerTransform: {fileID: 1096590419}
 --- !u!61 &298610920
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1302,7 +1302,6 @@ GameObject:
   m_Component:
   - component: {fileID: 370312337}
   - component: {fileID: 370312338}
-  - component: {fileID: 370312339}
   m_Layer: 0
   m_Name: Door2
   m_TagString: Untagged
@@ -1385,20 +1384,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &370312339
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 370312336}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2792f953843d194489af6866fb207e9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: LegIron::TeleportInteract
-  targetPosition: {fileID: 0}
-  playerTransform: {fileID: 1096590419}
 --- !u!1 &461198699
 GameObject:
   m_ObjectHideFlags: 0
@@ -3455,7 +3440,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1018583956}
   - component: {fileID: 1018583957}
-  - component: {fileID: 1018583958}
   m_Layer: 0
   m_Name: Door1
   m_TagString: Untagged
@@ -3538,20 +3522,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &1018583958
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1018583955}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2792f953843d194489af6866fb207e9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: LegIron::TeleportInteract
-  targetPosition: {fileID: 0}
-  playerTransform: {fileID: 1096590419}
 --- !u!1 &1071795388
 GameObject:
   m_ObjectHideFlags: 0

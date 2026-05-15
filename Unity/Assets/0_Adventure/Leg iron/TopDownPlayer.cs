@@ -35,7 +35,6 @@ public class TopDownPlayer : MonoBehaviour
 
     void FixedUpdate()
     {
-        // 물리 엔진을 통한 실제 이동 처리
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
     }
 
