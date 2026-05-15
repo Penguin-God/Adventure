@@ -383,7 +383,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 1}
@@ -1750,6 +1750,7 @@ GameObject:
   - component: {fileID: 378853061}
   - component: {fileID: 378853063}
   - component: {fileID: 378853062}
+  - component: {fileID: 378853064}
   m_Layer: 0
   m_Name: Noise
   m_TagString: Untagged
@@ -1819,7 +1820,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.9372549, g: 0.0078116907, b: 0, a: 1}
@@ -1876,7 +1877,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -1892,6 +1893,31 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &378853064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378853059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08d367b7951cf6d4ea6f0a0bae3093f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LegIron::DreamMainInteract
+  normalTexts:
+  - "\uC2DC\uB044\uB7FD\uB2E4"
+  changedTexts:
+  - "\uB354 \uC2DC\uB044\uB7EC\uC6CC\uC84C\uB2E4"
+  - "\uB354"
+  - "\uB354"
+  - "\uB354,\uB354,\uB354,\uB354,\uB354,\uB354,\uB354,\uB354,\uB354"
+  - "\uBB34\uC5B8\uAC00 \uAE68\uC9C0\uB294 \uC18C\uB9AC\uAC00 \uB4E4\uB9AC\uACE0
+    \uC870\uC6A9\uD574\uC9C4\uB2E4"
+  scaleMultiplier: 5
+  scaleDuration: 0.7
+  dialogueManager: {fileID: 1587174089}
+  dreamManager: {fileID: 2069271336}
 --- !u!1 &454172369
 GameObject:
   m_ObjectHideFlags: 0
@@ -2632,7 +2658,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 1}
@@ -2782,7 +2808,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -3681,7 +3707,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 1}
@@ -4206,7 +4232,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.18867922, g: 0.18867922, b: 0.18867922, a: 1}
@@ -4767,7 +4793,7 @@ GameObject:
   - component: {fileID: 1071691159}
   - component: {fileID: 1071691160}
   - component: {fileID: 1071691162}
-  - component: {fileID: 1071691161}
+  - component: {fileID: 1071691163}
   m_Layer: 0
   m_Name: Remote
   m_TagString: Untagged
@@ -4849,21 +4875,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &1071691161
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1071691158}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05213b3ad2f9bd240bc467e97a74cb30, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: LegIron::DreamDialogueTrigger
-  texts:
-  - "TV \uC18C\uB9AC\uB97C \uD0A4\uC6E0\uB2E4"
-  dialogueManager: {fileID: 1587174089}
 --- !u!61 &1071691162
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4894,7 +4905,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -4910,6 +4921,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1071691163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1071691158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9497d192495b266458b50b43abf43826, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LegIron::DreamRemoteInteract
+  texts:
+  - "TV \uC18C\uB9AC\uB97C \uD0A4\uC6E0\uB2E4"
+  dialogueManager: {fileID: 1587174089}
+  mainObject: {fileID: 378853064}
 --- !u!1 &1071795388
 GameObject:
   m_ObjectHideFlags: 0
@@ -8163,6 +8190,7 @@ GameObject:
   - component: {fileID: 2069271333}
   - component: {fileID: 2069271334}
   - component: {fileID: 2069271335}
+  - component: {fileID: 2069271336}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -8212,6 +8240,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: LegIron::TransitionManager
   fadeImage: {fileID: 1966767400}
   fadeDuration: 1.5
+--- !u!114 &2069271336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2069271332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e1760dfec698e5439ee347008393293, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LegIron::DreamManager
+  playerTransform: {fileID: 1096590419}
+  wakeUpLocation: {fileID: 251919583}
+  transitionManager: {fileID: 2069271335}
 --- !u!1 &2088025262
 GameObject:
   m_ObjectHideFlags: 0
