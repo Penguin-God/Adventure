@@ -1,7 +1,14 @@
 using UnityEngine;
 
+public enum InteractType
+{
+    Collision,
+    Input,
+}
+
 public interface IInteractable
 {
+    InteractType Type { get; }
     void Interact();
 }
 
@@ -15,8 +22,10 @@ public class TopDownPlayer : MonoBehaviour
     private Vector2 movement;
 
     [Header("Interaction Settings")]
-    public float interactionCooldown = 0.5f; // 무한 반복을 막기 위한 쿨다운 (0.5초)
-    private float lastInteractTime; // 마지막으로 상호작용을 한 시간
+    public float interactionCooldown = 0.5f;
+    private float lastInteractTime;
+
+    IInteractable currentTarget;
 
     void Start()
     {
@@ -27,10 +36,15 @@ public class TopDownPlayer : MonoBehaviour
 
     void Update()
     {
-        // 1. 이동 입력 받기
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         movement = movement.normalized;
+
+        if (currentTarget != null)
+        {
+            if (currentTarget.Type == InteractType.Collision) ExecuteInteraction();
+            else if (currentTarget.Type == InteractType.Input && Input.GetKeyDown(KeyCode.Space)) ExecuteInteraction();
+        }
     }
 
     void FixedUpdate()
@@ -38,18 +52,26 @@ public class TopDownPlayer : MonoBehaviour
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
     }
 
-    // 2. 부딪혔을 때 자동으로 실행되는 유니티 내장 함수
-    private void OnCollisionEnter2D(Collision2D collision)
+    void ExecuteInteraction()
     {
-        // 현재 시간과 마지막 상호작용 시간을 비교하여, 쿨다운이 지나지 않았다면 함수를 종료(return)합니다.
-        if (Time.time - lastInteractTime < interactionCooldown) return;
-
-        IInteractable interactable = collision.collider.GetComponent<IInteractable>();
-        if (interactable != null)
+        if (Time.time - lastInteractTime >= interactionCooldown)
         {
-            // 상호작용 실행 후, 마지막 상호작용 시간을 현재 시간으로 갱신합니다.
-            interactable.Interact();
+            currentTarget.Interact();
             lastInteractTime = Time.time;
         }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        IInteractable interactable = collision.collider.GetComponent<IInteractable>();
+        if (interactable != null)
+            currentTarget = interactable;
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        IInteractable interactable = collision.collider.GetComponent<IInteractable>();
+        if (interactable != null && interactable == currentTarget)
+            currentTarget = null;
     }
 }
