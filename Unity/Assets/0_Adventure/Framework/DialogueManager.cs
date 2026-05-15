@@ -14,11 +14,13 @@ public class DialogueManager : MonoBehaviour
 
     void Update()
     {
-        if (dialoguePanel.activeSelf && Input.GetMouseButtonDown(0))
+        if (dialoguePanel.activeSelf && DialogueInput())
         {
             ShowNextLine();
         }
     }
+
+    bool DialogueInput() => Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space);
 
     public void StartDialogue(List<string> lines)
     {

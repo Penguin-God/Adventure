@@ -31,8 +31,6 @@ public class TopDownPlayer : MonoBehaviour
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         movement = movement.normalized;
-
-        // 기존에 있던 스페이스바(Space) 감지 로직은 삭제했습니다!
     }
 
     void FixedUpdate()
@@ -45,12 +43,8 @@ public class TopDownPlayer : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // 현재 시간과 마지막 상호작용 시간을 비교하여, 쿨다운이 지나지 않았다면 함수를 종료(return)합니다.
-        if (Time.time - lastInteractTime < interactionCooldown)
-        {
-            return;
-        }
+        if (Time.time - lastInteractTime < interactionCooldown) return;
 
-        // 부딪힌 대상에게 IInteractable 컴포넌트가 있는지 확인합니다.
         IInteractable interactable = collision.collider.GetComponent<IInteractable>();
         if (interactable != null)
         {
