@@ -5,7 +5,7 @@ using UnityEngine;
 public class DialogueInteractOneTime : MonoBehaviour, IInteractable
 {
     bool isShow;
-    public InteractType Type => InteractType.CollisionOnce;
+    public InteractType Type => InteractType.Collision;
 
     public void Interact()
     {

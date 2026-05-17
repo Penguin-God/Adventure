@@ -4,7 +4,6 @@ public enum InteractType
 {
     Collision,
     Input,
-    CollisionOnce,
 }
 
 public interface IInteractable
