@@ -93,7 +93,7 @@ public class SimpleGameManager : MonoBehaviour
     public string[] endingDialogue;
     void OnNextDayButtonClicked()
     {
-        // 🔥 수정된 부분: 현재 날짜가 세팅된 날짜 데이터의 마지막인지 체크합니다.
+        // 현재 날짜가 세팅된 날짜 데이터의 마지막인지 체크합니다.
         if (currentDayIndex >= dayDatas.Count - 1)
         {
             // 마지막 날이라면 다음 날로 넘어가지 않고 다이얼로그 매니저를 통해 대사를 출력합니다.
