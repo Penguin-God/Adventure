@@ -1,26 +1,37 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // TextMeshPro 네임스페이스 추가
-using System.Collections.Generic;
+using TMPro;
 using System.Linq;
 
 public class GameBoardUI : MonoBehaviour
 {
     [Header("UI References")]
-    public Transform boardPanel;    
-    public GameObject squarePrefab; 
+    public Transform boardPanel;
+    public GameObject squarePrefab;
+
+    [Header("Stage Data")]
+    public StageDataSO currentStageData;
 
     private GameState currentState;
     private Button[,] uiButtons = new Button[8, 8];
     private Image[,] uiImages = new Image[8, 8];
-    
-    // TextMeshPro용 텍스트 배열로 변경
-    private TMP_Text[,] uiTexts = new TMP_Text[8, 8]; 
+    private TMP_Text[,] uiTexts = new TMP_Text[8, 8];
 
     void Start()
     {
         InitializeUI();
-        currentState = PuzzleStageBuilder.CreateStage1();
+
+        // StageDataSO가 할당되어 있다면 해당 데이터로 상태를 생성
+        if (currentStageData != null)
+        {
+            currentState = PuzzleStageBuilder.CreateFromSO(currentStageData);
+        }
+        else
+        {
+            Debug.LogError("스테이지 데이터가 비어있습니다! 인스펙터에 StageDataSO를 넣어주세요.");
+            return;
+        }
+
         RenderState(currentState);
     }
 
@@ -36,8 +47,7 @@ public class GameBoardUI : MonoBehaviour
                 GameObject obj = Instantiate(squarePrefab, boardPanel);
                 uiButtons[x, y] = obj.GetComponent<Button>();
                 uiImages[x, y] = obj.GetComponent<Image>();
-                
-                // 프리팹 자식에 있는 TMP_Text 컴포넌트를 가져와 배열에 저장
+
                 uiTexts[x, y] = obj.GetComponentInChildren<TMP_Text>();
 
                 uiButtons[x, y].onClick.AddListener(() => OnSquareClicked(clickX, clickY));
@@ -59,7 +69,7 @@ public class GameBoardUI : MonoBehaviour
         else
         {
             nextState = ChessPuzzleLogic.MoveAndTouch(currentState, clickedSquare);
-            
+
             if (nextState.IsVictory)
             {
                 Debug.Log("스테이지 클리어! 킹을 잡았습니다.");
@@ -80,39 +90,44 @@ public class GameBoardUI : MonoBehaviour
         foreach (var square in state.Board)
         {
             Image img = uiImages[square.X, square.Y];
-            TMP_Text txt = uiTexts[square.X, square.Y]; // 캐싱해둔 TMP_Text 컴포넌트
+            TMP_Text txt = uiTexts[square.X, square.Y];
 
-            // 1. 기물이 있으면 텍스트로 이름 표시 (처음부터 모든 기물이 보이게 됨)
+            // 1. 기물 텍스트 표시
             if (square.Piece == PieceType.None)
             {
-                txt.text = ""; 
+                txt.text = "";
             }
             else
             {
-                txt.text = square.Piece.ToString(); 
-                txt.color = Color.black; 
+                txt.text = square.Piece.ToString();
+                txt.color = Color.black;
             }
-            
-            // 2. 타일 배경 색상 처리
+
+            // 2. 타일 배경 색상 처리 조건
             bool isActive = state.ActiveSquare == square;
             bool isValidMove = validMoves.Contains(square);
-            bool isAllowedStart = state.ActiveSquare == null && state.AllowedStartingSquares.Contains(square);
 
+            // 기물이 아직 선택되지 않았고, 빈 칸이 아니며, 허용된 시작 기물 리스트에 없는 경우 (DisableStart 처리된 기물)
+            bool isStartDisabled = state.ActiveSquare == null &&
+                                   square.Piece != PieceType.None &&
+                                   !state.AllowedStartingSquares.Contains(square);
+
+            // 3. 색상 적용
             if (isActive)
             {
-                img.color = Color.green;
+                img.color = Color.green; // 현재 조작 중인 기물
             }
             else if (isValidMove)
             {
-                img.color = Color.yellow; 
+                img.color = Color.yellow; // 바톤 터치 이동 가능
             }
-            else if (isAllowedStart)
+            else if (isStartDisabled)
             {
-                img.color = Color.cyan; 
+                img.color = new Color(0.7f, 0.7f, 0.7f); // 시작 기물로 선택 불가능 (어두운 회색)
             }
             else
             {
-                img.color = Color.white; 
+                img.color = Color.white; // 일반 칸 또는 선택 가능한 첫 기물
             }
         }
     }

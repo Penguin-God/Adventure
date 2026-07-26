@@ -1,8 +1,8 @@
 ﻿<Solution>
   <Project Path="LegIron.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
-  <Project Path="FangAutoTile.csproj" />
   <Project Path="ChessBatonTouch.csproj" />
+  <Project Path="FangAutoTile.csproj" />
   <Project Path="Framework.csproj" />
   <Project Path="FangAutoTile.Editor.csproj" />
   <Project Path="Codependency.csproj" />

@@ -60,7 +60,7 @@ public static class ChessPuzzleLogic
             PieceType.Rook => (dx == 0 || dy == 0) && IsPathClear(board, from, to),
             PieceType.Bishop => (dx == dy) && IsPathClear(board, from, to),
             PieceType.Queen => (dx == 0 || dy == 0 || dx == dy) && IsPathClear(board, from, to),
-            PieceType.Pawn => (dx == 1 && dy == 1) && (to.Y - from.Y == 1),
+            PieceType.Pawn => (dx == 1 && dy == 1) && (from.Y - to.Y == 1),
             _ => false
         };
     }

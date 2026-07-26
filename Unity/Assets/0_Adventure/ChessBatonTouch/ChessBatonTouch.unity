@@ -538,6 +538,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: ChessBatonTouch::GameBoardUI
   boardPanel: {fileID: 492131911}
   squarePrefab: {fileID: 7238081151113486997, guid: 0731db858989dc94f8b528d259a7d136, type: 3}
+  currentStageData: {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
