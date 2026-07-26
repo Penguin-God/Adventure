@@ -20,15 +20,11 @@ public class GameBoardUI : MonoBehaviour
     void Start()
     {
         InitializeUI();
-
-        // StageDataSO가 할당되어 있다면 해당 데이터로 상태를 생성
-        if (currentStageData != null)
-        {
-            currentState = PuzzleStageBuilder.CreateFromSO(currentStageData);
-        }
+        if (GameDataManager.SelectedStageData != null)
+            currentState = PuzzleStageBuilder.CreateFromSO(GameDataManager.SelectedStageData);
         else
         {
-            Debug.LogError("스테이지 데이터가 비어있습니다! 인스펙터에 StageDataSO를 넣어주세요.");
+            Debug.LogError("로드할 스테이지 데이터가 없습니다!");
             return;
         }
 
