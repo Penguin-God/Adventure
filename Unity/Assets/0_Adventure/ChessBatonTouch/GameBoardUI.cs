@@ -1,18 +1,21 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; // TextMeshPro 네임스페이스 추가
 using System.Collections.Generic;
 using System.Linq;
 
 public class GameBoardUI : MonoBehaviour
 {
     [Header("UI References")]
-    public Transform boardPanel;    // 8x8 그리드가 설정된 UI 패널 (GridLayoutGroup 사용 권장)
-    public GameObject squarePrefab; // UI 버튼 프리팹
+    public Transform boardPanel;    
+    public GameObject squarePrefab; 
 
     private GameState currentState;
-
     private Button[,] uiButtons = new Button[8, 8];
     private Image[,] uiImages = new Image[8, 8];
+    
+    // TextMeshPro용 텍스트 배열로 변경
+    private TMP_Text[,] uiTexts = new TMP_Text[8, 8]; 
 
     void Start()
     {
@@ -27,12 +30,15 @@ public class GameBoardUI : MonoBehaviour
         {
             for (int x = 0; x < 8; x++)
             {
-                int clickX = x; // 클로저 이슈 방지를 위한 지역 변수 복사
+                int clickX = x;
                 int clickY = y;
 
                 GameObject obj = Instantiate(squarePrefab, boardPanel);
                 uiButtons[x, y] = obj.GetComponent<Button>();
                 uiImages[x, y] = obj.GetComponent<Image>();
+                
+                // 프리팹 자식에 있는 TMP_Text 컴포넌트를 가져와 배열에 저장
+                uiTexts[x, y] = obj.GetComponentInChildren<TMP_Text>();
 
                 uiButtons[x, y].onClick.AddListener(() => OnSquareClicked(clickX, clickY));
             }
@@ -41,30 +47,25 @@ public class GameBoardUI : MonoBehaviour
 
     private void OnSquareClicked(int x, int y)
     {
-        // IReadOnlyList에는 Find가 없으므로 LINQ의 FirstOrDefault를 사용합니다.
         var clickedSquare = currentState.Board.FirstOrDefault(sq => sq.X == x && sq.Y == y);
         if (clickedSquare == null) return;
 
         GameState nextState = currentState;
 
-        // 1. 아직 기물이 선택되지 않은 상태 (처음 시작)
         if (currentState.ActiveSquare == null)
         {
             nextState = ChessPuzzleLogic.SelectStartingPiece(currentState, clickedSquare);
         }
-        // 2. 기물이 활성화되어 있는 상태 (바톤 터치 시도)
         else
         {
             nextState = ChessPuzzleLogic.MoveAndTouch(currentState, clickedSquare);
-
+            
             if (nextState.IsVictory)
             {
                 Debug.Log("스테이지 클리어! 킹을 잡았습니다.");
-                // TODO: 클리어 UI 호출 또는 다음 스테이지 로드
             }
         }
 
-        // 상태가 변했다면 화면 갱신
         if (currentState != nextState)
         {
             currentState = nextState;
@@ -79,31 +80,39 @@ public class GameBoardUI : MonoBehaviour
         foreach (var square in state.Board)
         {
             Image img = uiImages[square.X, square.Y];
+            TMP_Text txt = uiTexts[square.X, square.Y]; // 캐싱해둔 TMP_Text 컴포넌트
 
-            // TODO: 게임 내 실제 스프라이트 연결 시 아래 주석 해제
-            // img.sprite = GetSpriteForPiece(square.Piece);
-
-            // record 클래스는 값(Value) 비교를 자동으로 해주기 때문에 Contains로 쉽게 체크 가능합니다.
+            // 1. 기물이 있으면 텍스트로 이름 표시 (처음부터 모든 기물이 보이게 됨)
+            if (square.Piece == PieceType.None)
+            {
+                txt.text = ""; 
+            }
+            else
+            {
+                txt.text = square.Piece.ToString(); 
+                txt.color = Color.black; 
+            }
+            
+            // 2. 타일 배경 색상 처리
             bool isActive = state.ActiveSquare == square;
             bool isValidMove = validMoves.Contains(square);
             bool isAllowedStart = state.ActiveSquare == null && state.AllowedStartingSquares.Contains(square);
 
-            // 상태에 따른 타일 색상 표현
             if (isActive)
             {
-                img.color = Color.green; // 조작 중인 기물
+                img.color = Color.green;
             }
             else if (isValidMove)
             {
-                img.color = Color.yellow; // 바톤 터치 가능한 타겟
+                img.color = Color.yellow; 
             }
             else if (isAllowedStart)
             {
-                img.color = Color.cyan; // 시작 가능한 기물 (힌트)
+                img.color = Color.cyan; 
             }
             else
             {
-                img.color = Color.white; // 일반 상태
+                img.color = Color.white; 
             }
         }
     }
