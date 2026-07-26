@@ -3,6 +3,7 @@ using UnityEngine;
 public static class GameDataManager
 {
     public static StageDataSO SelectedStageData { get; set; }
+    public static StageDataSO NextStageData { get; set; } // 추가: 다음 스테이지 데이터
     public static int CurrentAbsoluteLevel { get; set; }
 
     public static int MaxClearedLevel
@@ -11,7 +12,6 @@ public static class GameDataManager
         set => PlayerPrefs.SetInt("MaxClearedLevel", value);
     }
 
-    // 광고 시청 여부 (true면 전체 챕터 해금)
     public static bool IsPremiumUnlocked
     {
         get => PlayerPrefs.GetInt("IsPremiumUnlocked", 0) == 1;

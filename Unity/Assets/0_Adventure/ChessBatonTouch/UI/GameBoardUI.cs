@@ -8,6 +8,7 @@ public class GameBoardUI : MonoBehaviour
     [Header("UI References")]
     public Transform boardPanel;
     public GameObject squarePrefab;
+    public GameResultUI gameResultUI;
 
     [Header("Stage Data")]
     public StageDataSO currentStageData;
@@ -68,7 +69,8 @@ public class GameBoardUI : MonoBehaviour
 
             if (nextState.IsVictory)
             {
-                Debug.Log("스테이지 클리어! 킹을 잡았습니다.");
+                gameResultUI.gameObject.SetActive(true);
+                gameResultUI.OnStageCleared();
             }
         }
 

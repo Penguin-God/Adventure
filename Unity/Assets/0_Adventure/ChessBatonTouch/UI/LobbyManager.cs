@@ -76,35 +76,42 @@ public class LobbyManager : MonoBehaviour
         {
             if (i >= chapter.stages.Count)
             {
-                stageButtons[i].gameObject.SetActive(false); // 데이터가 부족하면 버튼 숨김
+                stageButtons[i].gameObject.SetActive(false);
                 continue;
             }
 
             stageButtons[i].gameObject.SetActive(true);
-            int stageIndexInChapter = i;
-            int absoluteLevel = (currentChapterIndex * 10) + stageIndexInChapter;
-
-            // 해금 조건: 내가 깬 최고 레벨 + 1까지만 플레이 가능
+            int stageIdx = i; // 클로저 문제 방지용 로컬 변수
+            int absoluteLevel = (currentChapterIndex * 10) + stageIdx;
             bool isUnlocked = absoluteLevel <= GameDataManager.MaxClearedLevel;
 
             Button btn = stageButtons[i];
             btn.interactable = isUnlocked;
+            btn.GetComponentInChildren<TMP_Text>().text = (stageIdx + 1).ToString();
 
-            // 버튼 텍스트 설정 (예: 1, 2, 3...)
-            TMP_Text btnText = btn.GetComponentInChildren<TMP_Text>();
-            if (btnText != null) btnText.text = (stageIndexInChapter + 1).ToString();
-
-            // 기존 리스너 지우고 새로 등록
             btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() => OnStageSelected(absoluteLevel, chapter.stages[stageIndexInChapter]));
+            // ★ 클릭 시 현재 챕터 인덱스와 스테이지 인덱스를 통째로 넘겨줍니다.
+            btn.onClick.AddListener(() => OnStageSelected(currentChapterIndex, stageIdx, absoluteLevel));
         }
     }
 
-    private void OnStageSelected(int absoluteLevel, StageDataSO stageData)
+    private void OnStageSelected(int chapterIdx, int stageIdx, int absoluteLevel)
     {
-        // 정적 매니저에 데이터 세팅 후 인게임 씬 로드
-        GameDataManager.SelectedStageData = stageData;
         GameDataManager.CurrentAbsoluteLevel = absoluteLevel;
+        GameDataManager.SelectedStageData = chapters[chapterIdx].stages[stageIdx];
+
+        // ★ 다음 스테이지 데이터 미리 계산해서 담아두기
+        GameDataManager.NextStageData = null;
+        if (stageIdx + 1 < chapters[chapterIdx].stages.Count)
+        {
+            // 같은 챕터의 다음 스테이지
+            GameDataManager.NextStageData = chapters[chapterIdx].stages[stageIdx + 1];
+        }
+        else if (chapterIdx + 1 < chapters.Count && chapters[chapterIdx + 1].stages.Count > 0)
+        {
+            // 다음 챕터의 첫 번째 스테이지
+            GameDataManager.NextStageData = chapters[chapterIdx + 1].stages[0];
+        }
 
         SceneManager.LoadScene("Puzzle");
     }
