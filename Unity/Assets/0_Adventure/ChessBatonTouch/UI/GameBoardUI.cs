@@ -1,7 +1,8 @@
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameBoardUI : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class GameBoardUI : MonoBehaviour
     public Transform boardPanel;
     public GameObject squarePrefab;
     public GameResultUI gameResultUI;
+    public Button restartBtn;
 
     [Header("Stage Data")]
     public StageDataSO currentStageData;
@@ -29,6 +31,7 @@ public class GameBoardUI : MonoBehaviour
             return;
         }
 
+        restartBtn.onClick.AddListener(RestartStage);
         RenderState(currentState);
     }
 
@@ -129,4 +132,6 @@ public class GameBoardUI : MonoBehaviour
             }
         }
     }
+
+    public void RestartStage() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 }
