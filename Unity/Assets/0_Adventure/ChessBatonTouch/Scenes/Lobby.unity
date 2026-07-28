@@ -2619,8 +2619,8 @@ MonoBehaviour:
   - chapterName: 123
     stages:
     - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
-    - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
-    - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
+    - {fileID: 11400000, guid: 709b6d03f9bc6d74e95e209b6be36a42, type: 2}
+    - {fileID: 11400000, guid: c9811753e8931eb46bbc13f0447e53f5, type: 2}
     - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
     - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
   - chapterName: 22
