@@ -1454,6 +1454,19 @@ MonoBehaviour:
   squarePrefab: {fileID: 7238081151113486997, guid: 0731db858989dc94f8b528d259a7d136, type: 3}
   gameResultUI: {fileID: 198054725}
   restartBtn: {fileID: 1742726917}
+  pieceSpritesConfig:
+  - pieceType: 1
+    pieceSprite: {fileID: 21300000, guid: f86756836471345408f73073bb8a47fe, type: 3}
+  - pieceType: 2
+    pieceSprite: {fileID: 21300000, guid: 1d1b20dd8eb4c084499d7e7346d8b39e, type: 3}
+  - pieceType: 3
+    pieceSprite: {fileID: 21300000, guid: 0f05b06efee77674c9c81aa68b2c8564, type: 3}
+  - pieceType: 4
+    pieceSprite: {fileID: 21300000, guid: 1ed915c4f8f4ef642a1049e27fa9ea8e, type: 3}
+  - pieceType: 5
+    pieceSprite: {fileID: 21300000, guid: 3a0afc691820eac4a8fed85bd2a2056a, type: 3}
+  - pieceType: 6
+    pieceSprite: {fileID: 21300000, guid: be302447939b48d4c8b481ea0d2873cb, type: 3}
   currentStageData: {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

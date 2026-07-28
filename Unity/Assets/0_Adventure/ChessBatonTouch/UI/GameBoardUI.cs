@@ -1,8 +1,17 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
+// 인스펙터에서 기물 타입과 이미지를 연결하기 위한 구조체
+[Serializable]
+public struct PieceSpriteData
+{
+    public PieceType pieceType;
+    public Sprite pieceSprite;
+}
 
 public class GameBoardUI : MonoBehaviour
 {
@@ -12,22 +21,33 @@ public class GameBoardUI : MonoBehaviour
     public GameResultUI gameResultUI;
     public Button restartBtn;
 
+    [Header("Piece Sprites Configuration")]
+    public List<PieceSpriteData> pieceSpritesConfig; // 인스펙터에서 세팅할 리스트
+    private Dictionary<PieceType, Sprite> pieceSpriteDict;
+
     [Header("Stage Data")]
     public StageDataSO currentStageData;
 
     private GameState currentState;
     private Button[,] uiButtons = new Button[8, 8];
-    private Image[,] uiImages = new Image[8, 8];
-    private TMP_Text[,] uiTexts = new TMP_Text[8, 8];
+    private Image[,] uiBackgrounds = new Image[8, 8]; // 기존 배경용 Image
+    private Image[,] uiPieceImages = new Image[8, 8]; // 새로 추가된 기물용 Image
 
     void Start()
     {
+        // 리스트를 딕셔너리로 변환하여 빠른 검색이 가능하게 세팅
+        pieceSpriteDict = new Dictionary<PieceType, Sprite>();
+        foreach (var config in pieceSpritesConfig)
+        {
+            pieceSpriteDict[config.pieceType] = config.pieceSprite;
+        }
+
         InitializeUI();
         if (GameDataManager.SelectedStageData != null)
             currentState = PuzzleStageBuilder.CreateFromSO(GameDataManager.SelectedStageData);
         else
         {
-            Debug.LogError("로드할 스테이지 데이터가 없습니다!");
+            Debug.LogError("스테이지 데이터가 없습니다!");
             return;
         }
 
@@ -43,12 +63,13 @@ public class GameBoardUI : MonoBehaviour
             {
                 int clickX = x;
                 int clickY = y;
-
                 GameObject obj = Instantiate(squarePrefab, boardPanel);
-                uiButtons[x, y] = obj.GetComponent<Button>();
-                uiImages[x, y] = obj.GetComponent<Image>();
 
-                uiTexts[x, y] = obj.GetComponentInChildren<TMP_Text>();
+                uiButtons[x, y] = obj.GetComponent<Button>();
+                uiBackgrounds[x, y] = obj.GetComponent<Image>();
+
+                // 첫 번째 자식인 PieceImage 컴포넌트를 가져옴
+                uiPieceImages[x, y] = obj.transform.GetChild(0).GetComponent<Image>();
 
                 uiButtons[x, y].onClick.AddListener(() => OnSquareClicked(clickX, clickY));
             }
@@ -90,45 +111,52 @@ public class GameBoardUI : MonoBehaviour
 
         foreach (var square in state.Board)
         {
-            Image img = uiImages[square.X, square.Y];
-            TMP_Text txt = uiTexts[square.X, square.Y];
+            Image bgImg = uiBackgrounds[square.X, square.Y];
+            Image pieceImg = uiPieceImages[square.X, square.Y];
 
-            // 1. 기물 텍스트 표시
+            // 1. 기물 이미지 렌더링
             if (square.Piece == PieceType.None)
             {
-                txt.text = "";
+                pieceImg.sprite = null;
+                pieceImg.color = Color.clear; // 기물이 없으면 투명하게
             }
             else
             {
-                txt.text = square.Piece.ToString();
-                txt.color = Color.black;
+                if (pieceSpriteDict.TryGetValue(square.Piece, out Sprite sprite))
+                {
+                    pieceImg.sprite = sprite;
+                    pieceImg.color = Color.white; // 불투명하게 보이도록 설정
+                }
+                else
+                {
+                    pieceImg.sprite = null;
+                    pieceImg.color = Color.clear;
+                }
             }
 
-            // 2. 타일 배경 색상 처리 조건
+            // 2. 상태값 판별
             bool isActive = state.ActiveSquare == square;
             bool isValidMove = validMoves.Contains(square);
-
-            // 기물이 아직 선택되지 않았고, 빈 칸이 아니며, 허용된 시작 기물 리스트에 없는 경우 (DisableStart 처리된 기물)
             bool isStartDisabled = state.ActiveSquare == null &&
                                    square.Piece != PieceType.None &&
                                    !state.AllowedStartingSquares.Contains(square);
 
-            // 3. 색상 적용
+            // 3. 배경색 렌더링 (기물 이미지는 영향받지 않음)
             if (isActive)
             {
-                img.color = Color.green; // 현재 조작 중인 기물
+                bgImg.color = Color.green; // 활성화
             }
             else if (isValidMove)
             {
-                img.color = Color.yellow; // 바톤 터치 이동 가능
+                bgImg.color = Color.yellow; // 이동 가능
             }
             else if (isStartDisabled)
             {
-                img.color = new Color(0.7f, 0.7f, 0.7f); // 시작 기물로 선택 불가능 (어두운 회색)
+                bgImg.color = new Color(0.7f, 0.7f, 0.7f); // 비활성화됨
             }
             else
             {
-                img.color = Color.white; // 일반 칸 또는 선택 가능한 첫 기물
+                bgImg.color = Color.white; // 기본
             }
         }
     }
