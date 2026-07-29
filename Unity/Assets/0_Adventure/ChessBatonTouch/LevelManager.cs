@@ -1,6 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class ChapterData
+{
+    public string chapterName;
+    public List<StageDataSO> stages = new List<StageDataSO>(10);
+}
+
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance { get; private set; }

@@ -43,11 +43,15 @@ public class GameBoardUI : MonoBehaviour
         }
 
         InitializeUI();
-        if (GameDataManager.SelectedStageData != null)
-            currentState = PuzzleStageBuilder.CreateFromSO(GameDataManager.SelectedStageData);
+        currentStageData = LevelManager.Instance.GetStageData(LevelManager.Instance.CurrentAbsoluteLevel);
+
+        if (currentStageData != null)
+        {
+            currentState = PuzzleStageBuilder.CreateFromSO(currentStageData);
+        }
         else
         {
-            Debug.LogError("스테이지 데이터가 없습니다!");
+            Debug.LogError("스테이지 데이터를 불러올 수 없습니다!");
             return;
         }
 

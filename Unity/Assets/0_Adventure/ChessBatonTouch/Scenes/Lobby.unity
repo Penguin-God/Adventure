@@ -2465,6 +2465,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1504881676}
   m_CullTransparentMesh: 1
+--- !u!1 &1739226775
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1739226776}
+  - component: {fileID: 1739226777}
+  m_Layer: 0
+  m_Name: Level
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1739226776
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739226775}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 750.124, y: 845.93427, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1739226777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1739226775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb74adc21dde616479f4b8dbd7d1d014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ChessBatonTouch::LevelManager
+  chapters:
+  - chapterName: 123
+    stages:
+    - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
+    - {fileID: 11400000, guid: 709b6d03f9bc6d74e95e209b6be36a42, type: 2}
+    - {fileID: 11400000, guid: c9811753e8931eb46bbc13f0447e53f5, type: 2}
+    - {fileID: 11400000, guid: 398aa71231004da4d8abdd2c02fb0bba, type: 2}
 --- !u!1 &1808881401
 GameObject:
   m_ObjectHideFlags: 0
@@ -2615,21 +2666,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba4ba67b851ef00489c1cd2f88a55b40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: ChessBatonTouch::LobbyManager
-  chapters:
-  - chapterName: 123
-    stages:
-    - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
-    - {fileID: 11400000, guid: 709b6d03f9bc6d74e95e209b6be36a42, type: 2}
-    - {fileID: 11400000, guid: c9811753e8931eb46bbc13f0447e53f5, type: 2}
-    - {fileID: 11400000, guid: 398aa71231004da4d8abdd2c02fb0bba, type: 2}
-    - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
-  - chapterName: 22
-    stages:
-    - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
-    - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
-    - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
-    - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
-    - {fileID: 11400000, guid: d006a8b3454fdf5448c30c42fcad7dca, type: 2}
   chapterTitleText: {fileID: 1240035295}
   stageButtons:
   - {fileID: 930718015}
@@ -2785,3 +2821,4 @@ SceneRoots:
   - {fileID: 1811033935}
   - {fileID: 1348432112}
   - {fileID: 461203987}
+  - {fileID: 1739226776}
