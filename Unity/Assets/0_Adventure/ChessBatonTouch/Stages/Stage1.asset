@@ -26,13 +26,13 @@ MonoBehaviour:
     Piece: 2
     DisableStart: 1
   - X: 5
-    Y: 6
-    Piece: 6
-    DisableStart: 0
-  - X: 5
     Y: 4
     Piece: 3
     DisableStart: 0
+  - X: 5
+    Y: 6
+    Piece: 6
+    DisableStart: 1
   CorrectStartingPiece:
     X: 0
     Y: 0
