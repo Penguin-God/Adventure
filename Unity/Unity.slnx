@@ -2,6 +2,7 @@
   <Project Path="LegIron.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="ChessBatonTouch.csproj" />
+  <Project Path="Baking.csproj" />
   <Project Path="FangAutoTile.csproj" />
   <Project Path="Framework.csproj" />
   <Project Path="FangAutoTile.Editor.csproj" />
