@@ -3,22 +3,32 @@ namespace System.Runtime.CompilerServices
     internal static class IsExternalInit { }
 }
 
-
 public record TerrainState(int Tier1, int Tier2, int Tier3);
 public record ClickerState(TerrainState Forest, TerrainState Mine, int UltimateItem);
 
 public static class ClickerLogic
 {
     // --- 🌲 숲(Forest) 로직 ---
-    public static ClickerState GatherForest(ClickerState state, float randomValue, float dropChance)
+    public static ClickerState GatherForest(ClickerState state, float randomValue, float t2Chance, float t3Chance)
     {
-        // Forest 상태만 업데이트된 새로운 복사본을 만듭니다.
-        var nextForest = state.Forest with { Tier1 = state.Forest.Tier1 + 1 };
+        var nextForest = state.Forest;
 
-        if (randomValue <= dropChance)
+        // 1. 가장 희귀한 Tier 3 당첨 여부부터 검사
+        if (randomValue <= t3Chance)
+        {
+            nextForest = nextForest with { Tier3 = nextForest.Tier3 + 1 };
+        }
+        // 2. 그 다음 Tier 2 검사 (T3 확률 구간을 넘어선 값부터 T2 확률 구간까지)
+        else if (randomValue <= t3Chance + t2Chance)
+        {
             nextForest = nextForest with { Tier2 = nextForest.Tier2 + 1 };
+        }
+        // 3. 위 조건에 모두 빗나갔다면 기본 재료(Tier 1) 획득
+        else
+        {
+            nextForest = nextForest with { Tier1 = nextForest.Tier1 + 1 };
+        }
 
-        // 전체 상태 중 Forest만 교체하여 반환합니다.
         return state with { Forest = nextForest };
     }
 
@@ -36,13 +46,17 @@ public static class ClickerLogic
         return state;
     }
 
-    // --- ⛰️ 광산(Mine) 로직 ---
-    public static ClickerState GatherMine(ClickerState state, float randomValue, float dropChance)
+    // --- ⛰️ 광산(Mine) 로직 (숲과 구조 동일) ---
+    public static ClickerState GatherMine(ClickerState state, float randomValue, float t2Chance, float t3Chance)
     {
-        var nextMine = state.Mine with { Tier1 = state.Mine.Tier1 + 1 };
+        var nextMine = state.Mine;
 
-        if (randomValue <= dropChance)
+        if (randomValue <= t3Chance)
+            nextMine = nextMine with { Tier3 = nextMine.Tier3 + 1 };
+        else if (randomValue <= t3Chance + t2Chance)
             nextMine = nextMine with { Tier2 = nextMine.Tier2 + 1 };
+        else
+            nextMine = nextMine with { Tier1 = nextMine.Tier1 + 1 };
 
         return state with { Mine = nextMine };
     }
@@ -64,7 +78,6 @@ public static class ClickerLogic
     // --- ✨ 궁극의 상위 조합 레시피 ---
     public static ClickerState CraftUltimate(ClickerState state)
     {
-        // 조건: 숲의 3티어 재료 1개 + 광산의 3티어 재료 1개
         if (state.Forest.Tier3 >= 1 && state.Mine.Tier3 >= 1)
         {
             return state with
