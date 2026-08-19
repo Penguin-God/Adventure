@@ -4,5 +4,6 @@
   <Project Path="Framework.csproj" />
   <Project Path="Codependency.csproj" />
   <Project Path="TakeOne'sOneLife.csproj" />
+  <Project Path="RecipeCliker.csproj" />
   <Project Path="Spiderman.csproj" />
 </Solution>
