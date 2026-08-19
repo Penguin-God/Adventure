@@ -2,16 +2,22 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// UI 액션과 백엔드를 연결하는 진입점 클래스입니다.
+/// 이 스크립트만 빈 게임 오브젝트에 컴포넌트로 추가하시면 됩니다.
+/// </summary>
 public class BakingPrototype : MonoBehaviour
 {
     private List<Ingredient> inventory = new List<Ingredient>();
-    private List<Ingredient> workbench = new List<Ingredient>(); // 이제 단일 타입으로 완벽 통일!
+    private List<Ingredient> workbench = new List<Ingredient>();
     private string logMessage = "재료를 선택해 작업대에 올리세요!";
 
     private readonly List<Recipe> recipes = new List<Recipe>
     {
         new Recipe("[대성공] 겉바속촉 완벽한 빵!", "발효된", new[] { "밀가루", "물", "이스트" }),
-        new Recipe("[성공] 딱딱하고 질긴 빵", "기본", new[] { "밀가루", "물" })
+        new Recipe("[성공] 딱딱하고 질긴 빵", "기본", new[] { "밀가루", "물" }),
+        new Recipe("[대성공] 촉촉한 파운드 케이크!", "기본", new[] { "밀가루", "계란", "버터", "설탕" }),
+        new Recipe("[대성공] 쫀득쫀득 휘낭시에!", "기본", new[] { "밀가루", "계란", "헤이즐넛 버터", "설탕" })
     };
 
     void Start()
@@ -61,7 +67,7 @@ public class BakingPrototype : MonoBehaviour
         if (GUILayout.Button("➕ 재료 리필", GUILayout.Height(40)))
         {
             RefillInventory();
-            logMessage = "창고에 재료가 리필되었습니다.";
+            logMessage = "창고에 모든 재료가 리필되었습니다.";
         }
         GUILayout.EndVertical();
     }
@@ -179,7 +185,7 @@ public class BakingPrototype : MonoBehaviour
             }
             else
             {
-                logMessage = "오븐에는 가공이 끝난 재료 1개만 넣을 수 있습니다.";
+                logMessage = "오븐에는 가공이 끝난 재료(또는 혼합물) 1개만 넣을 수 있습니다.";
             }
         }
     }
@@ -188,7 +194,6 @@ public class BakingPrototype : MonoBehaviour
     {
         if (item.Components != null && item.Components.Count > 0)
         {
-            // 혼합물 취소 시 구성 요소들을 분해해서 창고로 돌려보냄
             foreach (var component in item.Components)
             {
                 inventory.Add(component);
@@ -206,5 +211,8 @@ public class BakingPrototype : MonoBehaviour
         inventory.Add(new Ingredient("밀가루"));
         inventory.Add(new Ingredient("물"));
         inventory.Add(new Ingredient("이스트"));
+        inventory.Add(new Ingredient("계란"));
+        inventory.Add(new Ingredient("버터"));
+        inventory.Add(new Ingredient("설탕"));
     }
 }
