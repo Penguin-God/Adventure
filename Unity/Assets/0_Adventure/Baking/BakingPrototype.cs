@@ -1,27 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class BakingPrototype : MonoBehaviour
 {
     private List<Ingredient> inventory = new List<Ingredient>();
-    private List<object> workbench = new List<object>();
+    private List<Ingredient> workbench = new List<Ingredient>(); // 이제 단일 타입으로 완벽 통일!
     private string logMessage = "재료를 선택해 작업대에 올리세요!";
 
     private readonly List<Recipe> recipes = new List<Recipe>
     {
-        new Recipe("[대성공] 겉바속촉 완벽한 빵!", new[]
-        {
-            new Ingredient("밀가루", "기본"),
-            new Ingredient("물", "기본"),
-            new Ingredient("이스트", "발효됨")
-        }),
-        new Recipe("[성공] 딱딱하고 질긴 빵", new[]
-        {
-            new Ingredient("밀가루", "기본"),
-            new Ingredient("물", "기본")
-        })
+        new Recipe("[대성공] 겉바속촉 완벽한 빵!", "발효된", new[] { "밀가루", "물", "이스트" }),
+        new Recipe("[성공] 딱딱하고 질긴 빵", "기본", new[] { "밀가루", "물" })
     };
 
     void Start()
@@ -59,11 +49,11 @@ public class BakingPrototype : MonoBehaviour
             int index = i;
             var item = inventory[index];
 
-            DrawItemRow($"[{item.State}] {item.Name}", "올리기 ➔", () =>
+            DrawItemRow(item.GetDisplayName(), "올리기 ➔", () =>
             {
                 inventory.RemoveAt(index);
                 workbench.Add(item);
-                logMessage = $"{item.Name}을(를) 작업대에 올렸습니다.";
+                logMessage = $"{item.GetDisplayName()}을(를) 작업대에 올렸습니다.";
             });
         }
 
@@ -86,9 +76,8 @@ public class BakingPrototype : MonoBehaviour
         {
             int index = i;
             var item = workbench[index];
-            string displayName = GetDisplayName(item);
 
-            DrawItemRow(displayName, "✖ 취소", () =>
+            DrawItemRow(item.GetDisplayName(), "✖ 취소", () =>
             {
                 workbench.RemoveAt(index);
                 ReturnToInventory(item);
@@ -104,7 +93,7 @@ public class BakingPrototype : MonoBehaviour
         GUILayout.Label("🔥 가공 및 완성");
         GUILayout.Space(10);
 
-        if (workbench.Count == 1 && workbench[0] is Ingredient)
+        if (workbench.Count == 1)
             DrawSingleProcessing();
         else if (workbench.Count > 1)
             DrawMixing();
@@ -130,7 +119,7 @@ public class BakingPrototype : MonoBehaviour
 
     void DrawSingleProcessing()
     {
-        var target = (Ingredient)workbench[0];
+        var target = workbench[0];
 
         if (GUILayout.Button("🔥 불 가열", GUILayout.Height(60)))
         {
@@ -138,7 +127,11 @@ public class BakingPrototype : MonoBehaviour
             if (processed != target)
             {
                 workbench[0] = processed;
-                logMessage = $"{processed.Name}에 불을 가해 [{processed.State}] 상태가 되었습니다.";
+                logMessage = $"{target.Name}에 불을 가해 [{processed.State}] 상태가 되었습니다.";
+            }
+            else
+            {
+                logMessage = "이 재료는 열을 가해도 아무 반응이 없습니다.";
             }
         }
 
@@ -150,7 +143,15 @@ public class BakingPrototype : MonoBehaviour
             if (processed != target)
             {
                 workbench[0] = processed;
-                logMessage = $"{processed.Name}을(를) 발효시켰습니다.";
+                logMessage = $"{processed.GetDisplayName()} 상태가 되었습니다!";
+            }
+            else if (target.Name != "반죽")
+            {
+                logMessage = "단일 재료는 발효할 수 없습니다. 반죽을 만들어주세요.";
+            }
+            else
+            {
+                logMessage = "반죽에 이스트가 포함되어 있지 않아 발효되지 않습니다.";
             }
         }
     }
@@ -159,26 +160,10 @@ public class BakingPrototype : MonoBehaviour
     {
         if (GUILayout.Button("🥣 재료 섞기", GUILayout.Height(80)))
         {
-            var ingredients = workbench.OfType<Ingredient>().ToArray();
-            var doughs = workbench.OfType<Dough>().ToArray();
-
-            if (ingredients.Length == workbench.Count)
-            {
-                UpdateWorkbench(Dough.Mix(ingredients), "재료들을 섞어 [반죽]을 만들었습니다!");
-            }
-            else if (doughs.Length == 1 && ingredients.Length > 0)
-            {
-                var newDough = doughs[0];
-                foreach (var ing in ingredients)
-                {
-                    newDough = Dough.Mix(newDough, ing);
-                }
-                UpdateWorkbench(newDough, "기존 반죽에 새로운 재료를 섞어 넣었습니다!");
-            }
-            else
-            {
-                logMessage = "섞을 수 없는 조합입니다 (반죽끼리 섞는 것은 미지원).";
-            }
+            var mixedIngredient = Mixer.Mix(workbench);
+            workbench.Clear();
+            workbench.Add(mixedIngredient);
+            logMessage = $"재료들을 섞어 {mixedIngredient.GetDisplayName()}을(를) 만들었습니다!";
         }
     }
 
@@ -186,48 +171,32 @@ public class BakingPrototype : MonoBehaviour
     {
         if (GUILayout.Button("🔥 오븐에 굽기", GUILayout.Height(80)))
         {
-            if (workbench.Count == 1 && workbench[0] is Dough dough)
+            if (workbench.Count == 1)
             {
-                string result = Oven.Bake(dough, recipes);
+                string result = Oven.Bake(workbench[0], recipes);
                 workbench.Clear();
-                logMessage = $"결과: {result}";
+                logMessage = $"[오븐 결과] {result}";
             }
             else
             {
-                logMessage = "[실패] 오븐에는 완성된 '반죽' 1개만 넣을 수 있습니다.";
+                logMessage = "오븐에는 가공이 끝난 재료 1개만 넣을 수 있습니다.";
             }
         }
     }
 
-    void UpdateWorkbench(object newItem, string message)
+    void ReturnToInventory(Ingredient item)
     {
-        workbench.Clear();
-        workbench.Add(newItem);
-        logMessage = message;
-    }
-
-    string GetDisplayName(object item)
-    {
-        return item switch
+        if (item.Components != null && item.Components.Count > 0)
         {
-            Ingredient ing => $"[{ing.State}] {ing.Name}",
-            Dough d => $"[반죽] 재료 {d.Components.Count}개",
-            _ => "알 수 없는 물질"
-        };
-    }
-
-    void ReturnToInventory(object item)
-    {
-        if (item is Ingredient ing)
-        {
-            inventory.Add(ing);
-        }
-        else if (item is Dough dough)
-        {
-            foreach (var component in dough.Components)
+            // 혼합물 취소 시 구성 요소들을 분해해서 창고로 돌려보냄
+            foreach (var component in item.Components)
             {
                 inventory.Add(component);
             }
+        }
+        else
+        {
+            inventory.Add(item);
         }
     }
 
@@ -237,29 +206,5 @@ public class BakingPrototype : MonoBehaviour
         inventory.Add(new Ingredient("밀가루"));
         inventory.Add(new Ingredient("물"));
         inventory.Add(new Ingredient("이스트"));
-    }
-}
-
-public static class Processor
-{
-    public static Ingredient ApplyHeat(Ingredient item) =>
-        item.Name switch
-        {
-            "물" => item with { State = "끓임" },
-            "밀가루" => item with { State = "구움" },
-            _ => item
-        };
-
-    public static Ingredient Ferment(Ingredient item) => item.Name == "이스트" ? item with { State = "발효됨" } : item;
-}
-
-public static class Oven
-{
-    public static string Bake(Dough dough, IEnumerable<Recipe> recipes)
-    {
-        var doughSet = new HashSet<Ingredient>(dough.Components);
-        var matchedRecipe = recipes.FirstOrDefault(r => doughSet.SetEquals(r.RequiredComponents));
-
-        return matchedRecipe != null ? matchedRecipe.ResultName : "끔찍한 숯덩이 (조합 실패)";
     }
 }
