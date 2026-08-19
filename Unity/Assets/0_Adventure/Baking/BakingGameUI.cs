@@ -1,160 +1,170 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-public class BakingGameUI : MonoBehaviour
+public class BakingPrototype : MonoBehaviour
 {
-    // --- [상태 (State)] ---
-    // 핵심 로직은 '순수 함수'지만, 게임 화면은 진행 상황을 기억해야 하므로 상태를 가집니다.
-    private List<Ingredient> inventory = new List<Ingredient>();
-    private List<Ingredient> workbench = new List<Ingredient>();
-    private List<Recipe> recipes = new List<Recipe>();
+    List<string> inventory = new List<string> { "밀가루", "물", "이스트" };
+    List<string> workbench = new List<string>();
+    string logMessage = "재료를 선택해 작업대에 올리세요!";
 
-    private string logMessage = "재료를 선택해 작업대에 올리세요!";
-
-    void Start()
-    {
-        // 1. 초기 레시피 세팅
-        recipes.Add(new Recipe("완벽한 빵 (Perfect Bread)", new HashSet<Ingredient>
-        {
-            new Ingredient("Flour", "Raw"),
-            new Ingredient("Water", "Boiled"),
-            new Ingredient("Yeast", "Fermented")
-        }));
-
-        // 2. 초기 인벤토리(창고) 기본 재료 제공
-        inventory.Add(new Ingredient("Flour", "Raw"));
-        inventory.Add(new Ingredient("Water", "Raw"));
-        inventory.Add(new Ingredient("Yeast", "Raw"));
-    }
-
-    // 유니티 내장 GUI 시스템 (코드로만 화면에 UI를 렌더링)
     void OnGUI()
     {
-        // UI 폰트 크기 세팅
         GUI.skin.label.fontSize = 20;
         GUI.skin.button.fontSize = 20;
 
-        // 전체 UI 영역 설정 (화면 꽉 차게, 여백 20)
         GUILayout.BeginArea(new Rect(20, 20, Screen.width - 40, Screen.height - 40));
-
-        // [상단 로그 메세지]
         GUILayout.Label($"[상태창] {logMessage}", GUILayout.Height(40));
         GUILayout.Space(20);
 
         GUILayout.BeginHorizontal();
 
-        // ==========================================
-        // 1. 창고 (Inventory) 영역
-        // ==========================================
+        // 1. 화면을 세 구역으로 나누어 각각의 그리기 함수 호출
+        DrawInventorySection();
+        DrawWorkbenchSection();
+        DrawActionSection();
+
+        GUILayout.EndHorizontal();
+        GUILayout.EndArea();
+    }
+
+    // ==========================================
+    // 🛠️ UI 구역별 그리기 함수
+    // ==========================================
+
+    void DrawInventorySection()
+    {
         GUILayout.BeginVertical("box", GUILayout.Width(Screen.width / 3f - 30));
-        GUILayout.Label("📦 창고 (Inventory)");
+        GUILayout.Label("📦 창고");
         GUILayout.Space(10);
 
-        foreach (var item in inventory.ToList()) // 순회 중 리스트 수정을 위해 ToList() 사용
+        for (int i = 0; i < inventory.Count; i++)
         {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label($"{item.Name}\n({item.State})");
-
-            // 버튼 클릭 시 상태 업데이트
-            if (GUILayout.Button("올리기 ➔", GUILayout.Width(100), GUILayout.Height(50)))
+            string item = inventory[i];
+            // 재사용 함수 호출: 텍스트, 버튼 이름, 클릭 시 실행할 동작(람다식)
+            DrawItemRow(item, "올리기 ➔", () =>
             {
-                inventory.Remove(item);
+                inventory.RemoveAt(i);
                 workbench.Add(item);
-                logMessage = $"{item.Name}을(를) 작업대에 올렸습니다.";
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.Space(5);
+                logMessage = $"{item}을(를) 작업대에 올렸습니다.";
+            });
         }
 
         GUILayout.FlexibleSpace();
-        if (GUILayout.Button("➕ 기본 재료 리필", GUILayout.Height(40)))
+        if (GUILayout.Button("➕ 재료 리필", GUILayout.Height(40)))
         {
-            inventory.Add(new Ingredient("Flour", "Raw"));
-            inventory.Add(new Ingredient("Water", "Raw"));
-            inventory.Add(new Ingredient("Yeast", "Raw"));
+            inventory.Clear();
+            inventory.AddRange(new string[] { "밀가루", "물", "이스트" });
         }
         GUILayout.EndVertical();
+    }
 
-        // ==========================================
-        // 2. 작업대 (Workbench) 영역
-        // ==========================================
+    void DrawWorkbenchSection()
+    {
         GUILayout.BeginVertical("box", GUILayout.Width(Screen.width / 3f - 30));
-        GUILayout.Label("🛠️ 작업대 (Workbench)");
+        GUILayout.Label("🛠️ 작업대");
         GUILayout.Space(10);
 
         for (int i = 0; i < workbench.Count; i++)
         {
-            var item = workbench[i];
-            GUILayout.BeginHorizontal();
-            GUILayout.Label($"{item.Name}\n({item.State})");
-
-            if (GUILayout.Button("✖ 취소", GUILayout.Width(80), GUILayout.Height(50)))
+            string item = workbench[i];
+            DrawItemRow(item, "✖ 취소", () =>
             {
                 workbench.RemoveAt(i);
-                inventory.Add(item); // 다시 창고로 복귀
-                logMessage = $"{item.Name}을(를) 창고로 되돌렸습니다.";
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.Space(5);
+                inventory.Add(item);
+                logMessage = $"{item}을(를) 창고로 되돌렸습니다.";
+            });
         }
         GUILayout.EndVertical();
+    }
 
-        // ==========================================
-        // 3. 가공 및 오븐 (Actions) 영역
-        // ==========================================
+    void DrawActionSection()
+    {
         GUILayout.BeginVertical("box", GUILayout.Width(Screen.width / 3f - 30));
         GUILayout.Label("🔥 가공 및 완성");
         GUILayout.Space(10);
 
-        // 단일 재료 가공 로직 (작업대에 아이템이 딱 1개일 때만 활성화)
-        if (workbench.Count == 1)
-        {
-            var target = workbench[0];
-            if (GUILayout.Button("불 가열 (Apply Heat)", GUILayout.Height(60)))
-            {
-                // ✨ 함수형 코어 호출: 새 상태의 객체를 반환받아 기존 자리를 덮어씁니다. (원본 훼손 없음)
-                workbench[0] = Processor.ApplyHeat(target);
-                logMessage = $"{target.Name}에 불을 가했습니다.";
-            }
-            GUILayout.Space(10);
-            if (GUILayout.Button("발효 (Ferment)", GUILayout.Height(60)))
-            {
-                workbench[0] = Processor.Ferment(target);
-                logMessage = $"{target.Name}을(를) 발효시켰습니다.";
-            }
-        }
-        else if (workbench.Count > 1)
-        {
-            GUILayout.Label("단일 가공은 재료가\n1개일 때만 가능합니다.");
-        }
-        else
-        {
-            GUILayout.Label("작업대에 재료를 올려주세요.");
-        }
+        // 작업대 상태에 따라 세부 가공 함수 호출
+        if (workbench.Count == 1) DrawSingleProcessing();
+        else if (workbench.Count > 1) DrawMixing();
 
         GUILayout.FlexibleSpace();
-
-        // 오븐 로직 (작업대에 재료가 1개 이상일 때)
-        if (workbench.Count > 0)
-        {
-            if (GUILayout.Button("오븐에 굽기 (Bake!)", GUILayout.Height(80)))
-            {
-                // ✨ 함수형 코어 호출: 여러 재료를 받아 '새로운 반죽' 생성
-                var dough = Dough.Mix(workbench.ToArray());
-
-                // ✨ 함수형 코어 호출: 반죽을 오븐에 넣어 문자열 결과 반환
-                string result = Oven.Bake(dough, recipes);
-
-                logMessage = $"[결과] {result} 완성!!";
-
-                // 완성했으니 작업대를 비움
-                workbench.Clear();
-            }
-        }
+        if (workbench.Count > 0) DrawOven();
 
         GUILayout.EndVertical();
+    }
+
+    // ==========================================
+    // ♻️ 재사용 및 세부 로직 함수
+    // ==========================================
+
+    // 중복되는 '텍스트 + 옆에 달린 버튼'을 그리는 재사용 함수
+    void DrawItemRow(string itemName, string buttonText, Action onClick)
+    {
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(itemName);
+        if (GUILayout.Button(buttonText, GUILayout.Width(100), GUILayout.Height(50)))
+        {
+            onClick?.Invoke(); // 버튼이 눌리면 전달받은 로직 실행
+        }
         GUILayout.EndHorizontal();
-        GUILayout.EndArea();
+        GUILayout.Space(5);
+    }
+
+    void DrawSingleProcessing()
+    {
+        string target = workbench[0];
+        if (GUILayout.Button("🔥 불 가열", GUILayout.Height(60)))
+        {
+            workbench[0] = target switch
+            {
+                "물" => "끓인 물",
+                "밀가루" => "구운 밀가루",
+                _ => target
+            };
+            logMessage = $"{target}에 불을 가했습니다.";
+        }
+        GUILayout.Space(10);
+        if (GUILayout.Button("🦠 발효", GUILayout.Height(60)))
+        {
+            workbench[0] = target == "이스트" ? "발효된 이스트" : target;
+            logMessage = $"{target}을(를) 발효시켰습니다.";
+        }
+    }
+
+    void DrawMixing()
+    {
+        if (GUILayout.Button("🥣 재료 섞기", GUILayout.Height(80)))
+        {
+            if (workbench.Contains("밀가루") && workbench.Contains("물") && workbench.Count == 2)
+                UpdateWorkbench("반죽", "밀가루와 물을 섞어 [반죽]을 만들었습니다!");
+            else if (workbench.Contains("반죽") && workbench.Contains("발효된 이스트") && workbench.Count == 2)
+                UpdateWorkbench("발효 반죽", "반죽에 발효된 이스트를 섞어 [발효 반죽]이 되었습니다!");
+            else
+                UpdateWorkbench("괴식 덩어리", "재료들이 엉망으로 섞여버렸습니다...");
+        }
+    }
+
+    void DrawOven()
+    {
+        if (GUILayout.Button("🔥 오븐에 굽기", GUILayout.Height(80)))
+        {
+            if (workbench.Contains("발효 반죽") && workbench.Count == 1)
+                logMessage = "[대성공] 겉바속촉 완벽한 빵이 구워졌습니다!";
+            else if (workbench.Contains("반죽") && workbench.Count == 1)
+                logMessage = "[성공] 딱딱하고 질긴 빵이 구워졌습니다.";
+            else
+                logMessage = "[실패] 오븐에서 끔찍한 숯덩이가 나왔습니다...";
+
+            workbench.Clear();
+        }
+    }
+
+    // 작업대 업데이트와 메시지 출력을 동시에 묶은 유틸리티 함수
+    void UpdateWorkbench(string newItem, string message)
+    {
+        workbench.Clear();
+        workbench.Add(newItem);
+        logMessage = message;
     }
 }
