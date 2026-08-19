@@ -12,6 +12,10 @@ public record Ingredient(string Name, string State = "Raw", IReadOnlyCollection<
     public string GetDisplayName()
     {
         string baseStr = State == "Raw" ? Name : $"{State} {Name}";
+
+        // 레시피 아이템인 경우 특별한 이모지 표기
+        if (State == "Recipe") return $"📜 {Name}";
+
         if (Components != null && Components.Count > 0)
         {
             var compNames = Components.Select(c => c.State == "Raw" ? c.Name : $"{c.State} {c.Name}");
@@ -23,7 +27,6 @@ public record Ingredient(string Name, string State = "Raw", IReadOnlyCollection<
 
 public record Recipe(string ResultName, string RequiredState, string[] RequiredComponentNames, int Price);
 
-// [혼합 로직]
 public static class Mixer
 {
     public static Ingredient Mix(IEnumerable<Ingredient> items)
@@ -43,7 +46,6 @@ public static class Mixer
             .ToArray();
 
         bool hasFlour = distinctComps.Any(c => c.Name == "밀가루");
-        // 액체류(물, 계란 등)가 포함되어 있는지 검사
         bool hasLiquid = distinctComps.Any(c => c.Name == "물" || c.Name == "계란");
 
         string newName = (hasFlour && hasLiquid) ? "반죽" : "혼합재료";

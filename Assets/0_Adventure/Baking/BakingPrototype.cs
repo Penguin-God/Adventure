@@ -5,17 +5,18 @@ public class BakingPrototype : MonoBehaviour
 {
     private List<Ingredient> inventory = new List<Ingredient>();
     private List<Ingredient> workbench = new List<Ingredient>();
-    private string logMessage = "재료를 조합해 빵을 만들고 판매하세요!";
+    private string logMessage = "재료를 조합해 빵을 만들고 돈을 벌어보세요!";
 
-    // 🌟 판매 수익 관리
-    private int currentMoney = 0;
+    // 초기 자본금 (테스트를 위해 100G 제공)
+    private int currentMoney = 100;
 
-    // 🌟 기획하신 3가지 레시피 세팅
+    // 🌟 브라우니 레시피 추가
     private readonly List<Recipe> recipes = new List<Recipe>
     {
         new Recipe("빵", "발효된", new[] { "밀가루", "물", "이스트" }, 40),
         new Recipe("파운드 케이크", "Raw", new[] { "밀가루", "계란", "버터", "설탕" }, 80),
-        new Recipe("휘낭시에", "Raw", new[] { "밀가루", "계란", "헤이즐넛 버터", "설탕" }, 120)
+        new Recipe("휘낭시에", "Raw", new[] { "밀가루", "계란", "헤이즐넛 버터", "설탕" }, 120),
+        new Recipe("브라우니", "Raw", new[] { "밀가루", "계란", "버터", "설탕", "초콜릿" }, 250) // 🍫 신규 브라우니!
     };
 
     void Start()
@@ -25,12 +26,12 @@ public class BakingPrototype : MonoBehaviour
 
     void OnGUI()
     {
-        GUI.skin.label.fontSize = 20;
-        GUI.skin.button.fontSize = 20;
+        GUI.skin.label.fontSize = 18;
+        GUI.skin.button.fontSize = 18;
 
         GUILayout.BeginArea(new Rect(20, 20, Screen.width - 40, Screen.height - 40));
 
-        // 상단 재화 표시 UI
+        // 상태창 및 소지금
         GUILayout.BeginHorizontal();
         GUILayout.Label($"[상태창] {logMessage}", GUILayout.Height(40));
         GUILayout.FlexibleSpace();
@@ -38,10 +39,12 @@ public class BakingPrototype : MonoBehaviour
         GUILayout.EndHorizontal();
         GUILayout.Space(20);
 
+        // 4개의 구역으로 분할 렌더링
         GUILayout.BeginHorizontal();
         DrawInventorySection();
         DrawWorkbenchSection();
         DrawActionSection();
+        DrawShopSection(); // 🌟 상점 구역 추가
         GUILayout.EndHorizontal();
 
         GUILayout.EndArea();
@@ -49,7 +52,8 @@ public class BakingPrototype : MonoBehaviour
 
     void DrawInventorySection()
     {
-        GUILayout.BeginVertical("box", GUILayout.Width(Screen.width / 3f - 30));
+        // 4분할을 위해 넓이 조정
+        GUILayout.BeginVertical("box", GUILayout.Width(Screen.width / 4f - 20));
         GUILayout.Label("📦 창고");
         GUILayout.Space(10);
 
@@ -61,19 +65,29 @@ public class BakingPrototype : MonoBehaviour
             GUILayout.BeginHorizontal();
             GUILayout.Label(item.GetDisplayName());
 
-            // 🌟 가격이 부여된 완성품은 작업대에 올리지 않고 바로 판매
+            // 🌟 1. 완성품인 경우 (판매)
             if (item.Price > 0)
             {
-                if (GUILayout.Button($"💰 판매 (+{item.Price}G)", GUILayout.Width(130), GUILayout.Height(50)))
+                if (GUILayout.Button($"💰 판매 (+{item.Price}G)", GUILayout.Width(100), GUILayout.Height(40)))
                 {
                     currentMoney += item.Price;
                     inventory.RemoveAt(index);
                     logMessage = $"{item.Name}을(를) 팔아 {item.Price}G를 벌었습니다!";
                 }
             }
+            // 🌟 2. 레시피 아이템인 경우 (읽기)
+            else if (item.State == "Recipe")
+            {
+                if (GUILayout.Button("📖 읽기", GUILayout.Width(80), GUILayout.Height(40)))
+                {
+                    // 클릭 시 텍스트(힌트)만 출력하고 소모되지는 않음
+                    logMessage = $"[{item.Name}] 초콜릿, 버터, 설탕, 계란, 밀가루를 섞어 오븐에 구우면 완성!";
+                }
+            }
+            // 🌟 3. 일반 재료인 경우 (작업대에 올리기)
             else
             {
-                if (GUILayout.Button("올리기 ➔", GUILayout.Width(100), GUILayout.Height(50)))
+                if (GUILayout.Button("올리기 ➔", GUILayout.Width(80), GUILayout.Height(40)))
                 {
                     inventory.RemoveAt(index);
                     workbench.Add(item);
@@ -85,16 +99,13 @@ public class BakingPrototype : MonoBehaviour
         }
 
         GUILayout.FlexibleSpace();
-        if (GUILayout.Button("➕ 재료 리필", GUILayout.Height(40)))
-        {
-            RefillInventory();
-        }
+        if (GUILayout.Button("➕ 기본 재료 리필", GUILayout.Height(40))) RefillInventory();
         GUILayout.EndVertical();
     }
 
     void DrawWorkbenchSection()
     {
-        GUILayout.BeginVertical("box", GUILayout.Width(Screen.width / 3f - 30));
+        GUILayout.BeginVertical("box", GUILayout.Width(Screen.width / 4f - 20));
         GUILayout.Label("🛠️ 작업대");
         GUILayout.Space(10);
 
@@ -102,14 +113,12 @@ public class BakingPrototype : MonoBehaviour
         {
             int index = i;
             var item = workbench[index];
-
             GUILayout.BeginHorizontal();
             GUILayout.Label(item.GetDisplayName());
-            if (GUILayout.Button("✖ 취소", GUILayout.Width(80), GUILayout.Height(50)))
+            if (GUILayout.Button("✖ 취소", GUILayout.Width(60), GUILayout.Height(40)))
             {
                 workbench.RemoveAt(index);
                 ReturnToInventory(item);
-                logMessage = "재료를 창고로 되돌렸습니다.";
             }
             GUILayout.EndHorizontal();
             GUILayout.Space(5);
@@ -119,16 +128,51 @@ public class BakingPrototype : MonoBehaviour
 
     void DrawActionSection()
     {
-        GUILayout.BeginVertical("box", GUILayout.Width(Screen.width / 3f - 30));
+        GUILayout.BeginVertical("box", GUILayout.Width(Screen.width / 4f - 20));
         GUILayout.Label("🔥 가공 및 완성");
         GUILayout.Space(10);
 
+        // 기존의 가공/섞기/오븐 로직 그대로 유지
         if (workbench.Count == 1) DrawSingleProcessing();
         else if (workbench.Count > 1) DrawMixing();
 
         GUILayout.FlexibleSpace();
         if (workbench.Count > 0) DrawOven();
 
+        GUILayout.EndVertical();
+    }
+
+    // ==========================================
+    // 🏪 상점 시스템 그리기
+    // ==========================================
+    void DrawShopSection()
+    {
+        GUILayout.BeginVertical("box", GUILayout.Width(Screen.width / 4f - 20));
+        GUILayout.Label("🛒 상점 (구매)");
+        GUILayout.Space(10);
+
+        // 1. 초콜릿 구매 버튼 (30G)
+        GUI.enabled = currentMoney >= 30; // 돈이 모자라면 회색으로 비활성화
+        if (GUILayout.Button("🍫 초콜릿 (30G)", GUILayout.Height(50)))
+        {
+            currentMoney -= 30;
+            inventory.Add(new Ingredient("초콜릿"));
+            logMessage = "상점에서 초콜릿을 구매했습니다!";
+        }
+
+        GUILayout.Space(10);
+
+        // 2. 브라우니 레시피 구매 버튼 (100G)
+        GUI.enabled = currentMoney >= 100;
+        if (GUILayout.Button("📜 브라우니 레시피 (100G)", GUILayout.Height(50)))
+        {
+            currentMoney -= 100;
+            // State를 "Recipe"로 지정하여 일반 재료와 다르게 취급
+            inventory.Add(new Ingredient("브라우니 레시피", "Recipe"));
+            logMessage = "새로운 레시피를 구매했습니다! 창고에서 읽어보세요.";
+        }
+
+        GUI.enabled = true; // 이후 UI 그리기 원상복구
         GUILayout.EndVertical();
     }
 
