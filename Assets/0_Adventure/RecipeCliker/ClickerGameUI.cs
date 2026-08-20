@@ -1,5 +1,8 @@
 using UnityEngine;
 
+// ==========================================
+// [상태 및 UI 관리자] 부수효과 처리 구역
+// ==========================================
 public class ClickerGameUI : MonoBehaviour
 {
     [Header("🌲 숲 기본 확률 설정")]
@@ -10,11 +13,12 @@ public class ClickerGameUI : MonoBehaviour
     [Range(0f, 100f)] public float mineTier2Chance = 20.0f;
     [Range(0f, 100f)] public float mineTier3Chance = 2.0f;
 
-    [Header("📜 레시피 및 연금술 확률 설정")]
-    [Range(0f, 100f)] public float recipeDropChance = 1.0f; // 채굴 시 T1->T3 레시피 드롭 확률 (1%)
-    [Range(0f, 100f)] public float mixSuccessChance = 70.0f; // 이종 T2 연금술 성공 확률 (70%)
-    public int t1ToT3RecipePrice = 20000; // 상점 구매가
-    public int t2MixRecipePrice = 10000;  // 상점 연금술 레시피 구매가
+    [Header("📜 레시피 및 지역 해금 비용")]
+    public int mineUnlockPrice = 5000; // ✨ 광산 해금 비용 (5000G)
+    [Range(0f, 100f)] public float recipeDropChance = 1.0f;
+    [Range(0f, 100f)] public float mixSuccessChance = 70.0f;
+    public int t1ToT3RecipePrice = 20000;
+    public int t2MixRecipePrice = 10000;
 
     [Header("💰 기본 판매 가격")]
     public int t1Price = 10;
@@ -25,7 +29,7 @@ public class ClickerGameUI : MonoBehaviour
     private ClickerState currentState = new ClickerState(
         new TerrainState(0, 0, 0),
         new TerrainState(0, 0, 0),
-        0, 0, new UpgradeState(0, 0, 0)
+        0, 0, new UpgradeState(0, 0, 0) // IsMineUnlocked는 기본적으로 false
     );
 
     private int Boosted(int basePrice) => Mathf.RoundToInt(basePrice * (1f + currentState.Upgrades.SellBonus * 0.05f));
@@ -38,7 +42,7 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.BeginArea(new Rect(50, 50, Screen.width - 100, Screen.height - 100));
 
         GUILayout.BeginHorizontal();
-        GUILayout.Label("🛠️ 지형 조합 클리커 - 레시피 & 상점 연금술", GUILayout.Width(500));
+        GUILayout.Label("🛠️ 지형 조합 클리커 - 지역 해금 & 연금술", GUILayout.Width(500));
         GUILayout.FlexibleSpace();
         GUILayout.Label($"💰 소지금: {currentState.Money:N0} G", GUILayout.Width(300));
         GUILayout.EndHorizontal();
@@ -52,15 +56,29 @@ public class ClickerGameUI : MonoBehaviour
             () => currentState = ClickerLogic.SellForest(currentState, t => TerrainLogic.SellTier3(t, Boosted(t3Price)))
         );
         GUILayout.Space(20);
-        DrawTerrainInventory("⛰️ 광산 인벤토리", currentState.Mine,
-            () => currentState = ClickerLogic.SellMine(currentState, t => TerrainLogic.SellTier1(t, Boosted(t1Price))),
-            () => currentState = ClickerLogic.SellMine(currentState, t => TerrainLogic.SellTier2(t, Boosted(t2Price))),
-            () => currentState = ClickerLogic.SellMine(currentState, t => TerrainLogic.SellTier3(t, Boosted(t3Price)))
-        );
+
+        // ✨ 광산 인벤토리 (잠김 상태 처리)
+        if (currentState.Upgrades.IsMineUnlocked)
+        {
+            DrawTerrainInventory("⛰️ 광산 인벤토리", currentState.Mine,
+                () => currentState = ClickerLogic.SellMine(currentState, t => TerrainLogic.SellTier1(t, Boosted(t1Price))),
+                () => currentState = ClickerLogic.SellMine(currentState, t => TerrainLogic.SellTier2(t, Boosted(t2Price))),
+                () => currentState = ClickerLogic.SellMine(currentState, t => TerrainLogic.SellTier3(t, Boosted(t3Price)))
+            );
+        }
+        else
+        {
+            GUILayout.BeginVertical("box");
+            GUILayout.Label("⛰️ 광산 인벤토리 (미개척)");
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("🔒 광산을 개척해야 합니다.", new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter });
+            GUILayout.FlexibleSpace();
+            GUILayout.EndVertical();
+        }
         GUILayout.EndHorizontal();
         GUILayout.Space(20);
 
-        // 2. 행동 구역 (채집 시 레시피 드롭 체크 포함)
+        // 2. 행동 구역
         GUILayout.BeginHorizontal();
         DrawTerrainActions(
             "🌲 숲에서 행동", currentState.Forest,
@@ -75,18 +93,35 @@ public class ClickerGameUI : MonoBehaviour
             () => currentState = ClickerLogic.UpdateForest(currentState, t => TerrainLogic.CraftT1ToT3(t, currentState.Upgrades.HasT1ToT3Recipe))
         );
         GUILayout.Space(20);
-        DrawTerrainActions(
-            "⛰️ 광산에서 행동", currentState.Mine,
-            mineTier2Chance + currentState.Upgrades.Tier2Prob,
-            mineTier3Chance + currentState.Upgrades.Tier3Prob,
-            (random, recipeRoll) => {
-                currentState = ClickerLogic.UpdateMine(currentState, t => TerrainLogic.Gather(t, random, mineTier2Chance + currentState.Upgrades.Tier2Prob, mineTier3Chance + currentState.Upgrades.Tier3Prob));
-                currentState = ClickerLogic.CheckRecipeDrop(currentState, recipeRoll, recipeDropChance);
-            },
-            () => currentState = ClickerLogic.UpdateMine(currentState, TerrainLogic.CraftTier2),
-            () => currentState = ClickerLogic.UpdateMine(currentState, TerrainLogic.CraftTier3),
-            () => currentState = ClickerLogic.UpdateMine(currentState, t => TerrainLogic.CraftT1ToT3(t, currentState.Upgrades.HasT1ToT3Recipe))
-        );
+
+        // ✨ 광산 행동 구역 (해금 구매 처리)
+        if (currentState.Upgrades.IsMineUnlocked)
+        {
+            DrawTerrainActions(
+                "⛰️ 광산에서 행동", currentState.Mine,
+                mineTier2Chance + currentState.Upgrades.Tier2Prob,
+                mineTier3Chance + currentState.Upgrades.Tier3Prob,
+                (random, recipeRoll) => {
+                    currentState = ClickerLogic.UpdateMine(currentState, t => TerrainLogic.Gather(t, random, mineTier2Chance + currentState.Upgrades.Tier2Prob, mineTier3Chance + currentState.Upgrades.Tier3Prob));
+                    currentState = ClickerLogic.CheckRecipeDrop(currentState, recipeRoll, recipeDropChance);
+                },
+                () => currentState = ClickerLogic.UpdateMine(currentState, TerrainLogic.CraftTier2),
+                () => currentState = ClickerLogic.UpdateMine(currentState, TerrainLogic.CraftTier3),
+                () => currentState = ClickerLogic.UpdateMine(currentState, t => TerrainLogic.CraftT1ToT3(t, currentState.Upgrades.HasT1ToT3Recipe))
+            );
+        }
+        else
+        {
+            GUILayout.BeginVertical("box");
+            GUILayout.Label("⛰️ 미지의 지역: 광산");
+            GUILayout.Space(20);
+            GUILayout.Label("새로운 희귀 광물들을 캘 수 있는 지역입니다.\n조합으로 자금을 모아 길을 뚫어보세요.");
+            GUILayout.FlexibleSpace();
+            // ✨ BuyUpgrade를 재사용하여 아주 깔끔하게 한 줄로 광산 해금!
+            DrawCraftButton($"🔒 광산 개척하기 ({mineUnlockPrice:N0} G)", currentState.Money >= mineUnlockPrice,
+                () => currentState = ClickerLogic.BuyUpgrade(currentState, mineUnlockPrice, u => u with { IsMineUnlocked = true }));
+            GUILayout.EndVertical();
+        }
         GUILayout.EndHorizontal();
         GUILayout.Space(20);
 
@@ -122,23 +157,20 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.Space(10);
         GUILayout.Label("📜 특별 레시피 구매");
 
-        // ✨ 1) T1->T3 직통 레시피 (채굴 중 뽑기로 나오거나, 상점에서 골드로 즉시 구매 가능)
         string t1ToT3Label = currentState.Upgrades.HasT1ToT3Recipe ? "⚡ T1->T3 직통 레시피 (보유 중)" : $"⚡ T1->T3 직통 레시피 ({t1ToT3RecipePrice:N0}G)";
         DrawUpgradeRow(t1ToT3Label, currentState.Upgrades.HasT1ToT3Recipe ? 0 : t1ToT3RecipePrice,
             () => currentState = ClickerLogic.BuyUpgrade(currentState, t1ToT3RecipePrice, u => u with { HasT1ToT3Recipe = true }), !currentState.Upgrades.HasT1ToT3Recipe);
 
-        // ✨ 2) 이종 T2 연금술 레시피 (상점 구매)
         string t2MixLabel = currentState.Upgrades.HasT2MixRecipe ? "🧪 이종 T2 연금술 레시피 (보유 중)" : $"🧪 이종 T2 연금술 레시피 ({t2MixRecipePrice:N0}G)";
         DrawUpgradeRow(t2MixLabel, currentState.Upgrades.HasT2MixRecipe ? 0 : t2MixRecipePrice,
             () => currentState = ClickerLogic.BuyUpgrade(currentState, t2MixRecipePrice, u => u with { HasT2MixRecipe = true }), !currentState.Upgrades.HasT2MixRecipe);
 
-        // ✨ 연금술 레시피 해금 시 상점에 연금술 조합 실행 버튼 출력
         if (currentState.Upgrades.HasT2MixRecipe)
         {
             GUILayout.Space(10);
-            DrawCraftButton($"🧪 이종 T2 연금술 실행\n(숲 T2 30개 + 광산 T2 30개 -> {mixSuccessChance}% 확률로 T3 1개 획득)", ClickerLogic.CanMixT2(currentState), () => {
+            DrawCraftButton($"🧪 이종 T2 연금술 실행\n(숲 T2 30개 + 광산 T2 30개 -> {mixSuccessChance}% 확률로 무작위 T3 획득)", ClickerLogic.CanMixT2(currentState), () => {
                 float roll = UnityEngine.Random.Range(0f, 100f);
-                bool isForestTarget = UnityEngine.Random.value > 0.5f; // 50% 확률로 숲 T3 또는 광산 T3 결정
+                bool isForestTarget = UnityEngine.Random.value > 0.5f;
                 currentState = ClickerLogic.MixT2(currentState, roll, mixSuccessChance, isForestTarget);
             });
         }
@@ -209,7 +241,6 @@ public class ClickerGameUI : MonoBehaviour
         DrawCraftButton("🔨 T2 조합 (T1 100개)", TerrainLogic.CanCraftTier2(state), onCraftT2);
         DrawCraftButton("✨ T3 조합 (T2 100개)", TerrainLogic.CanCraftTier3(state), onCraftT3);
 
-        // ✨ T1->T3 직통 레시피가 해금되었을 때만 행동창에 특수 조합 버튼 표시
         if (currentState.Upgrades.HasT1ToT3Recipe)
         {
             DrawCraftButton("⚡ T1->T3 직통 조합 (T1 3,000개)", TerrainLogic.CanCraftT1ToT3(state, true), onCraftT1ToT3);
