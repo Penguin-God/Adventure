@@ -1,8 +1,6 @@
 using UnityEngine;
+using System;
 
-// ==========================================
-// [상태 및 UI 관리자] 부수효과 처리 구역
-// ==========================================
 public class ClickerGameUI : MonoBehaviour
 {
     [Header("🌲 숲 확률 설정 (Inspector)")]
@@ -65,10 +63,10 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.EndHorizontal();
         GUILayout.Space(40);
 
-        // 3. 최종 조합 버튼
+        // 3. 최종 조합 버튼 (✨ UI는 이제 규칙을 모릅니다. 도메인에게 물어봅니다!)
         DrawCraftButton(
             "✨ 궁극의 아티팩트 만들기 (숲 T3 [1개] + 광산 T3 [1개] 소모)",
-            currentState.Forest.Tier3 >= 1 && currentState.Mine.Tier3 >= 1,
+            ClickerLogic.CanCraftUltimate(currentState),
             () => currentState = ClickerLogic.CraftUltimate(currentState)
         );
         GUILayout.EndArea();
@@ -88,15 +86,12 @@ public class ClickerGameUI : MonoBehaviour
 
     private void DrawTerrainActions(
         string title, TerrainState state, float t2Chance, float t3Chance,
-        System.Action<float, float, float> onGather,
-        System.Action onCraftT2,
-        System.Action onCraftT3)
+        Action<float, float, float> onGather, Action onCraftT2, Action onCraftT3)
     {
         GUILayout.BeginVertical("box");
         GUILayout.Label(title);
         GUILayout.Space(10);
 
-        // 버튼 텍스트에 확률을 직관적으로 표기
         float t1Chance = 100f - (t2Chance + t3Chance);
         if (GUILayout.Button($"⛏️ 채집\n(T3 {t3Chance}% / T2 {t2Chance}% / T1 {t1Chance}%)", GUILayout.Height(80)))
         {
@@ -105,8 +100,9 @@ public class ClickerGameUI : MonoBehaviour
         }
         GUILayout.Space(10);
 
-        DrawCraftButton("🔨 T2 조합 (T1 100개)", state.Tier1 >= 100, onCraftT2);
-        DrawCraftButton("✨ T3 조합 (T2 100개)", state.Tier2 >= 100, onCraftT3);
+        // ✨ 조합 가능 여부도 도메인 로직(TerrainLogic)에게 위임합니다.
+        DrawCraftButton("🔨 T2 조합 (T1 100개)", TerrainLogic.CanCraftTier2(state), onCraftT2);
+        DrawCraftButton("✨ T3 조합 (T2 100개)", TerrainLogic.CanCraftTier3(state), onCraftT3);
 
         GUILayout.EndVertical();
     }
@@ -120,7 +116,7 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.EndHorizontal();
     }
 
-    private void DrawCraftButton(string label, bool canCraft, System.Action onCraft)
+    private void DrawCraftButton(string label, bool canCraft, Action onCraft)
     {
         GUI.enabled = canCraft;
         if (GUILayout.Button(label, GUILayout.Height(60))) onCraft?.Invoke();
