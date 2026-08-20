@@ -43,19 +43,25 @@ public class ClickerGameUI : MonoBehaviour
 
         // 2. 행동 구역 (확률 데이터 전달)
         GUILayout.BeginHorizontal();
+
+        // 🌲 숲에서 행동
         DrawTerrainActions(
             "🌲 숲에서 행동", currentState.Forest, forestTier2Chance, forestTier3Chance,
-            (random, t2, t3) => currentState = ClickerLogic.GatherForest(currentState, random, t2, t3),
-            () => currentState = ClickerLogic.CraftForestTier2(currentState),
-            () => currentState = ClickerLogic.CraftForestTier3(currentState)
+            (random, t2, t3) => currentState = ClickerLogic.UpdateForest(currentState, t => TerrainLogic.Gather(t, random, t2, t3)),
+            () => currentState = ClickerLogic.UpdateForest(currentState, TerrainLogic.CraftTier2),
+            () => currentState = ClickerLogic.UpdateForest(currentState, TerrainLogic.CraftTier3)
         );
+
         GUILayout.Space(20);
+
+        // ⛰️ 광산에서 행동
         DrawTerrainActions(
             "⛰️ 광산에서 행동", currentState.Mine, mineTier2Chance, mineTier3Chance,
-            (random, t2, t3) => currentState = ClickerLogic.GatherMine(currentState, random, t2, t3),
-            () => currentState = ClickerLogic.CraftMineTier2(currentState),
-            () => currentState = ClickerLogic.CraftMineTier3(currentState)
+            (random, t2, t3) => currentState = ClickerLogic.UpdateMine(currentState, t => TerrainLogic.Gather(t, random, t2, t3)),
+            () => currentState = ClickerLogic.UpdateMine(currentState, TerrainLogic.CraftTier2),
+            () => currentState = ClickerLogic.UpdateMine(currentState, TerrainLogic.CraftTier3)
         );
+
         GUILayout.EndHorizontal();
         GUILayout.Space(40);
 
@@ -80,7 +86,6 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.EndVertical();
     }
 
-    // 확률 파라미터가 추가된 행동 렌더링 함수
     private void DrawTerrainActions(
         string title, TerrainState state, float t2Chance, float t3Chance,
         System.Action<float, float, float> onGather,
