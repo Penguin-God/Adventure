@@ -17,15 +17,18 @@ public class ClickerGameUI : MonoBehaviour
     public int ironPrice = 15; public int silverPrice = 80; public int alloyPrice = 300;
     public int artifactPrice = 5000;
 
-    [Header("🛒 상점 비용")]
+    [Header("🛒 상점 비용 및 효율 설정")]
+    public float sellBonusPerLevel = 0.05f; // ✨ 1레벨당 판매 효율 증가량 (0.05 = 5%)
+    public int baseSellBonusCost = 1000;    // ✨ 효율 업그레이드 기본 가격
     public int mineUnlockCost = 2000;
     public int woodRecCost = 1000; public int alloyRecCost = 2500; public int artifactRecCost = 10000;
     public int endingDeedCost = 500000;
 
     private ClickerState s = new ClickerState(new Inventory(0, 0, 0, 0, 0, 0, 0), 0, new UpgradeState(0));
-    private int Boosted(int baseP) => Mathf.RoundToInt(baseP * (1f + s.Upgrades.SellBonus * 0.05f));
 
-    // ✨ 실수로 날려버렸던 알림 시스템 완벽 복구
+    // ✨ 하드코딩되었던 0.05f 대신, 에디터에서 설정한 변수(sellBonusPerLevel)를 직접 사용합니다.
+    private int Boosted(int baseP) => Mathf.RoundToInt(baseP * (1f + s.Upgrades.SellBonus * sellBonusPerLevel));
+
     private string notificationMsg = "";
     private float notificationEndTime = 0f;
 
@@ -41,23 +44,19 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.BeginArea(new Rect(20, 20, Screen.width - 40, Screen.height - 40));
 
         GUILayout.BeginHorizontal();
-        GUILayout.Label("🛠️ 직관적 조합 클리커 - 숲&광산 융합 레이아웃", GUILayout.Width(500));
+        GUILayout.Label("🛠️ 직관적 조합 클리커 - 에디터 밸런싱 모드", GUILayout.Width(500));
         GUILayout.FlexibleSpace();
         GUILayout.Label($"💰 소지금: {s.Money:N0} G", GUILayout.Width(250));
         GUILayout.EndHorizontal();
         GUILayout.Space(15);
 
-        // ==========================================
-        // ✨ 레이아웃 2단 분리 (좌측: 지형 조합 / 우측: 상점)
-        // ==========================================
         GUILayout.BeginHorizontal();
 
-        // 🟢 [좌측 구역] 숲과 광산을 묶는 거대한 컨테이너
+        // ==================== 1. 🌲 숲 구역 ====================
         GUILayout.BeginVertical(GUILayout.Width(Screen.width * 0.66f - 30));
 
         GUILayout.BeginHorizontal();
 
-        // --- 1. 🌲 숲 구역 ---
         GUILayout.BeginVertical(GUILayout.Width(Screen.width * 0.33f - 20));
         DrawInventoryBox("🌲 숲 채집물",
             ("통나무", s.Inv.Log, Boosted(logPrice), () => s = GameLogic.Sell(s, i => i.Log > 0 ? (i with { Log = i.Log - 1 }, 1) : (i, 0), Boosted(logPrice)), () => s = GameLogic.Sell(s, i => i.Log > 0 ? (i with { Log = 0 }, i.Log) : (i, 0), Boosted(logPrice))),
@@ -73,7 +72,7 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.Space(5);
         if (GUILayout.Button($"⛏️ 숲 채집하기", GUILayout.Height(60)))
         {
-            bool hadWoodRec = s.Upgrades.HasWoodRec; // ✨ 획득 전 상태 체크
+            bool hadWoodRec = s.Upgrades.HasWoodRec;
             s = GameLogic.GatherForest(s, Random.Range(0f, 100f), woodChance, sapChance);
             s = GameLogic.RollForestRecipe(s, Random.Range(0f, 100f), forestRecChance);
             if (!hadWoodRec && s.Upgrades.HasWoodRec) ShowNotification("📜 [가공된 목재 레시피]를 발견했습니다!");
@@ -85,7 +84,7 @@ public class ClickerGameUI : MonoBehaviour
 
         GUILayout.Space(10);
 
-        // --- 2. ⛰️ 광산 구역 ---
+        // ==================== 2. ⛰️ 광산 구역 ====================
         GUILayout.BeginVertical(GUILayout.Width(Screen.width * 0.33f - 20));
         if (s.Upgrades.IsMineUnlocked)
         {
@@ -122,21 +121,20 @@ public class ClickerGameUI : MonoBehaviour
         }
         GUILayout.EndVertical();
 
-        GUILayout.EndHorizontal(); // 숲과 광산의 수평 정렬 끝
+        GUILayout.EndHorizontal();
 
         GUILayout.Space(15);
 
-        // --- ✨ 3. 공예품 조합 (숲과 광산의 하단을 길게 통합) ---
         if (s.Upgrades.HasArtifactRec)
         {
             DrawCraftButton("✨ 궁극의 공예품 조합 ✨\n[가공된 목재(1) + 특수 합금(1)]", GameLogic.CanCraftArtifact(s), () => s = GameLogic.CraftArtifact(s), 80);
         }
 
-        GUILayout.EndVertical(); // 🟢 좌측 구역 끝
+        GUILayout.EndVertical();
 
         GUILayout.Space(10);
 
-        // 🔵 [우측 구역] 상점 및 결과물 보관함
+        // ==================== 3. 🔵 [우측 구역] 상점 ====================
         GUILayout.BeginVertical(GUILayout.Width(Screen.width * 0.33f - 30));
 
         DrawInventoryBox("✨ 특수 자원 보관함",
@@ -147,8 +145,9 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.BeginVertical("box");
         GUILayout.Label("🛒 상점");
 
-        int upgCost = 1000 * (s.Upgrades.SellBonus + 1);
-        DrawShopRow($"판매 효율 +10% (현재 +{s.Upgrades.SellBonus * 10}%)", upgCost, () => s = GameLogic.BuyUpgrade(s, upgCost, u => u with { SellBonus = u.SellBonus + 1 }), true);
+        // ✨ 에디터 변수를 읽어와 가격과 증가율 텍스트를 실시간으로 맞춥니다! (오류가 수정되었습니다)
+        int upgCost = baseSellBonusCost * (s.Upgrades.SellBonus + 1);
+        DrawShopRow($"판매 효율 +{sellBonusPerLevel * 100f:F0}% (현재 +{s.Upgrades.SellBonus * sellBonusPerLevel * 100f:F0}%)", upgCost, () => s = GameLogic.BuyUpgrade(s, upgCost, u => u with { SellBonus = u.SellBonus + 1 }), true);
         GUILayout.Space(10);
 
         if (!s.Upgrades.HasWoodRec) DrawShopRow($"📜 가공된 목재 레시피", woodRecCost, () => s = GameLogic.BuyUpgrade(s, woodRecCost, u => u with { HasWoodRec = true }));
@@ -159,17 +158,16 @@ public class ClickerGameUI : MonoBehaviour
             if (s.Upgrades.HasArtifactRec) ShowNotification("✨ [공예품 레시피]를 구매했습니다!");
         });
 
-        // 땅문서는 여전히 조용히 배치됩니다.
         if (!s.Upgrades.HasEndingDeed) DrawShopRow($"👑 영주의 땅문서", endingDeedCost, () => s = GameLogic.BuyUpgrade(s, endingDeedCost, u => u with { HasEndingDeed = true }));
 
         GUILayout.EndVertical();
 
-        GUILayout.EndVertical(); // 🔵 우측 구역 끝
+        GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
 
-        // ==================== 🌟 부활한 알림 UI 렌더링 ====================
+        // ==================== 🌟 알림 UI ====================
         if (Time.time < notificationEndTime)
         {
             GUIStyle notifStyle = new GUIStyle(GUI.skin.box);
@@ -203,7 +201,6 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.EndVertical();
     }
 
-    // ✨ 높이(Height) 매개변수를 추가하여 거대한 버튼을 만들 수 있게 확장했습니다.
     private void DrawCraftButton(string label, bool canCraft, System.Action onCraft, int height = 50)
     {
         GUI.enabled = canCraft;
