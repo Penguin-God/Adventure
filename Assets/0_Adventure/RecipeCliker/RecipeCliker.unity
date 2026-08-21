@@ -257,13 +257,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: RecipeCliker::ClickerGameUI
   flowerChance: 20
   sapChance: 30
-  woodRecChance: 2
-  woodPickRecChance: 2
+  woodRecChance: 4
+  woodPickRecChance: 4
   goldChance: 20
   ironChance: 30
-  alloyRecChance: 2
-  ironPickRecChance: 2
-  shearsRecChance: 2
+  alloyRecChance: 4
+  ironPickRecChance: 4
+  shearsRecChance: 4
   logPrice: 10
   sapPrice: 50
   flowerPrice: 150
