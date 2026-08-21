@@ -6,7 +6,6 @@ public class ClickerGameUI : MonoBehaviour
     [Range(0f, 100f)] public float flowerChance = 3.0f;
     [Range(0f, 100f)] public float sapChance = 15.0f;
 
-    // ✨ 레시피별 획득 확률을 각각 분리했습니다!
     [Header("🌲 숲 레시피 드롭 확률")]
     [Range(0f, 100f)] public float woodRecChance = 2.0f;
     [Range(0f, 100f)] public float woodPickRecChance = 1.0f;
@@ -15,7 +14,6 @@ public class ClickerGameUI : MonoBehaviour
     [Range(0f, 100f)] public float goldChance = 2.0f;
     [Range(0f, 100f)] public float ironChance = 20.0f;
 
-    // ✨ 광산 역시 레시피별 획득 확률을 완벽히 분리했습니다!
     [Header("⛰️ 광산 레시피 드롭 확률")]
     [Range(0f, 100f)] public float alloyRecChance = 2.0f;
     [Range(0f, 100f)] public float ironPickRecChance = 1.0f;
@@ -50,7 +48,7 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.BeginArea(new Rect(20, 20, Screen.width - 40, Screen.height - 40));
 
         GUILayout.BeginHorizontal();
-        GUILayout.Label("🛠️ 직관적 조합 클리커 - 개별 레시피 확률 분리", GUILayout.Width(500));
+        GUILayout.Label("🛠️ 직관적 조합 클리커 - 기획 밸런스 패치 완료", GUILayout.Width(500));
         GUILayout.FlexibleSpace();
         GUILayout.Label($"💰 소지금: {s.Money:N0} G", GUILayout.Width(250));
         GUILayout.EndHorizontal();
@@ -78,7 +76,6 @@ public class ClickerGameUI : MonoBehaviour
         string fDrops = $"💎 [드롭] 통나무({fLogCh:F1}%) / 수액({sapChance}%)" + (s.Upgrades.HasShears ? $" / 꽃({flowerChance}%)" : "");
         GUILayout.Label(fDrops, new GUIStyle(GUI.skin.label) { fontSize = 13 });
 
-        // ✨ 각각 분리된 확률을 화면에 정확히 띄워줍니다!
         string wRecStr = s.Upgrades.HasWoodRec ? "✅" : "❌";
         string pRecStr = s.Upgrades.HasWoodPickRec ? "✅" : "❌";
         GUILayout.Label($"📜 [레시피] 목재({woodRecChance}%) {wRecStr} / 나무곡괭이({woodPickRecChance}%) {pRecStr}", new GUIStyle(GUI.skin.label) { fontSize = 13 });
@@ -88,18 +85,16 @@ public class ClickerGameUI : MonoBehaviour
         {
             bool hWood = s.Upgrades.HasWoodRec; bool hWPick = s.Upgrades.HasWoodPickRec;
             s = GameLogic.GatherForest(s, Random.Range(0f, 100f), sapChance, flowerChance);
-
-            // ✨ 숲 레시피 주사위를 굴릴 때, 각각 분리된 확률 변수를 던져줍니다!
             s = GameLogic.RollForestRecipes(s, Random.Range(0f, 100f), woodRecChance, Random.Range(0f, 100f), woodPickRecChance);
-
             if (!hWood && s.Upgrades.HasWoodRec) ShowNotification("📜 [가공된 목재 레시피] 발견!");
             if (!hWPick && s.Upgrades.HasWoodPickRec) ShowNotification("📜 [나무 곡괭이 레시피] 발견!");
         }
         GUILayout.Space(5);
 
+        // ✨ 버튼 텍스트의 요구 수치 변경 완료
         if (s.Upgrades.HasWoodRec) DrawCraftButton("🔨 가공된 목재 [통나무(10) + 수액(3)]", GameLogic.CanCraftWood(s), () => s = GameLogic.CraftWood(s));
-        if (s.Upgrades.HasWoodPickRec && !s.Upgrades.HasWoodPick) DrawCraftButton("⛏️ 나무 곡괭이 제작 [목재(10)]", GameLogic.CanCraftWoodPick(s), () => { s = GameLogic.CraftWoodPick(s); ShowNotification("⛏️ 광산 해금!"); });
-        if (s.Upgrades.HasShearsRec && !s.Upgrades.HasShears) DrawCraftButton("✂️ 원예 가위 제작 [철광석(10) + 통나무(30)]", GameLogic.CanCraftShears(s), () => { s = GameLogic.CraftShears(s); ShowNotification("✂️ 꽃 해금!"); });
+        if (s.Upgrades.HasWoodPickRec && !s.Upgrades.HasWoodPick) DrawCraftButton("⛏️ 나무 곡괭이 제작 [가공된 목재(5)]", GameLogic.CanCraftWoodPick(s), () => { s = GameLogic.CraftWoodPick(s); ShowNotification("⛏️ 광산 해금!"); });
+        if (s.Upgrades.HasShearsRec && !s.Upgrades.HasShears) DrawCraftButton("✂️ 원예 가위 제작 [철(5) + 통나무(30)]", GameLogic.CanCraftShears(s), () => { s = GameLogic.CraftShears(s); ShowNotification("✂️ 꽃 해금!"); });
 
         GUILayout.EndVertical();
         GUILayout.EndVertical();
@@ -124,7 +119,6 @@ public class ClickerGameUI : MonoBehaviour
             string mDrops = $"💎 [드롭] 돌({mStoneCh:F1}%) / 철광석({ironChance}%)" + (s.Upgrades.HasIronPick ? $" / 금({goldChance}%)" : "");
             GUILayout.Label(mDrops, new GUIStyle(GUI.skin.label) { fontSize = 13 });
 
-            // ✨ 광산 레시피 확률 분리 출력
             string aRecStr = s.Upgrades.HasAlloyRec ? "✅" : "❌";
             string iRecStr = s.Upgrades.HasIronPickRec ? "✅" : "❌";
             string sRecStr = s.Upgrades.HasShearsRec ? "✅" : "❌";
@@ -135,8 +129,6 @@ public class ClickerGameUI : MonoBehaviour
             {
                 bool hAlloy = s.Upgrades.HasAlloyRec; bool hIPick = s.Upgrades.HasIronPickRec; bool hShears = s.Upgrades.HasShearsRec;
                 s = GameLogic.GatherMine(s, Random.Range(0f, 100f), ironChance, goldChance);
-
-                // ✨ 광산 레시피 주사위를 굴릴 때도, 각각 분리된 확률 변수를 던져줍니다!
                 s = GameLogic.RollMineRecipes(s, Random.Range(0f, 100f), alloyRecChance, Random.Range(0f, 100f), ironPickRecChance, Random.Range(0f, 100f), shearsRecChance);
 
                 if (!hAlloy && s.Upgrades.HasAlloyRec) ShowNotification("📜 [특수 합금 레시피] 발견!");
@@ -144,8 +136,10 @@ public class ClickerGameUI : MonoBehaviour
                 if (!hShears && s.Upgrades.HasShearsRec) ShowNotification("📜 [원예 가위 레시피] 발견!");
             }
             GUILayout.Space(5);
-            if (s.Upgrades.HasAlloyRec) DrawCraftButton("🔨 특수 합금 [돌(10) + 철광석(3)]", GameLogic.CanCraftAlloy(s), () => s = GameLogic.CraftAlloy(s));
-            if (s.Upgrades.HasIronPickRec && !s.Upgrades.HasIronPick) DrawCraftButton("⛏️ 철 곡괭이 제작 [나무곡괭이 + 철(30)]", GameLogic.CanCraftIronPick(s), () => { s = GameLogic.CraftIronPick(s); ShowNotification("⛏️ 금광석 해금!"); });
+
+            // ✨ 버튼 텍스트의 요구 수치 변경 완료
+            if (s.Upgrades.HasAlloyRec) DrawCraftButton("🔨 특수 합금 [돌(10) + 철(3)]", GameLogic.CanCraftAlloy(s), () => s = GameLogic.CraftAlloy(s));
+            if (s.Upgrades.HasIronPickRec && !s.Upgrades.HasIronPick) DrawCraftButton("⛏️ 철 곡괭이 제작 [나무 곡괭이 보유 + 철(10)]", GameLogic.CanCraftIronPick(s), () => { s = GameLogic.CraftIronPick(s); ShowNotification("⛏️ 금광석 해금!"); });
             GUILayout.EndVertical();
         }
         else
@@ -172,6 +166,7 @@ public class ClickerGameUI : MonoBehaviour
         // 🔵 [우측 구역] 상점 및 결과물
         GUILayout.BeginVertical(GUILayout.Width(Screen.width * 0.33f - 30));
 
+        // 🎒 보유 중인 도구 UI
         GUILayout.BeginVertical("box");
         GUILayout.Label("🎒 보유 장비", new GUIStyle(GUI.skin.label) { fontStyle = FontStyle.Bold });
         string toolList = "";
