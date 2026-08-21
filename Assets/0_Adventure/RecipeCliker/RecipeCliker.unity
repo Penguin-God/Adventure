@@ -275,11 +275,11 @@ MonoBehaviour:
   artifactPrice: 20000
   sellBonusPerLevel: 0.1
   baseSellBonusCost: 1000
-  woodRecCost: 3000
-  alloyRecCost: 5000
-  artifactRecCost: 10000
+  woodRecCost: 1000
+  alloyRecCost: 3000
+  artifactRecCost: 7000
   woodPickRecCost: 2000
-  ironPickRecCost: 5000
+  ironPickRecCost: 4000
   shearsRecCost: 4000
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
