@@ -12,7 +12,7 @@ public record UpgradeState(
     bool HasWoodPick = false, bool HasIronPick = false, bool HasShears = false,
     bool HasWoodRec = false, bool HasWoodPickRec = false,
     bool HasAlloyRec = false, bool HasIronPickRec = false, bool HasShearsRec = false,
-    bool HasArtifactRec = false
+    bool HasArtifactRec = false, bool HasEndingDeed = false // ✨ 엔딩 상태 복구
 );
 
 public record ClickerState(Inventory Inv, int Money, UpgradeState Upgrades);
@@ -57,12 +57,10 @@ public static class GameLogic
             }
         };
 
-    // --- 📜 기획에 맞춘 자원 조합 비율 변경 ---
     public static bool CanCraftWood(ClickerState s) => s.Upgrades.HasWoodRec && s.Inv.Log >= 10 && s.Inv.Sap >= 3;
     public static bool CanCraftAlloy(ClickerState s) => s.Upgrades.HasAlloyRec && s.Inv.Stone >= 10 && s.Inv.Iron >= 3;
     public static bool CanCraftArtifact(ClickerState s) => s.Upgrades.HasArtifactRec && s.Inv.Flower >= 1 && s.Inv.Gold >= 1;
 
-    // --- 🛠️ 기획에 맞춘 도구 조합 비율 변경 ---
     public static bool CanCraftWoodPick(ClickerState s) => s.Upgrades.HasWoodPickRec && !s.Upgrades.HasWoodPick && s.Inv.Wood >= 5;
     public static bool CanCraftIronPick(ClickerState s) => s.Upgrades.HasIronPickRec && s.Upgrades.HasWoodPick && !s.Upgrades.HasIronPick && s.Inv.Iron >= 10;
     public static bool CanCraftShears(ClickerState s) => s.Upgrades.HasShearsRec && !s.Upgrades.HasShears && s.Inv.Iron >= 5 && s.Inv.Log >= 30;

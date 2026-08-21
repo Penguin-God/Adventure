@@ -281,6 +281,7 @@ MonoBehaviour:
   woodPickRecCost: 2000
   ironPickRecCost: 4000
   shearsRecCost: 4000
+  endingDeedCost: 300000
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
