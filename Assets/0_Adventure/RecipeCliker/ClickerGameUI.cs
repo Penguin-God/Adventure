@@ -20,18 +20,10 @@ public class ClickerGameUI : MonoBehaviour
     [Header("🛒 상점 비용")]
     public int mineUnlockCost = 2000;
     public int woodRecCost = 1000; public int alloyRecCost = 2500; public int artifactRecCost = 10000;
+    public int endingDeedCost = 500000;
 
     private ClickerState s = new ClickerState(new Inventory(0, 0, 0, 0, 0, 0, 0), 0, new UpgradeState(0));
     private int Boosted(int baseP) => Mathf.RoundToInt(baseP * (1f + s.Upgrades.SellBonus * 0.05f));
-
-    private string notificationMsg = "";
-    private float notificationEndTime = 0f;
-
-    private void ShowNotification(string msg)
-    {
-        notificationMsg = msg;
-        notificationEndTime = Time.time + 2.0f;
-    }
 
     private void OnGUI()
     {
@@ -39,7 +31,7 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.BeginArea(new Rect(20, 20, Screen.width - 40, Screen.height - 40));
 
         GUILayout.BeginHorizontal();
-        GUILayout.Label("🛠️ 직관적 조합 클리커 - 조합 비율 변경 & 확률 표기", GUILayout.Width(500));
+        GUILayout.Label("🛠️ 직관적 조합 클리커 - 상점 정비", GUILayout.Width(500));
         GUILayout.FlexibleSpace();
         GUILayout.Label($"💰 소지금: {s.Money:N0} G", GUILayout.Width(250));
         GUILayout.EndHorizontal();
@@ -60,7 +52,6 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.BeginVertical("box");
         GUILayout.Label("🌲 숲 행동");
 
-        // ✨ 기본 재료(통나무)의 드롭 확률을 계산하여 표기합니다.
         float logChance = 100f - woodChance - sapChance;
         GUILayout.Label($"💎 [드롭] 통나무({logChance:F1}%) / 수액({sapChance}%) / 가공된 목재({woodChance}%)", new GUIStyle(GUI.skin.label) { fontSize = 14 });
         GUILayout.Label($"📜 [레시피 드롭] 가공된 목재 ({forestRecChance}%) - {(s.Upgrades.HasWoodRec ? "✅ 획득" : "❌ 미획득")}", new GUIStyle(GUI.skin.label) { fontSize = 14 });
@@ -68,14 +59,11 @@ public class ClickerGameUI : MonoBehaviour
 
         if (GUILayout.Button($"⛏️ 숲 채집하기", GUILayout.Height(60)))
         {
-            bool hadRecipe = s.Upgrades.HasWoodRec;
             s = GameLogic.GatherForest(s, Random.Range(0f, 100f), woodChance, sapChance);
             s = GameLogic.RollForestRecipe(s, Random.Range(0f, 100f), forestRecChance);
-            if (!hadRecipe && s.Upgrades.HasWoodRec) ShowNotification("📜 [가공된 목재 레시피]를 발견했습니다!");
         }
 
         GUILayout.Space(5);
-        // ✨ 조합 버튼 텍스트 변경
         if (s.Upgrades.HasWoodRec) DrawCraftButton("🔨 가공된 목재 [통나무(10) + 수액(3)]", GameLogic.CanCraftWood(s), () => s = GameLogic.CraftWood(s));
         GUILayout.EndVertical();
         GUILayout.EndVertical();
@@ -96,7 +84,6 @@ public class ClickerGameUI : MonoBehaviour
             GUILayout.BeginVertical("box");
             GUILayout.Label("⛰️ 광산 행동");
 
-            // ✨ 기본 재료(철광석)의 드롭 확률을 계산하여 표기합니다.
             float ironChance = 100f - alloyChance - silverChance;
             GUILayout.Label($"💎 [드롭] 철광석({ironChance:F1}%) / 은광석({silverChance}%) / 합금({alloyChance}%)", new GUIStyle(GUI.skin.label) { fontSize = 14 });
             GUILayout.Label($"📜 [레시피 드롭] 특수 합금 ({mineRecChance}%) - {(s.Upgrades.HasAlloyRec ? "✅ 획득" : "❌ 미획득")}", new GUIStyle(GUI.skin.label) { fontSize = 14 });
@@ -104,14 +91,11 @@ public class ClickerGameUI : MonoBehaviour
 
             if (GUILayout.Button($"⛏️ 광산 채집하기", GUILayout.Height(60)))
             {
-                bool hadRecipe = s.Upgrades.HasAlloyRec;
                 s = GameLogic.GatherMine(s, Random.Range(0f, 100f), alloyChance, silverChance);
                 s = GameLogic.RollMineRecipe(s, Random.Range(0f, 100f), mineRecChance);
-                if (!hadRecipe && s.Upgrades.HasAlloyRec) ShowNotification("📜 [특수 합금 레시피]를 발견했습니다!");
             }
 
             GUILayout.Space(5);
-            // ✨ 조합 버튼 텍스트 변경
             if (s.Upgrades.HasAlloyRec) DrawCraftButton("🔨 특수 합금 [철광석(10) + 은광석(3)]", GameLogic.CanCraftAlloy(s), () => s = GameLogic.CraftAlloy(s));
             GUILayout.EndVertical();
         }
@@ -143,11 +127,10 @@ public class ClickerGameUI : MonoBehaviour
 
         if (!s.Upgrades.HasWoodRec) DrawShopRow($"📜 가공된 목재 레시피", woodRecCost, () => s = GameLogic.BuyUpgrade(s, woodRecCost, u => u with { HasWoodRec = true }));
         if (!s.Upgrades.HasAlloyRec) DrawShopRow($"📜 특수 합금 레시피", alloyRecCost, () => s = GameLogic.BuyUpgrade(s, alloyRecCost, u => u with { HasAlloyRec = true }));
-        // ✨ 공예품 레시피는 상점 전용
-        if (!s.Upgrades.HasArtifactRec) DrawShopRow($"✨ 공예품 레시피", artifactRecCost, () => {
-            s = GameLogic.BuyUpgrade(s, artifactRecCost, u => u with { HasArtifactRec = true });
-            if (s.Upgrades.HasArtifactRec) ShowNotification("✨ [공예품 레시피]를 구매했습니다!");
-        });
+        if (!s.Upgrades.HasArtifactRec) DrawShopRow($"✨ 공예품 레시피", artifactRecCost, () => s = GameLogic.BuyUpgrade(s, artifactRecCost, u => u with { HasArtifactRec = true }));
+
+        // ✨ 알림 없이 그저 상점의 마지막 상품으로 조용히 진열됩니다. 구매 시 목록에서 사라집니다.
+        if (!s.Upgrades.HasEndingDeed) DrawShopRow($"👑 영주의 땅문서", endingDeedCost, () => s = GameLogic.BuyUpgrade(s, endingDeedCost, u => u with { HasEndingDeed = true }));
 
         GUILayout.Space(15);
         if (s.Upgrades.HasArtifactRec) DrawCraftButton("✨ 공예품 조합\n[가공된 목재(1) + 특수 합금(1)]", GameLogic.CanCraftArtifact(s), () => s = GameLogic.CraftArtifact(s));
@@ -157,16 +140,6 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.EndVertical();
         GUILayout.EndHorizontal();
         GUILayout.EndArea();
-
-        // ==================== 🌟 알림 UI 렌더링 ====================
-        if (Time.time < notificationEndTime)
-        {
-            GUIStyle notifStyle = new GUIStyle(GUI.skin.box);
-            notifStyle.fontSize = 26;
-            notifStyle.normal.textColor = Color.yellow;
-            notifStyle.alignment = TextAnchor.MiddleCenter;
-            GUI.Box(new Rect(Screen.width / 2f - 250, Screen.height / 2f - 50, 500, 100), notificationMsg, notifStyle);
-        }
     }
 
     // --- [UI 재사용 헬퍼 함수들] ---

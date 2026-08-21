@@ -6,14 +6,14 @@ namespace System.Runtime.CompilerServices
 }
 
 public record Inventory(int Log, int Sap, int Wood, int Iron, int Silver, int Alloy, int Artifact);
-public record UpgradeState(int SellBonus, bool HasWoodRec = false, bool HasAlloyRec = false, bool HasArtifactRec = false, bool IsMineUnlocked = false);
+// ✨ HasEndingDeed 속성 추가
+public record UpgradeState(int SellBonus, bool HasWoodRec = false, bool HasAlloyRec = false, bool HasArtifactRec = false, bool IsMineUnlocked = false, bool HasEndingDeed = false);
 public record ClickerState(Inventory Inv, int Money, UpgradeState Upgrades);
 
 public static class GameLogic
 {
     public static ClickerState UpdateInv(ClickerState s, Func<Inventory, Inventory> updateFunc) => s with { Inv = updateFunc(s.Inv) };
 
-    // --- ⛏️ 채집 로직 (이중 with가 완벽히 사라졌습니다) ---
     public static ClickerState GatherForest(ClickerState s, float matRoll, float woodChance, float sapChance)
     {
         if (matRoll <= woodChance) return UpdateInv(s, i => i with { Wood = i.Wood + 1 });
@@ -38,7 +38,6 @@ public static class GameLogic
     public static bool CanCraftAlloy(ClickerState s) => s.Upgrades.HasAlloyRec && s.Inv.Iron >= 10 && s.Inv.Silver >= 3;
     public static bool CanCraftArtifact(ClickerState s) => s.Upgrades.HasArtifactRec && s.Inv.Wood >= 1 && s.Inv.Alloy >= 1;
 
-    // --- 🔨 조합 실행 로직 (중복을 제거해 한 줄 마법의 가독성이 폭발적으로 상승했습니다) ---
     public static ClickerState CraftWood(ClickerState s) => CanCraftWood(s) ? UpdateInv(s, i => i with { Log = i.Log - 10, Sap = i.Sap - 3, Wood = i.Wood + 1 }) : s;
     public static ClickerState CraftAlloy(ClickerState s) => CanCraftAlloy(s) ? UpdateInv(s, i => i with { Iron = i.Iron - 10, Silver = i.Silver - 3, Alloy = i.Alloy + 1 }) : s;
     public static ClickerState CraftArtifact(ClickerState s) => CanCraftArtifact(s) ? UpdateInv(s, i => i with { Wood = i.Wood - 1, Alloy = i.Alloy - 1, Artifact = i.Artifact + 1 }) : s;
