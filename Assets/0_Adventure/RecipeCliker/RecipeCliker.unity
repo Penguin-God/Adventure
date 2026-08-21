@@ -255,23 +255,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 035a9adcf014cce4b8a16fd64b32fdd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: RecipeCliker::ClickerGameUI
-  woodChance: 3
+  woodChance: 1
   sapChance: 25
-  forestRecChance: 1
-  alloyChance: 3
+  forestRecChance: 0.5
+  alloyChance: 1
   silverChance: 25
-  mineRecChance: 1
+  mineRecChance: 0.5
   logPrice: 10
   sapPrice: 50
-  woodPrice: 200
+  woodPrice: 700
   ironPrice: 15
   silverPrice: 80
-  alloyPrice: 300
-  artifactPrice: 5000
-  mineUnlockCost: 2000
-  woodRecCost: 1000
-  alloyRecCost: 2500
+  alloyPrice: 1000
+  artifactPrice: 10000
+  mineUnlockCost: 5000
+  woodRecCost: 3000
+  alloyRecCost: 5000
   artifactRecCost: 10000
+  endingDeedCost: 100000
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
