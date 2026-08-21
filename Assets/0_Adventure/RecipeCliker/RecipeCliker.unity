@@ -272,7 +272,7 @@ MonoBehaviour:
   ironPrice: 15
   goldPrice: 250
   alloyPrice: 1000
-  artifactPrice: 10000
+  artifactPrice: 20000
   sellBonusPerLevel: 0.1
   baseSellBonusCost: 1000
   woodRecCost: 3000

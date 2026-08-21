@@ -48,7 +48,7 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.BeginArea(new Rect(20, 20, Screen.width - 40, Screen.height - 40));
 
         GUILayout.BeginHorizontal();
-        GUILayout.Label("[ 직관적 조합 클리커 - 빌드 안정화 버전 ]", GUILayout.Width(500));
+        GUILayout.Label("[ 직관적 조합 클리커 - 해금 정보 표시 ]", GUILayout.Width(500));
         GUILayout.FlexibleSpace();
         GUILayout.Label($"[ 소지금: {s.Money:N0} G ]", GUILayout.Width(250));
         GUILayout.EndHorizontal();
@@ -91,8 +91,13 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.Space(5);
 
         if (s.Upgrades.HasWoodRec) DrawCraftButton("가공된 목재 [통나무(10) + 수액(3)]", GameLogic.CanCraftWood(s), () => s = GameLogic.CraftWood(s));
-        if (s.Upgrades.HasWoodPickRec && !s.Upgrades.HasWoodPick) DrawCraftButton("나무 곡괭이 제작 [가공된 목재(5)]", GameLogic.CanCraftWoodPick(s), () => { s = GameLogic.CraftWoodPick(s); ShowNotification("광산 해금!"); });
-        if (s.Upgrades.HasShearsRec && !s.Upgrades.HasShears) DrawCraftButton("원예 가위 제작 [철(5) + 통나무(30)]", GameLogic.CanCraftShears(s), () => { s = GameLogic.CraftShears(s); ShowNotification("꽃 해금!"); });
+
+        // ✨ 도구 제작 버튼에 명확한 해금 효과를 두 줄로 추가했습니다!
+        if (s.Upgrades.HasWoodPickRec && !s.Upgrades.HasWoodPick)
+            DrawCraftButton("나무 곡괭이 제작 [가공된 목재(5)]\n(효과: 광산 진입 및 돌, 철광석 해금)", GameLogic.CanCraftWoodPick(s), () => { s = GameLogic.CraftWoodPick(s); ShowNotification("광산 해금!"); }, 60);
+
+        if (s.Upgrades.HasShearsRec && !s.Upgrades.HasShears)
+            DrawCraftButton("원예 가위 제작 [철(5) + 통나무(30)]\n(효과: 숲의 '꽃' 해금)", GameLogic.CanCraftShears(s), () => { s = GameLogic.CraftShears(s); ShowNotification("꽃 해금!"); }, 60);
 
         GUILayout.EndVertical();
         GUILayout.EndVertical();
@@ -136,7 +141,11 @@ public class ClickerGameUI : MonoBehaviour
             GUILayout.Space(5);
 
             if (s.Upgrades.HasAlloyRec) DrawCraftButton("특수 합금 [돌(10) + 철(3)]", GameLogic.CanCraftAlloy(s), () => s = GameLogic.CraftAlloy(s));
-            if (s.Upgrades.HasIronPickRec && !s.Upgrades.HasIronPick) DrawCraftButton("철 곡괭이 제작 [나무 곡괭이 + 철(10)]", GameLogic.CanCraftIronPick(s), () => { s = GameLogic.CraftIronPick(s); ShowNotification("금광석 해금!"); });
+
+            // ✨ 도구 제작 버튼에 명확한 해금 효과를 두 줄로 추가했습니다!
+            if (s.Upgrades.HasIronPickRec && !s.Upgrades.HasIronPick)
+                DrawCraftButton("철 곡괭이 제작 [나무 곡괭이 + 철(10)]\n(효과: 광산의 '금광석' 해금)", GameLogic.CanCraftIronPick(s), () => { s = GameLogic.CraftIronPick(s); ShowNotification("금광석 해금!"); }, 60);
+
             GUILayout.EndVertical();
         }
         else
@@ -186,10 +195,12 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.Space(10);
 
         if (!s.Upgrades.HasWoodRec) DrawShopRow($"가공된 목재 레시피", woodRecCost, () => s = GameLogic.BuyUpgrade(s, woodRecCost, u => u with { HasWoodRec = true }));
-        if (!s.Upgrades.HasWoodPickRec) DrawShopRow($"나무 곡괭이 레시피", woodPickRecCost, () => s = GameLogic.BuyUpgrade(s, woodPickRecCost, u => u with { HasWoodPickRec = true }));
+
+        // ✨ 상점 레시피 구매 버튼에도 해금 정보를 명확하게 표시했습니다!
+        if (!s.Upgrades.HasWoodPickRec) DrawShopRow($"나무 곡괭이 레시피 (돌, 철 해금)", woodPickRecCost, () => s = GameLogic.BuyUpgrade(s, woodPickRecCost, u => u with { HasWoodPickRec = true }));
         if (!s.Upgrades.HasAlloyRec) DrawShopRow($"특수 합금 레시피", alloyRecCost, () => s = GameLogic.BuyUpgrade(s, alloyRecCost, u => u with { HasAlloyRec = true }));
-        if (!s.Upgrades.HasIronPickRec) DrawShopRow($"철 곡괭이 레시피", ironPickRecCost, () => s = GameLogic.BuyUpgrade(s, ironPickRecCost, u => u with { HasIronPickRec = true }));
-        if (!s.Upgrades.HasShearsRec) DrawShopRow($"원예 가위 레시피", shearsRecCost, () => s = GameLogic.BuyUpgrade(s, shearsRecCost, u => u with { HasShearsRec = true }));
+        if (!s.Upgrades.HasIronPickRec) DrawShopRow($"철 곡괭이 레시피 (금광석 해금)", ironPickRecCost, () => s = GameLogic.BuyUpgrade(s, ironPickRecCost, u => u with { HasIronPickRec = true }));
+        if (!s.Upgrades.HasShearsRec) DrawShopRow($"원예 가위 레시피 (꽃 해금)", shearsRecCost, () => s = GameLogic.BuyUpgrade(s, shearsRecCost, u => u with { HasShearsRec = true }));
 
         if (!s.Upgrades.HasArtifactRec) DrawShopRow($"공예품 레시피", artifactRecCost, () => {
             s = GameLogic.BuyUpgrade(s, artifactRecCost, u => u with { HasArtifactRec = true });
@@ -248,6 +259,7 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.Label(label);
         GUILayout.FlexibleSpace();
         GUI.enabled = s.Money >= cost;
+        // 텍스트가 살짝 길어져서 폭을 넓혔습니다.
         if (GUILayout.Button($"[ {cost:N0}G ]", GUILayout.Width(130))) onBuy?.Invoke();
         GUI.enabled = true;
         GUILayout.EndHorizontal();
