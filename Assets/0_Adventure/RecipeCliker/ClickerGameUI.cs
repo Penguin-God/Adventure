@@ -29,8 +29,6 @@ public class ClickerGameUI : MonoBehaviour
     public int baseSellBonusCost = 1000;
     public int woodRecCost = 1000; public int alloyRecCost = 2500; public int artifactRecCost = 10000;
     public int woodPickRecCost = 2000; public int ironPickRecCost = 5000; public int shearsRecCost = 4000;
-
-    // ✨ 10만 원짜리 아무 의미 없는 엔딩템 가격 복구!
     public int endingDeedCost = 100000;
 
     private ClickerState s = new ClickerState(new Inventory(0, 0, 0, 0, 0, 0, 0, 0, 0), 0, new UpgradeState(0));
@@ -51,7 +49,7 @@ public class ClickerGameUI : MonoBehaviour
         GUILayout.BeginArea(new Rect(20, 20, Screen.width - 40, Screen.height - 40));
 
         GUILayout.BeginHorizontal();
-        GUILayout.Label("[ 직관적 조합 클리커 - 10만 골드 엔딩 복구 ]", GUILayout.Width(500));
+        GUILayout.Label("[ 직관적 조합 클리커 - 재료 밸런스 패치 ]", GUILayout.Width(500));
         GUILayout.FlexibleSpace();
         GUILayout.Label($"[ 소지금: {s.Money:N0} G ]", GUILayout.Width(250));
         GUILayout.EndHorizontal();
@@ -95,7 +93,9 @@ public class ClickerGameUI : MonoBehaviour
 
         if (s.Upgrades.HasWoodRec) DrawCraftButton("가공된 목재 [통나무(10) + 수액(3)]", GameLogic.CanCraftWood(s), () => s = GameLogic.CraftWood(s));
         if (s.Upgrades.HasWoodPickRec && !s.Upgrades.HasWoodPick) DrawCraftButton("나무 곡괭이 제작 [가공된 목재(5)]\n(효과: 광산 진입 및 돌, 철광석 해금)", GameLogic.CanCraftWoodPick(s), () => { s = GameLogic.CraftWoodPick(s); ShowNotification("광산 해금!"); }, 60);
-        if (s.Upgrades.HasShearsRec && !s.Upgrades.HasShears) DrawCraftButton("원예 가위 제작 [철(5) + 통나무(30)]\n(효과: 숲의 '꽃' 해금)", GameLogic.CanCraftShears(s), () => { s = GameLogic.CraftShears(s); ShowNotification("꽃 해금!"); }, 60);
+
+        // ✨ 텍스트 수정 (통나무 10개)
+        if (s.Upgrades.HasShearsRec && !s.Upgrades.HasShears) DrawCraftButton("원예 가위 제작 [철(5) + 통나무(10)]\n(효과: 숲의 '꽃' 해금)", GameLogic.CanCraftShears(s), () => { s = GameLogic.CraftShears(s); ShowNotification("꽃 해금!"); }, 60);
 
         GUILayout.EndVertical();
         GUILayout.EndVertical();
@@ -199,7 +199,6 @@ public class ClickerGameUI : MonoBehaviour
             if (s.Upgrades.HasArtifactRec) ShowNotification("공예품 레시피 획득!");
         });
 
-        // ✨ 10만 원짜리 아무 의미 없는 엔딩템 복구!
         if (!s.Upgrades.HasEndingDeed) DrawShopRow($"영주의 땅문서 (임시 엔딩)", endingDeedCost, () => {
             s = GameLogic.BuyUpgrade(s, endingDeedCost, u => u with { HasEndingDeed = true });
             if (s.Upgrades.HasEndingDeed) ShowNotification("축하합니다! 영주의 땅문서를 샀습니다!");
