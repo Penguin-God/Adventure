@@ -5,21 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/Start.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 0
-    path: Assets/Scenes/Reenact.unity
-    guid: 415b8dcaf71cf7f4bae987b9a4d32519
   - enabled: 1
-    path: Assets/Scenes/Prototype.unity
-    guid: f11a46462b4e7034dbdba6d5379234f3
-  - enabled: 1
-    path: Assets/0_Adventure/ChessBatonTouch/Scenes/Lobby.unity
-    guid: f7faf9688a0e0384e949a34cdfa02124
-  - enabled: 1
-    path: Assets/0_Adventure/ChessBatonTouch/Scenes/Puzzle.unity
-    guid: 7f484da69661ee74d97be0463148489a
+    path: Assets/0_Adventure/RecipeCliker/RecipeCliker.unity
+    guid: 1ee632b57a202d642bd2c2b7d5d96542
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
