@@ -67,43 +67,70 @@ namespace GatchTycoon.UI
                 {
                     _buildingObjects[b.id].transform.position = new Vector3(b.x * tileSize, 0, b.y * tileSize);
                 }
+                else
+                {
+                    OnBuildingPlaced(b);
+                }
             }
         }
         
         private void OnBuildingPlaced(BuildingModel model)
         {
+            if (_buildingObjects.ContainsKey(model.id)) return;
+            
             GameObject prefab = model.data.prefab;
-            bool isTempPrefab = false;
+            GameObject go;
+            
             if (prefab == null) 
             {
-                prefab = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                isTempPrefab = true;
+                go = new GameObject($"Building_{model.data.buildingName}_{model.id}");
+                go.transform.position = new Vector3(model.x * tileSize, 0, model.y * tileSize);
+                go.transform.SetParent(buildingsParent);
+                go.transform.rotation = Quaternion.Euler(90, 0, 0);
+                
+                var sr = go.AddComponent<SpriteRenderer>();
+                Texture2D tex = new Texture2D(1, 1);
+                tex.SetPixel(0, 0, Color.white);
+                tex.Apply();
+                sr.sprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+                
+                go.transform.localScale = new Vector3(tileSize * 0.8f, tileSize * 0.8f, 1);
             }
-            
-            var go = Instantiate(prefab, new Vector3(model.x * tileSize, 0, model.y * tileSize), Quaternion.identity, buildingsParent);
-            go.name = $"Building_{model.data.buildingName}_{model.id}";
+            else
+            {
+                go = Instantiate(prefab, new Vector3(model.x * tileSize, 0, model.y * tileSize), Quaternion.identity, buildingsParent);
+                go.name = $"Building_{model.data.buildingName}_{model.id}";
+            }
             
             var interaction = go.AddComponent<BuildingInteraction>();
             interaction.modelId = model.id;
             
-            var canvasGo = new GameObject("UI");
-            canvasGo.transform.SetParent(go.transform, false);
-            canvasGo.transform.localPosition = new Vector3(0, 1.5f, 0);
-            var canvas = canvasGo.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.WorldSpace;
-            canvasGo.GetComponent<RectTransform>().sizeDelta = new Vector2(2, 1);
-            
-            var textGo = new GameObject("Text");
-            textGo.transform.SetParent(canvasGo.transform, false);
-            var tmp = textGo.AddComponent<TextMeshProUGUI>();
-            tmp.text = $"Lv.{model.data.level}\n{model.data.buildingName}";
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.fontSize = 0.5f;
-            textGo.GetComponent<RectTransform>().sizeDelta = new Vector2(2, 1);
+            var renderer = go.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                Color catColor = Color.white;
+                switch (model.data.category)
+                {
+                    case BuildingCategory.CityHall: catColor = Color.yellow; break;
+                    case BuildingCategory.Residence: catColor = Color.green; break;
+                    case BuildingCategory.Work: catColor = Color.blue; break;
+                    case BuildingCategory.Mixed: catColor = Color.magenta; break;
+                    case BuildingCategory.Special: catColor = Color.cyan; break;
+                }
+                float darkenFactor = Mathf.Max(0.2f, 1.0f - ((model.data.level - 1) * 0.3f));
+                catColor = new Color(catColor.r * darkenFactor, catColor.g * darkenFactor, catColor.b * darkenFactor, 1f);
+                
+                if (renderer is SpriteRenderer sr)
+                {
+                    sr.color = catColor;
+                }
+                else
+                {
+                    renderer.material.color = catColor;
+                }
+            }
             
             _buildingObjects[model.id] = go;
-            
-            if (isTempPrefab) Destroy(prefab);
         }
         
         private void OnBuildingRemoved(BuildingModel model)

@@ -40,7 +40,7 @@ namespace GatchTycoon.UI
         {
             if (!_isDragging) return;
             Vector3 pos = GetMouseWorldPos() + _offset;
-            pos.y = 0;
+            pos.y = 0.5f; // Raise slightly while dragging
             transform.position = pos;
         }
         
