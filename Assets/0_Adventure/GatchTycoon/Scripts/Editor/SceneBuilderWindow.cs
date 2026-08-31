@@ -178,9 +178,43 @@ namespace GatchTycoon.Editor
                 work1.goldPerHour = 20;
                 AssetDatabase.CreateAsset(work1, "Assets/0_Adventure/GatchTycoon/Resources/Work1.asset");
                 
+                var work2 = ScriptableObject.CreateInstance<BuildingDataSO>();
+                work2.buildingName = "Commercial House";
+                work2.category = BuildingCategory.Work;
+                work2.level = 2;
+                work2.capacity = 2;
+                work2.goldPerHour = 50;
+                AssetDatabase.CreateAsset(work2, "Assets/0_Adventure/GatchTycoon/Resources/Work2.asset");
+                
+                work1.nextLevelBuilding = work2;
+                EditorUtility.SetDirty(work1);
+                
                 config.gachaPool = new List<BuildingDataSO> { residence1, work1 };
                 
                 AssetDatabase.CreateAsset(config, "Assets/0_Adventure/GatchTycoon/Resources/GameConfig.asset");
+                AssetDatabase.SaveAssets();
+            }
+            else
+            {
+                // Force update existing assets in case they were generated without nextLevelBuilding
+                var r1 = AssetDatabase.LoadAssetAtPath<BuildingDataSO>("Assets/0_Adventure/GatchTycoon/Resources/Residence1.asset");
+                var r2 = AssetDatabase.LoadAssetAtPath<BuildingDataSO>("Assets/0_Adventure/GatchTycoon/Resources/Residence2.asset");
+                if (r1 != null && r2 != null && r1.nextLevelBuilding == null) { r1.nextLevelBuilding = r2; EditorUtility.SetDirty(r1); }
+                
+                var w1 = AssetDatabase.LoadAssetAtPath<BuildingDataSO>("Assets/0_Adventure/GatchTycoon/Resources/Work1.asset");
+                var w2 = AssetDatabase.LoadAssetAtPath<BuildingDataSO>("Assets/0_Adventure/GatchTycoon/Resources/Work2.asset");
+                if (w1 != null && w2 == null)
+                {
+                    w2 = ScriptableObject.CreateInstance<BuildingDataSO>();
+                    w2.buildingName = "Commercial House";
+                    w2.category = BuildingCategory.Work;
+                    w2.level = 2;
+                    w2.capacity = 2;
+                    w2.goldPerHour = 50;
+                    AssetDatabase.CreateAsset(w2, "Assets/0_Adventure/GatchTycoon/Resources/Work2.asset");
+                    w1.nextLevelBuilding = w2;
+                    EditorUtility.SetDirty(w1);
+                }
                 AssetDatabase.SaveAssets();
             }
             return config;

@@ -29,7 +29,7 @@ namespace GatchTycoon.UI
             if (GridManager.Instance == null || GridRenderer.Instance == null) return;
             var buildings = GridManager.Instance.GetAllBuildings();
             var model = buildings.FirstOrDefault(b => b.id == modelId);
-            if (model == null || model.data.category == Domain.BuildingCategory.CityHall) return; 
+            if (model == null) return; 
             
             _startPosition = transform.position;
             _offset = transform.position - GetMouseWorldPos();
