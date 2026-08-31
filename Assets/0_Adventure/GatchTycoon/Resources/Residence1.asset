@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5836506c4bd75764fae989a8629832ef, type: 3}
+  m_Name: Residence1
+  m_EditorClassIdentifier: GatchTycoon::GatchTycoon.Data.BuildingDataSO
+  buildingName: Goshiwon
+  category: 1
+  level: 1
+  prefab: {fileID: 0}
+  capacity: 1
+  goldPerHour: 0
+  baseOccupancyRate: 0.5
+  buildCost: 0
+  costCurrency: 0
+  buffRange: 0
+  occupancyBuffAmount: 0
+  goldEfficiencyBuffAmount: 0
+  nextLevelBuilding: {fileID: 11400000, guid: 8740fb26741a63a41ae24fdcf9812328, type: 2}
+  combinationMaterials: []
+  combinationResult: {fileID: 0}

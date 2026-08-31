@@ -1,6 +1,7 @@
 ﻿<Solution>
   <Project Path="Baking.csproj" />
   <Project Path="LegIron.csproj" />
+  <Project Path="GatchTycoon.csproj" />
   <Project Path="Framework.csproj" />
   <Project Path="Codependency.csproj" />
   <Project Path="TakeOne'sOneLife.csproj" />

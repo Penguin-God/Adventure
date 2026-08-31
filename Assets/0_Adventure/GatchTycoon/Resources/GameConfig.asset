@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9867222a3771d8149a5a4b670a47085d, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: GatchTycoon::GatchTycoon.Data.GameConfigSO
+  cityHallLevels:
+  - level: 1
+    gridSizeX: 2
+    gridSizeY: 2
+    upgradeCost: 500
+    costCurrency: 0
+  - level: 2
+    gridSizeX: 3
+    gridSizeY: 3
+    upgradeCost: 2000
+    costCurrency: 0
+  gachaCost: 100
+  gachaCurrency: 0
+  gachaPool:
+  - {fileID: 11400000, guid: de3dae7454a2be141834455374ba26ee, type: 2}
+  - {fileID: 11400000, guid: 73b08cf31da20cb4b91c821566fc36d9, type: 2}
