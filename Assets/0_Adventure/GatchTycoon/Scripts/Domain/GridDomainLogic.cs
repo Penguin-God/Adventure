@@ -24,12 +24,12 @@ namespace GatchTycoon.Domain
     {
         public static float CalculateOccupancyRate(BuildingModel residence, IEnumerable<BuildingModel> allBuildings)
         {
-            float rate = 0.5f; // Base occupancy
+            float rate = residence.data.baseOccupancyRate;
             var buffs = allBuildings
-                .Where(b => b.data.category == BuildingCategory.Convenience && b.data.buffType == BuffType.OccupancyRate)
-                .Where(b => IsInRange(residence.x, residence.y, b.x, b.y, b.data.buffRange))
+                .Where(b => b.data.category == BuildingCategory.Public && b.data.buffType == BuffType.OccupancyRate)
+                .Where(b => IsInPattern(b.x, b.y, residence.x, residence.y, b.data.effectPattern))
                 .Sum(b => b.data.buffAmount);
-            return rate + buffs;
+            return System.Math.Min(1.0f, rate + buffs);
         }
         
         public static float CalculateGoldEfficiency(BuildingModel building, IEnumerable<BuildingModel> allBuildings)
@@ -37,7 +37,7 @@ namespace GatchTycoon.Domain
             float eff = 1.0f;
             var buffs = allBuildings
                 .Where(b => b.data.category == BuildingCategory.Convenience && b.data.buffType == BuffType.MoneyEfficiency)
-                .Where(b => IsInRange(building.x, building.y, b.x, b.y, b.data.buffRange))
+                .Where(b => IsInPattern(b.x, b.y, building.x, building.y, b.data.effectPattern))
                 .Sum(b => b.data.buffAmount);
             return eff + buffs;
         }
@@ -55,7 +55,7 @@ namespace GatchTycoon.Domain
                 float occupancyRate = CalculateOccupancyRate(r, allBuildings);
                 int availableWorkers = (int)(r.data.capacity * occupancyRate);
                 
-                var worksInRange = workBuildings.Where(w => IsInRange(r.x, r.y, w.x, w.y, r.data.commuteRange)).ToList();
+                var worksInRange = workBuildings.Where(w => IsInPattern(r.x, r.y, w.x, w.y, r.data.commutePattern)).ToList();
                 
                 foreach (var w in worksInRange)
                 {
@@ -89,7 +89,27 @@ namespace GatchTycoon.Domain
             return baseGold;
         }
         
-        public static bool IsInRange(int x1, int y1, int x2, int y2, int range) =>
-            System.Math.Abs(x1 - x2) <= range && System.Math.Abs(y1 - y2) <= range;
+        public static bool IsInPattern(int originX, int originY, int targetX, int targetY, RangePattern pattern)
+        {
+            int dx = targetX - originX;
+            int dy = targetY - originY;
+            if (dx == 0 && dy == 0) return false;
+            
+            switch (pattern)
+            {
+                case RangePattern.LeftRight:
+                    return dy == 0 && System.Math.Abs(dx) == 1;
+                case RangePattern.Cross:
+                    return (System.Math.Abs(dx) == 1 && dy == 0) || (System.Math.Abs(dy) == 1 && dx == 0);
+                case RangePattern.Square3x3:
+                    return System.Math.Abs(dx) <= 1 && System.Math.Abs(dy) <= 1;
+                case RangePattern.TopDiagonals:
+                    return dy == 1 && System.Math.Abs(dx) == 1;
+                case RangePattern.AllDiagonals:
+                    return System.Math.Abs(dx) == 1 && System.Math.Abs(dy) == 1;
+                default:
+                    return false;
+            }
+        }
     }
 }

@@ -47,6 +47,9 @@ namespace GatchTycoon.UI
                 titleText.text = $"{type.buildingName} x{type.requiredCount} -> {type.nextLevelBuilding.buildingName}";
                 
                 var btn = go.transform.Find("CombineBtn").GetComponent<Button>();
+                var btnText = btn.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+                btnText.text = $"Combine\n({type.combineCost}G)";
+                
                 bool canCombine = GridManager.Instance.CanCombine(type);
                 btn.interactable = canCombine;
                 

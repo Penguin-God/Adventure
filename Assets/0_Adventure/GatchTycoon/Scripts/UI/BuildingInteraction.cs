@@ -10,6 +10,7 @@ namespace GatchTycoon.UI
         
         private Vector3 _offset;
         private Vector3 _startPosition;
+        private Vector3 _mouseDownPos;
         private Camera _mainCamera;
         private bool _isDragging;
         
@@ -32,6 +33,7 @@ namespace GatchTycoon.UI
             if (model == null) return; 
             
             _startPosition = transform.position;
+            _mouseDownPos = Input.mousePosition;
             _offset = transform.position - GetMouseWorldPos();
             _isDragging = true;
         }
@@ -39,15 +41,25 @@ namespace GatchTycoon.UI
         void OnMouseDrag()
         {
             if (!_isDragging) return;
-            Vector3 pos = GetMouseWorldPos() + _offset;
-            pos.y = 0.5f; // Raise slightly while dragging
-            transform.position = pos;
+            if (Vector3.Distance(Input.mousePosition, _mouseDownPos) > 10f)
+            {
+                Vector3 pos = GetMouseWorldPos() + _offset;
+                pos.y = 0.5f; 
+                transform.position = pos;
+            }
         }
         
         void OnMouseUp()
         {
             if (!_isDragging) return;
             _isDragging = false;
+            
+            // Check if it was just a click
+            if (Vector3.Distance(Input.mousePosition, _mouseDownPos) <= 10f)
+            {
+                UIManager.Instance.ShowBuildingInfo(modelId);
+                return;
+            }
             
             var buildings = GridManager.Instance.GetAllBuildings();
             var model = buildings.FirstOrDefault(b => b.id == modelId);

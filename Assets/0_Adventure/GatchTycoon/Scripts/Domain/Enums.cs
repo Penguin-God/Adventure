@@ -6,6 +6,7 @@ namespace GatchTycoon.Domain
         Residence,
         Work,
         Convenience,
+        Public,
         Special
     }
 
@@ -19,5 +20,15 @@ namespace GatchTycoon.Domain
     {
         OccupancyRate,
         MoneyEfficiency
+    }
+    
+    public enum RangePattern
+    {
+        None,
+        LeftRight,
+        Cross,
+        Square3x3,
+        TopDiagonals,
+        AllDiagonals
     }
 }

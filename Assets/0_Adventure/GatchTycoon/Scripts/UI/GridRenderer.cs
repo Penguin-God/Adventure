@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using GatchTycoon.Domain;
 using GatchTycoon.Managers;
-using TMPro;
 
 namespace GatchTycoon.UI
 {
@@ -10,7 +9,6 @@ namespace GatchTycoon.UI
     {
         public static GridRenderer Instance { get; private set; }
         
-        public GameObject tilePrefab;
         public float tileSize = 1.2f;
         public Transform tilesParent;
         public Transform buildingsParent;
@@ -52,20 +50,35 @@ namespace GatchTycoon.UI
                 for (int y = 0; y < size.y; y++)
                 {
                     var pos = new Vector2Int(x, y);
-                    if (!_tiles.ContainsKey(pos) && tilePrefab != null)
+                    if (!_tiles.ContainsKey(pos))
                     {
-                        var go = Instantiate(tilePrefab, new Vector3(x * tileSize, 0, y * tileSize), Quaternion.identity, tilesParent);
-                        go.name = $"Tile_{x}_{y}";
+                        var go = new GameObject($"Tile_{x}_{y}");
+                        go.transform.position = new Vector3(x * tileSize, -0.01f, y * tileSize);
+                        go.transform.SetParent(tilesParent);
+                        go.transform.rotation = Quaternion.Euler(90, 0, 0);
+                        
+                        var sr = go.AddComponent<SpriteRenderer>();
+                        Texture2D tex = new Texture2D(1, 1);
+                        tex.SetPixel(0, 0, Color.white);
+                        tex.Apply();
+                        sr.sprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+                        go.transform.localScale = new Vector3(tileSize * 0.95f, tileSize * 0.95f, 1);
+                        sr.color = new Color(0.8f, 0.8f, 0.8f);
+                        
                         _tiles[pos] = go;
                     }
                 }
             }
             
-            foreach (var b in GridManager.Instance.GetAllBuildings())
+            var buildings = GridManager.Instance.GetAllBuildings();
+            var assignments = GridDomainLogic.CalculateWorkerAssignments(buildings);
+            
+            foreach (var b in buildings)
             {
                 if (_buildingObjects.ContainsKey(b.id))
                 {
                     _buildingObjects[b.id].transform.position = new Vector3(b.x * tileSize, 0, b.y * tileSize);
+                    UpdateBuildingColor(b, assignments);
                 }
                 else
                 {
@@ -74,63 +87,65 @@ namespace GatchTycoon.UI
             }
         }
         
+        private void UpdateBuildingColor(BuildingModel model, Dictionary<string, int> assignments)
+        {
+            if (!_buildingObjects.ContainsKey(model.id)) return;
+            var go = _buildingObjects[model.id];
+            var renderer = go.GetComponent<Renderer>();
+            if (renderer == null) return;
+            
+            Color catColor = Color.white;
+            switch (model.data.category)
+            {
+                case BuildingCategory.CityHall: catColor = Color.yellow; break;
+                case BuildingCategory.Residence: catColor = Color.green; break;
+                case BuildingCategory.Work: 
+                    catColor = Color.blue; 
+                    if (assignments != null && assignments.ContainsKey(model.id) && assignments[model.id] > 0)
+                    {
+                        catColor = Color.cyan; // Active!
+                    }
+                    break;
+                case BuildingCategory.Convenience: catColor = Color.magenta; break;
+                case BuildingCategory.Public: catColor = new Color(1f, 0.5f, 0f); break; // Orange
+                case BuildingCategory.Special: catColor = Color.gray; break;
+            }
+            
+            float darkenFactor = Mathf.Max(0.2f, 1.0f - ((model.data.level - 1) * 0.3f));
+            catColor = new Color(catColor.r * darkenFactor, catColor.g * darkenFactor, catColor.b * darkenFactor, 1f);
+            
+            if (renderer is SpriteRenderer sr)
+            {
+                sr.color = catColor;
+            }
+            else
+            {
+                renderer.material.color = catColor;
+            }
+        }
+        
         private void OnBuildingPlaced(BuildingModel model)
         {
             if (_buildingObjects.ContainsKey(model.id)) return;
             
-            GameObject prefab = model.data.prefab;
-            GameObject go;
+            GameObject go = new GameObject($"Building_{model.data.buildingName}_{model.id}");
+            go.transform.position = new Vector3(model.x * tileSize, 0, model.y * tileSize);
+            go.transform.SetParent(buildingsParent);
+            go.transform.rotation = Quaternion.Euler(90, 0, 0);
             
-            if (prefab == null) 
-            {
-                go = new GameObject($"Building_{model.data.buildingName}_{model.id}");
-                go.transform.position = new Vector3(model.x * tileSize, 0, model.y * tileSize);
-                go.transform.SetParent(buildingsParent);
-                go.transform.rotation = Quaternion.Euler(90, 0, 0);
-                
-                var sr = go.AddComponent<SpriteRenderer>();
-                Texture2D tex = new Texture2D(1, 1);
-                tex.SetPixel(0, 0, Color.white);
-                tex.Apply();
-                sr.sprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
-                
-                go.transform.localScale = new Vector3(tileSize * 0.8f, tileSize * 0.8f, 1);
-            }
-            else
-            {
-                go = Instantiate(prefab, new Vector3(model.x * tileSize, 0, model.y * tileSize), Quaternion.identity, buildingsParent);
-                go.name = $"Building_{model.data.buildingName}_{model.id}";
-            }
+            var sr = go.AddComponent<SpriteRenderer>();
+            Texture2D tex = new Texture2D(1, 1);
+            tex.SetPixel(0, 0, Color.white);
+            tex.Apply();
+            sr.sprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
+            
+            go.transform.localScale = new Vector3(tileSize * 0.8f, tileSize * 0.8f, 1);
             
             var interaction = go.AddComponent<BuildingInteraction>();
             interaction.modelId = model.id;
             
-            var renderer = go.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                Color catColor = Color.white;
-                switch (model.data.category)
-                {
-                    case BuildingCategory.CityHall: catColor = Color.yellow; break;
-                    case BuildingCategory.Residence: catColor = Color.green; break;
-                    case BuildingCategory.Work: catColor = Color.blue; break;
-                    case BuildingCategory.Convenience: catColor = Color.magenta; break;
-                    case BuildingCategory.Special: catColor = Color.cyan; break;
-                }
-                float darkenFactor = Mathf.Max(0.2f, 1.0f - ((model.data.level - 1) * 0.3f));
-                catColor = new Color(catColor.r * darkenFactor, catColor.g * darkenFactor, catColor.b * darkenFactor, 1f);
-                
-                if (renderer is SpriteRenderer sr)
-                {
-                    sr.color = catColor;
-                }
-                else
-                {
-                    renderer.material.color = catColor;
-                }
-            }
-            
             _buildingObjects[model.id] = go;
+            UpdateBuildingColor(model, null);
         }
         
         private void OnBuildingRemoved(BuildingModel model)
@@ -139,6 +154,33 @@ namespace GatchTycoon.UI
             {
                 Destroy(_buildingObjects[model.id]);
                 _buildingObjects.Remove(model.id);
+            }
+        }
+        
+        public void HighlightRange(BuildingModel model)
+        {
+            foreach (var kvp in _tiles)
+            {
+                var sr = kvp.Value.GetComponent<SpriteRenderer>();
+                if (sr != null) sr.color = new Color(0.8f, 0.8f, 0.8f);
+            }
+            
+            if (model == null) return;
+            
+            RangePattern pattern = RangePattern.None;
+            if (model.data.category == BuildingCategory.Residence) pattern = model.data.commutePattern;
+            else if (model.data.category == BuildingCategory.Convenience || model.data.category == BuildingCategory.Public) pattern = model.data.effectPattern;
+            
+            if (pattern != RangePattern.None)
+            {
+                foreach (var kvp in _tiles)
+                {
+                    if (GridDomainLogic.IsInPattern(model.x, model.y, kvp.Key.x, kvp.Key.y, pattern))
+                    {
+                        var sr = kvp.Value.GetComponent<SpriteRenderer>();
+                        if (sr != null) sr.color = new Color(1f, 0.5f, 0.5f); // Reddish highlight
+                    }
+                }
             }
         }
         

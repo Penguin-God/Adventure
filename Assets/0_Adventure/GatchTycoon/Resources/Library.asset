@@ -10,21 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5836506c4bd75764fae989a8629832ef, type: 3}
-  m_Name: Restaurant
+  m_Name: Library
   m_EditorClassIdentifier: GatchTycoon::GatchTycoon.Data.BuildingDataSO
-  buildingName: Restaurant
-  category: 3
-  level: 1
+  buildingName: Library
+  category: 4
+  level: 3
   prefab: {fileID: 0}
-  baseGoldPerHour: 5
+  baseGoldPerHour: 1000
   buildCost: 0
   costCurrency: 0
   capacity: 0
-  commuteRange: 0
+  baseOccupancyRate: 0
+  commutePattern: 0
   totalJobs: 0
   profitPerWorker: 0
-  buffRange: 1
+  effectPattern: 2
   buffType: 0
-  buffAmount: 0.2
-  nextLevelBuilding: {fileID: 11400000, guid: fa64908658720f54d8ac61b9f93a4150, type: 2}
+  buffAmount: 0.1
+  nextLevelBuilding: {fileID: 0}
   requiredCount: 3
+  combineCost: 0

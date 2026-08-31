@@ -17,6 +17,9 @@ namespace GatchTycoon.Managers
             {
                 Debug.LogWarning("CityHallData not found in Resources!");
             }
+            
+            // Set starting gold according to design doc
+            CurrencyManager.Instance.AddCurrency(Domain.CurrencyType.Gold, 5000);
         }
     }
 }

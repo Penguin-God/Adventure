@@ -127,6 +127,15 @@ namespace GatchTycoon.Managers
         {
             if (!CanCombine(buildingType)) return false;
             
+            if (buildingType.combineCost > 0)
+            {
+                if (!CurrencyManager.Instance.SpendCurrency(CurrencyType.Gold, buildingType.combineCost))
+                {
+                    Debug.Log("Not enough gold to combine!");
+                    return false;
+                }
+            }
+            
             var targets = _grid.Values.Where(b => b.data == buildingType).Take(buildingType.requiredCount).ToList();
             
             var firstTarget = targets[0];

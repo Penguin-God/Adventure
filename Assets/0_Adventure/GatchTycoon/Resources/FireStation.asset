@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5836506c4bd75764fae989a8629832ef, type: 3}
-  m_Name: OneRoom
+  m_Name: FireStation
   m_EditorClassIdentifier: GatchTycoon::GatchTycoon.Data.BuildingDataSO
-  buildingName: OneRoom
-  category: 1
-  level: 1
+  buildingName: Fire Station
+  category: 4
+  level: 2
   prefab: {fileID: 0}
-  baseGoldPerHour: 100
+  baseGoldPerHour: 300
   buildCost: 0
   costCurrency: 0
-  capacity: 10
-  baseOccupancyRate: 0.3
-  commutePattern: 1
+  capacity: 0
+  baseOccupancyRate: 0
+  commutePattern: 0
   totalJobs: 0
   profitPerWorker: 0
-  effectPattern: 0
+  effectPattern: 5
   buffType: 0
-  buffAmount: 0
-  nextLevelBuilding: {fileID: 11400000, guid: 80d779a4c9e3d3b429abcc106a8a154c, type: 2}
+  buffAmount: 0.05
+  nextLevelBuilding: {fileID: 11400000, guid: e8370ca7f8d0a2441a2e6791d48c4365, type: 2}
   requiredCount: 3
-  combineCost: 2000
+  combineCost: 5000

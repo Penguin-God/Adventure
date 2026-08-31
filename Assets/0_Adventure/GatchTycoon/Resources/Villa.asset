@@ -16,15 +16,17 @@ MonoBehaviour:
   category: 1
   level: 2
   prefab: {fileID: 0}
-  baseGoldPerHour: 20
+  baseGoldPerHour: 300
   buildCost: 0
   costCurrency: 0
-  capacity: 5
-  commuteRange: 3
+  capacity: 20
+  baseOccupancyRate: 0.4
+  commutePattern: 2
   totalJobs: 0
   profitPerWorker: 0
-  buffRange: 0
+  effectPattern: 0
   buffType: 0
   buffAmount: 0
   nextLevelBuilding: {fileID: 11400000, guid: 53a6e6faef635e047bc0a09c82848fe1, type: 2}
   requiredCount: 3
+  combineCost: 5000

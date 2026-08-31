@@ -8,12 +8,21 @@ namespace GatchTycoon.UI
 {
     public class UIManager : MonoBehaviour
     {
+        public static UIManager Instance { get; private set; }
+        
         public TextMeshProUGUI topBarText;
         public UnityEngine.UI.Button gachaButton;
         public UnityEngine.UI.Button upgradeCityHallButton;
         public UnityEngine.UI.Button combineUIButton;
         
         public GameObject combinePopup;
+        public BuildingInfoPopupUI infoPopup;
+        
+        void Awake()
+        {
+            if (Instance == null) Instance = this;
+            else Destroy(gameObject);
+        }
         
         void Start()
         {
@@ -69,6 +78,18 @@ namespace GatchTycoon.UI
         private void OnUpgradeCityHallClicked()
         {
             GridManager.Instance.UpgradeCityHall();
+        }
+        
+        public void ShowBuildingInfo(string modelId)
+        {
+            if (infoPopup == null) return;
+            var buildings = GridManager.Instance.GetAllBuildings();
+            var model = buildings.FirstOrDefault(b => b.id == modelId);
+            if (model != null)
+            {
+                infoPopup.ShowInfo(model);
+                GridRenderer.Instance.HighlightRange(model);
+            }
         }
     }
 }

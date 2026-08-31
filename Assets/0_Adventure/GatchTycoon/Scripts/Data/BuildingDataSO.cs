@@ -18,19 +18,21 @@ namespace GatchTycoon.Data
         
         // Residence specifics
         public int capacity; 
-        public int commuteRange;
+        public float baseOccupancyRate;
+        public RangePattern commutePattern;
         
         // Work specifics
         public int totalJobs;
         public int profitPerWorker;
         
-        // Convenience specifics
-        public int buffRange;
+        // Convenience & Public specifics
+        public RangePattern effectPattern;
         public BuffType buffType;
         public float buffAmount;
         
         // Merge
         public BuildingDataSO nextLevelBuilding;
         public int requiredCount = 3;
+        public int combineCost;
     }
 }

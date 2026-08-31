@@ -32,6 +32,7 @@ namespace GatchTycoon.Editor
             var gridMgr = managers.AddComponent<GridManager>();
             var gachaMgr = managers.AddComponent<GachaManager>();
             var goldGen = managers.AddComponent<GoldGenerator>();
+            goldGen.tickRate = 10f; // Every 10 seconds
             
             gridMgr.gameConfig = gameConfig;
             
@@ -86,7 +87,7 @@ namespace GatchTycoon.Editor
             var gachaTextGo = new GameObject("Text");
             gachaTextGo.transform.SetParent(gachaBtnGo.transform, false);
             var gachaText = gachaTextGo.AddComponent<TextMeshProUGUI>();
-            gachaText.text = "Draw (100G)";
+            gachaText.text = "Draw (500G)";
             gachaText.color = Color.black;
             gachaText.alignment = TextAlignmentOptions.Center;
             gachaText.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 80);
@@ -135,7 +136,7 @@ namespace GatchTycoon.Editor
             // Combine Popup
             var combinePopupGo = new GameObject("CombinePopup");
             combinePopupGo.transform.SetParent(canvasGo.transform, false);
-            combinePopupGo.AddComponent<Image>().color = new Color(0, 0, 0, 0.8f);
+            combinePopupGo.AddComponent<Image>().color = new Color(0, 0, 0, 0.9f);
             var prt = combinePopupGo.GetComponent<RectTransform>();
             prt.anchorMin = new Vector2(0.1f, 0.1f);
             prt.anchorMax = new Vector2(0.9f, 0.9f);
@@ -147,7 +148,7 @@ namespace GatchTycoon.Editor
             var layout = contentParentGo.AddComponent<VerticalLayoutGroup>();
             layout.childControlHeight = false;
             layout.childControlWidth = false;
-            layout.spacing = 10;
+            layout.spacing = 15;
             var crt = contentParentGo.GetComponent<RectTransform>();
             crt.anchorMin = new Vector2(0, 0);
             crt.anchorMax = new Vector2(1, 1);
@@ -173,18 +174,20 @@ namespace GatchTycoon.Editor
             clsText.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 40);
             
             var recipePrefabGo = new GameObject("RecipeItemPrefab");
-            recipePrefabGo.AddComponent<Image>().color = Color.gray;
+            recipePrefabGo.AddComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f, 1f);
             var reqRt = recipePrefabGo.GetComponent<RectTransform>();
-            reqRt.sizeDelta = new Vector2(600, 60);
+            reqRt.sizeDelta = new Vector2(800, 60); // Widened to prevent text overflow
             var recTitle = new GameObject("TitleText");
             recTitle.transform.SetParent(recipePrefabGo.transform, false);
             var ttmp = recTitle.AddComponent<TextMeshProUGUI>();
-            ttmp.text = "Recipe";
+            ttmp.text = "Recipe Text";
+            ttmp.fontSize = 20;
             ttmp.alignment = TextAlignmentOptions.Left;
             var trt = recTitle.GetComponent<RectTransform>();
             trt.anchorMin = new Vector2(0, 0);
             trt.anchorMax = new Vector2(1, 1);
             trt.offsetMin = new Vector2(10, 0);
+            trt.offsetMax = new Vector2(-150, 0);
             
             var recBtnGo = new GameObject("CombineBtn");
             recBtnGo.transform.SetParent(recipePrefabGo.transform, false);
@@ -195,16 +198,15 @@ namespace GatchTycoon.Editor
             rbrt.anchorMax = new Vector2(1, 0.5f);
             rbrt.pivot = new Vector2(1, 0.5f);
             rbrt.anchoredPosition = new Vector2(-10, 0);
-            rbrt.sizeDelta = new Vector2(120, 40);
+            rbrt.sizeDelta = new Vector2(140, 40);
             var rbText = new GameObject("Text");
             rbText.transform.SetParent(recBtnGo.transform, false);
             var rbtmp = rbText.AddComponent<TextMeshProUGUI>();
             rbtmp.text = "Combine";
             rbtmp.color = Color.black;
             rbtmp.alignment = TextAlignmentOptions.Center;
-            rbtmp.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 40);
+            rbtmp.GetComponent<RectTransform>().sizeDelta = new Vector2(140, 40);
             
-            // Convert to real prefab
             if (!AssetDatabase.IsValidFolder("Assets/0_Adventure/GatchTycoon/Resources/UI"))
             {
                 AssetDatabase.CreateFolder("Assets/0_Adventure/GatchTycoon/Resources", "UI");
@@ -216,9 +218,54 @@ namespace GatchTycoon.Editor
             popupUI.contentParent = contentParentGo.transform;
             popupUI.recipeItemPrefab = savedPrefab;
             popupUI.closeButton = closeBtn;
-            
             combinePopupGo.SetActive(false);
             uiMgr.combinePopup = combinePopupGo;
+            
+            // Info Popup
+            var infoPopupGo = new GameObject("InfoPopup");
+            infoPopupGo.transform.SetParent(canvasGo.transform, false);
+            infoPopupGo.AddComponent<Image>().color = new Color(0, 0, 0, 0.9f);
+            var iprt = infoPopupGo.GetComponent<RectTransform>();
+            iprt.anchorMin = new Vector2(0.3f, 0.3f);
+            iprt.anchorMax = new Vector2(0.7f, 0.7f);
+            iprt.offsetMin = Vector2.zero;
+            iprt.offsetMax = Vector2.zero;
+            
+            var infoTextGo = new GameObject("InfoText");
+            infoTextGo.transform.SetParent(infoPopupGo.transform, false);
+            var itmp = infoTextGo.AddComponent<TextMeshProUGUI>();
+            itmp.text = "Building Info";
+            itmp.fontSize = 24;
+            itmp.alignment = TextAlignmentOptions.TopLeft;
+            var itrt = infoTextGo.GetComponent<RectTransform>();
+            itrt.anchorMin = new Vector2(0, 0);
+            itrt.anchorMax = new Vector2(1, 1);
+            itrt.offsetMin = new Vector2(20, -20);
+            itrt.offsetMax = new Vector2(-20, -20);
+            
+            var infoCloseBtnGo = new GameObject("CloseButton");
+            infoCloseBtnGo.transform.SetParent(infoPopupGo.transform, false);
+            infoCloseBtnGo.AddComponent<Image>().color = Color.red;
+            var infoCloseBtn = infoCloseBtnGo.AddComponent<Button>();
+            var icrt = infoCloseBtnGo.GetComponent<RectTransform>();
+            icrt.anchorMin = new Vector2(1, 1);
+            icrt.anchorMax = new Vector2(1, 1);
+            icrt.pivot = new Vector2(1, 1);
+            icrt.anchoredPosition = new Vector2(-10, -10);
+            icrt.sizeDelta = new Vector2(100, 40);
+            var icTextGo = new GameObject("Text");
+            icTextGo.transform.SetParent(infoCloseBtnGo.transform, false);
+            var icText = icTextGo.AddComponent<TextMeshProUGUI>();
+            icText.text = "Close";
+            icText.color = Color.white;
+            icText.alignment = TextAlignmentOptions.Center;
+            icText.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 40);
+            
+            var infoUI = infoPopupGo.AddComponent<BuildingInfoPopupUI>();
+            infoUI.infoText = itmp;
+            infoUI.closeButton = infoCloseBtn;
+            infoPopupGo.SetActive(false);
+            uiMgr.infoPopup = infoUI;
             
             if (Object.FindObjectOfType<UnityEngine.EventSystems.EventSystem>() == null)
             {
@@ -247,35 +294,46 @@ namespace GatchTycoon.Editor
                 
                 config.cityHallLevels = new List<CityHallLevelInfo>
                 {
-                    new CityHallLevelInfo { level = 1, gridSizeX = 3, gridSizeY = 3, upgradeCost = 500, costCurrency = CurrencyType.Gold },
-                    new CityHallLevelInfo { level = 2, gridSizeX = 4, gridSizeY = 4, upgradeCost = 2000, costCurrency = CurrencyType.Gold }
+                    new CityHallLevelInfo { level = 1, gridSizeX = 3, gridSizeY = 3, upgradeCost = 3000, costCurrency = CurrencyType.Gold },
+                    new CityHallLevelInfo { level = 2, gridSizeX = 4, gridSizeY = 4, upgradeCost = 10000, costCurrency = CurrencyType.Gold },
+                    new CityHallLevelInfo { level = 3, gridSizeX = 5, gridSizeY = 5, upgradeCost = 50000, costCurrency = CurrencyType.Gold },
+                    new CityHallLevelInfo { level = 4, gridSizeX = 6, gridSizeY = 6, upgradeCost = 500000, costCurrency = CurrencyType.Gold },
+                    new CityHallLevelInfo { level = 5, gridSizeX = 7, gridSizeY = 7, upgradeCost = 5000000, costCurrency = CurrencyType.Gold },
+                    new CityHallLevelInfo { level = 6, gridSizeX = 8, gridSizeY = 8, upgradeCost = 50000000, costCurrency = CurrencyType.Gold },
+                    new CityHallLevelInfo { level = 7, gridSizeX = 9, gridSizeY = 9, upgradeCost = 500000000, costCurrency = CurrencyType.Gold },
+                    new CityHallLevelInfo { level = 8, gridSizeX = 10, gridSizeY = 10, upgradeCost = -1, costCurrency = CurrencyType.Gold }
                 };
-                config.gachaCost = 100;
+                config.gachaCost = 500;
                 config.gachaCurrency = CurrencyType.Gold;
                 
                 var cityHallData = ScriptableObject.CreateInstance<BuildingDataSO>();
                 cityHallData.buildingName = "City Hall";
                 cityHallData.category = BuildingCategory.CityHall;
                 cityHallData.level = 1;
-                cityHallData.baseGoldPerHour = 50;
+                cityHallData.baseGoldPerHour = 100; // Will be generated anyway
                 AssetDatabase.CreateAsset(cityHallData, "Assets/0_Adventure/GatchTycoon/Resources/CityHallData.asset");
                 
                 // Residences
-                var res3 = CreateBuilding("Apartment", BuildingCategory.Residence, 3, 50, 10, 4);
-                var res2 = CreateBuilding("Villa", BuildingCategory.Residence, 2, 20, 5, 3, res3);
-                var res1 = CreateBuilding("OneRoom", BuildingCategory.Residence, 1, 10, 2, 2, res2);
+                var res3 = CreateBuilding("Apartment", BuildingCategory.Residence, 3, 1000, 50, 0.5f, RangePattern.Square3x3);
+                var res2 = CreateBuilding("Villa", BuildingCategory.Residence, 2, 300, 20, 0.4f, RangePattern.Cross, res3, 5000);
+                var res1 = CreateBuilding("OneRoom", BuildingCategory.Residence, 1, 100, 10, 0.3f, RangePattern.LeftRight, res2, 2000);
                 
                 // Works
-                var work3 = CreateBuilding("Corporate Building", BuildingCategory.Work, 3, 100, 0, 0, null, 10, 20);
-                var work2 = CreateBuilding("Officetel", BuildingCategory.Work, 2, 40, 0, 0, work3, 5, 10);
-                var work1 = CreateBuilding("Startup", BuildingCategory.Work, 1, 15, 0, 0, work2, 2, 5);
+                var work3 = CreateBuilding("Corporate Building", BuildingCategory.Work, 3, 1000, 0, 0f, RangePattern.None, null, 0, 50, 1000);
+                var work2 = CreateBuilding("Officetel", BuildingCategory.Work, 2, 300, 0, 0f, RangePattern.None, work3, 5000, 20, 400);
+                var work1 = CreateBuilding("Startup", BuildingCategory.Work, 1, 100, 0, 0f, RangePattern.None, work2, 2000, 10, 200);
                 
-                // Convenience
-                var conv3 = CreateBuilding("Shopping Mall", BuildingCategory.Convenience, 3, 30, 0, 0, null, 0, 0, 3, BuffType.MoneyEfficiency, 1.0f);
-                var conv2 = CreateBuilding("Mart", BuildingCategory.Convenience, 2, 10, 0, 0, conv3, 0, 0, 2, BuffType.OccupancyRate, 0.5f);
-                var conv1 = CreateBuilding("Restaurant", BuildingCategory.Convenience, 1, 5, 0, 0, conv2, 0, 0, 1, BuffType.OccupancyRate, 0.2f);
+                // Convenience (Money Efficiency)
+                var conv3 = CreateBuilding("Shopping Mall", BuildingCategory.Convenience, 3, 1000, 0, 0f, RangePattern.Square3x3, null, 0, 0, 0, BuffType.MoneyEfficiency, 1.0f);
+                var conv2 = CreateBuilding("Mart", BuildingCategory.Convenience, 2, 300, 0, 0f, RangePattern.Cross, conv3, 5000, 0, 0, BuffType.MoneyEfficiency, 0.5f);
+                var conv1 = CreateBuilding("Cafe", BuildingCategory.Convenience, 1, 100, 0, 0f, RangePattern.LeftRight, conv2, 2000, 0, 0, BuffType.MoneyEfficiency, 0.2f);
                 
-                config.gachaPool = new List<BuildingDataSO> { res1, work1, conv1 };
+                // Public (Occupancy Rate)
+                var pub3 = CreateBuilding("Library", BuildingCategory.Public, 3, 1000, 0, 0f, RangePattern.Cross, null, 0, 0, 0, BuffType.OccupancyRate, 0.10f);
+                var pub2 = CreateBuilding("Fire Station", BuildingCategory.Public, 2, 300, 0, 0f, RangePattern.AllDiagonals, pub3, 5000, 0, 0, BuffType.OccupancyRate, 0.05f);
+                var pub1 = CreateBuilding("Police Station", BuildingCategory.Public, 1, 100, 0, 0f, RangePattern.TopDiagonals, pub2, 2000, 0, 0, BuffType.OccupancyRate, 0.05f);
+                
+                config.gachaPool = new List<BuildingDataSO> { res1, work1, conv1, pub1 };
                 
                 AssetDatabase.CreateAsset(config, "Assets/0_Adventure/GatchTycoon/Resources/GameConfig.asset");
                 AssetDatabase.SaveAssets();
@@ -284,8 +342,8 @@ namespace GatchTycoon.Editor
         }
         
         private static BuildingDataSO CreateBuilding(string name, BuildingCategory cat, int level, int baseGold, 
-            int capacity = 0, int commute = 0, BuildingDataSO nextLvl = null, 
-            int totalJobs = 0, int profit = 0, int buffRange = 0, BuffType buffType = BuffType.OccupancyRate, float buffAmt = 0)
+            int capacity = 0, float baseOccupancy = 0f, RangePattern pattern = RangePattern.None, BuildingDataSO nextLvl = null, 
+            int combineCost = 0, int totalJobs = 0, int profit = 0, BuffType buffType = BuffType.OccupancyRate, float buffAmt = 0)
         {
             var b = ScriptableObject.CreateInstance<BuildingDataSO>();
             b.buildingName = name;
@@ -293,13 +351,15 @@ namespace GatchTycoon.Editor
             b.level = level;
             b.baseGoldPerHour = baseGold;
             b.capacity = capacity;
-            b.commuteRange = commute;
+            b.baseOccupancyRate = baseOccupancy;
+            if (cat == BuildingCategory.Residence) b.commutePattern = pattern;
+            else b.effectPattern = pattern;
             b.totalJobs = totalJobs;
             b.profitPerWorker = profit;
-            b.buffRange = buffRange;
             b.buffType = buffType;
             b.buffAmount = buffAmt;
             b.nextLevelBuilding = nextLvl;
+            b.combineCost = combineCost;
             b.requiredCount = 3;
             
             AssetDatabase.CreateAsset(b, $"Assets/0_Adventure/GatchTycoon/Resources/{name.Replace(" ", "")}.asset");
