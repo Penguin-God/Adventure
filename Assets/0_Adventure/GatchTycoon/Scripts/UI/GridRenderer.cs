@@ -114,7 +114,7 @@ namespace GatchTycoon.UI
                     case BuildingCategory.CityHall: catColor = Color.yellow; break;
                     case BuildingCategory.Residence: catColor = Color.green; break;
                     case BuildingCategory.Work: catColor = Color.blue; break;
-                    case BuildingCategory.Mixed: catColor = Color.magenta; break;
+                    case BuildingCategory.Convenience: catColor = Color.magenta; break;
                     case BuildingCategory.Special: catColor = Color.cyan; break;
                 }
                 float darkenFactor = Mathf.Max(0.2f, 1.0f - ((model.data.level - 1) * 0.3f));

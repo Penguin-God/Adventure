@@ -24,35 +24,69 @@ namespace GatchTycoon.Domain
     {
         public static float CalculateOccupancyRate(BuildingModel residence, IEnumerable<BuildingModel> allBuildings)
         {
-            float rate = residence.data.baseOccupancyRate;
+            float rate = 0.5f; // Base occupancy
             var buffs = allBuildings
-                .Where(b => b.data.category == BuildingCategory.Mixed)
+                .Where(b => b.data.category == BuildingCategory.Convenience && b.data.buffType == BuffType.OccupancyRate)
                 .Where(b => IsInRange(residence.x, residence.y, b.x, b.y, b.data.buffRange))
-                .Sum(b => b.data.occupancyBuffAmount);
+                .Sum(b => b.data.buffAmount);
             return rate + buffs;
         }
         
-        public static float CalculateGoldEfficiency(BuildingModel corporation, IEnumerable<BuildingModel> allBuildings)
+        public static float CalculateGoldEfficiency(BuildingModel building, IEnumerable<BuildingModel> allBuildings)
         {
             float eff = 1.0f;
             var buffs = allBuildings
-                .Where(b => b.data.category == BuildingCategory.Mixed)
-                .Where(b => IsInRange(corporation.x, corporation.y, b.x, b.y, b.data.buffRange))
-                .Sum(b => b.data.goldEfficiencyBuffAmount);
+                .Where(b => b.data.category == BuildingCategory.Convenience && b.data.buffType == BuffType.MoneyEfficiency)
+                .Where(b => IsInRange(building.x, building.y, b.x, b.y, b.data.buffRange))
+                .Sum(b => b.data.buffAmount);
             return eff + buffs;
         }
         
-        public static int CalculateCorporationGold(BuildingModel corporation, IEnumerable<BuildingModel> allBuildings)
+        public static Dictionary<string, int> CalculateWorkerAssignments(IEnumerable<BuildingModel> allBuildings)
         {
-            int totalResidents = allBuildings
-                .Where(b => b.data.category == BuildingCategory.Residence)
-                .Sum(b => (int)(b.data.capacity * CalculateOccupancyRate(b, allBuildings)));
+            var assignments = new Dictionary<string, int>();
+            var workBuildings = allBuildings.Where(b => b.data.category == BuildingCategory.Work).ToList();
+            var residenceBuildings = allBuildings.Where(b => b.data.category == BuildingCategory.Residence).ToList();
             
-            int activeWorkers = System.Math.Min(totalResidents, corporation.data.capacity);
+            foreach (var w in workBuildings) assignments[w.id] = 0;
             
-            float eff = CalculateGoldEfficiency(corporation, allBuildings);
+            foreach (var r in residenceBuildings)
+            {
+                float occupancyRate = CalculateOccupancyRate(r, allBuildings);
+                int availableWorkers = (int)(r.data.capacity * occupancyRate);
+                
+                var worksInRange = workBuildings.Where(w => IsInRange(r.x, r.y, w.x, w.y, r.data.commuteRange)).ToList();
+                
+                foreach (var w in worksInRange)
+                {
+                    if (availableWorkers <= 0) break;
+                    
+                    int currentWorkers = assignments[w.id];
+                    int availableJobs = w.data.totalJobs - currentWorkers;
+                    
+                    if (availableJobs > 0)
+                    {
+                        int toAssign = System.Math.Min(availableWorkers, availableJobs);
+                        assignments[w.id] += toAssign;
+                        availableWorkers -= toAssign;
+                    }
+                }
+            }
+            return assignments;
+        }
+        
+        public static int CalculateBuildingGold(BuildingModel b, IEnumerable<BuildingModel> allBuildings, Dictionary<string, int> assignments)
+        {
+            float eff = CalculateGoldEfficiency(b, allBuildings);
+            int baseGold = (int)(b.data.baseGoldPerHour * eff);
             
-            return (int)(activeWorkers * corporation.data.goldPerHour * eff);
+            if (b.data.category == BuildingCategory.Work && assignments.ContainsKey(b.id))
+            {
+                int workers = assignments[b.id];
+                return baseGold + (int)(workers * b.data.profitPerWorker * eff);
+            }
+            
+            return baseGold;
         }
         
         public static bool IsInRange(int x1, int y1, int x2, int y2, int range) =>

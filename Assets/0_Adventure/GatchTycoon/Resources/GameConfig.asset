@@ -14,17 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: GatchTycoon::GatchTycoon.Data.GameConfigSO
   cityHallLevels:
   - level: 1
-    gridSizeX: 2
-    gridSizeY: 2
+    gridSizeX: 3
+    gridSizeY: 3
     upgradeCost: 500
     costCurrency: 0
   - level: 2
-    gridSizeX: 3
-    gridSizeY: 3
+    gridSizeX: 4
+    gridSizeY: 4
     upgradeCost: 2000
     costCurrency: 0
   gachaCost: 100
   gachaCurrency: 0
   gachaPool:
-  - {fileID: 11400000, guid: de3dae7454a2be141834455374ba26ee, type: 2}
-  - {fileID: 11400000, guid: 73b08cf31da20cb4b91c821566fc36d9, type: 2}
+  - {fileID: 11400000, guid: 3d314bbf7e7bdc14ca4c685196947a9c, type: 2}
+  - {fileID: 11400000, guid: cdaa6e42c1594514993aa95adc25d57d, type: 2}
+  - {fileID: 11400000, guid: 56f3910f32bca42458fa971a3c3b8fc6, type: 2}

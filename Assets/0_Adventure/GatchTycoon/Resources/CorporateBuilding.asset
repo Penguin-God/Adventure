@@ -10,20 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5836506c4bd75764fae989a8629832ef, type: 3}
-  m_Name: Residence1
+  m_Name: CorporateBuilding
   m_EditorClassIdentifier: GatchTycoon::GatchTycoon.Data.BuildingDataSO
-  buildingName: Goshiwon
-  category: 1
-  level: 1
+  buildingName: Corporate Building
+  category: 2
+  level: 3
   prefab: {fileID: 0}
-  capacity: 1
-  goldPerHour: 0
-  baseOccupancyRate: 0.5
+  baseGoldPerHour: 100
   buildCost: 0
   costCurrency: 0
+  capacity: 0
+  commuteRange: 0
+  totalJobs: 10
+  profitPerWorker: 20
   buffRange: 0
-  occupancyBuffAmount: 0
-  goldEfficiencyBuffAmount: 0
-  nextLevelBuilding: {fileID: 11400000, guid: 8740fb26741a63a41ae24fdcf9812328, type: 2}
-  combinationMaterials: []
-  combinationResult: {fileID: 0}
+  buffType: 0
+  buffAmount: 0
+  nextLevelBuilding: {fileID: 0}
+  requiredCount: 3

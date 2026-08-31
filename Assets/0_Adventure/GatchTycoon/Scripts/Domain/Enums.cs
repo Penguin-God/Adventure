@@ -5,7 +5,7 @@ namespace GatchTycoon.Domain
         CityHall,
         Residence,
         Work,
-        Mixed,
+        Convenience,
         Special
     }
 
@@ -13,5 +13,11 @@ namespace GatchTycoon.Domain
     {
         Gold,
         Town2Currency
+    }
+    
+    public enum BuffType
+    {
+        OccupancyRate,
+        MoneyEfficiency
     }
 }

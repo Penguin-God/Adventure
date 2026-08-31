@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5836506c4bd75764fae989a8629832ef, type: 3}
-  m_Name: CityHallData
+  m_Name: OneRoom
   m_EditorClassIdentifier: GatchTycoon::GatchTycoon.Data.BuildingDataSO
-  buildingName: City Hall
-  category: 0
+  buildingName: OneRoom
+  category: 1
   level: 1
   prefab: {fileID: 0}
-  baseGoldPerHour: 50
+  baseGoldPerHour: 10
   buildCost: 0
   costCurrency: 0
-  capacity: 0
-  commuteRange: 0
+  capacity: 2
+  commuteRange: 2
   totalJobs: 0
   profitPerWorker: 0
   buffRange: 0
   buffType: 0
   buffAmount: 0
-  nextLevelBuilding: {fileID: 0}
+  nextLevelBuilding: {fileID: 11400000, guid: 80d779a4c9e3d3b429abcc106a8a154c, type: 2}
   requiredCount: 3

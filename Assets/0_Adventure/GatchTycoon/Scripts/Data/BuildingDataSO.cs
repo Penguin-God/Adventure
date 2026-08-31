@@ -12,19 +12,25 @@ namespace GatchTycoon.Data
         public int level;
         public GameObject prefab;
         
-        public int capacity; 
-        public int goldPerHour;
-        public float baseOccupancyRate;
+        public int baseGoldPerHour;
         public int buildCost;
         public CurrencyType costCurrency;
         
+        // Residence specifics
+        public int capacity; 
+        public int commuteRange;
+        
+        // Work specifics
+        public int totalJobs;
+        public int profitPerWorker;
+        
+        // Convenience specifics
         public int buffRange;
-        public float occupancyBuffAmount;
-        public float goldEfficiencyBuffAmount;
+        public BuffType buffType;
+        public float buffAmount;
         
+        // Merge
         public BuildingDataSO nextLevelBuilding;
-        
-        public List<BuildingDataSO> combinationMaterials;
-        public BuildingDataSO combinationResult;
+        public int requiredCount = 3;
     }
 }

@@ -10,20 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5836506c4bd75764fae989a8629832ef, type: 3}
-  m_Name: Residence2
+  m_Name: Officetel
   m_EditorClassIdentifier: GatchTycoon::GatchTycoon.Data.BuildingDataSO
-  buildingName: OneRoom
-  category: 1
+  buildingName: Officetel
+  category: 2
   level: 2
   prefab: {fileID: 0}
-  capacity: 2
-  goldPerHour: 0
-  baseOccupancyRate: 0.6
+  baseGoldPerHour: 40
   buildCost: 0
   costCurrency: 0
+  capacity: 0
+  commuteRange: 0
+  totalJobs: 5
+  profitPerWorker: 10
   buffRange: 0
-  occupancyBuffAmount: 0
-  goldEfficiencyBuffAmount: 0
-  nextLevelBuilding: {fileID: 0}
-  combinationMaterials: []
-  combinationResult: {fileID: 0}
+  buffType: 0
+  buffAmount: 0
+  nextLevelBuilding: {fileID: 11400000, guid: f5b01022b01c8ad4ab381e3c311f8474, type: 2}
+  requiredCount: 3

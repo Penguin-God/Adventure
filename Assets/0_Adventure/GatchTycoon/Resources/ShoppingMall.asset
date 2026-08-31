@@ -10,20 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5836506c4bd75764fae989a8629832ef, type: 3}
-  m_Name: Work1
+  m_Name: ShoppingMall
   m_EditorClassIdentifier: GatchTycoon::GatchTycoon.Data.BuildingDataSO
-  buildingName: Startup
-  category: 2
-  level: 1
+  buildingName: Shopping Mall
+  category: 3
+  level: 3
   prefab: {fileID: 0}
-  capacity: 1
-  goldPerHour: 20
-  baseOccupancyRate: 0
+  baseGoldPerHour: 30
   buildCost: 0
   costCurrency: 0
-  buffRange: 0
-  occupancyBuffAmount: 0
-  goldEfficiencyBuffAmount: 0
-  nextLevelBuilding: {fileID: 11400000, guid: fbab7cefc02cb044d9078045173b06d1, type: 2}
-  combinationMaterials: []
-  combinationResult: {fileID: 0}
+  capacity: 0
+  commuteRange: 0
+  totalJobs: 0
+  profitPerWorker: 0
+  buffRange: 3
+  buffType: 1
+  buffAmount: 1
+  nextLevelBuilding: {fileID: 0}
+  requiredCount: 3

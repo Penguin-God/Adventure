@@ -30,7 +30,7 @@ namespace GatchTycoon.Managers
             var levelInfo = gameConfig.cityHallLevels.FirstOrDefault(l => l.level == currentCityHallLevel);
             if (levelInfo != null)
                 return new Vector2Int(levelInfo.gridSizeX, levelInfo.gridSizeY);
-            return new Vector2Int(2, 2);
+            return new Vector2Int(3, 3); // Updated to 3x3 default
         }
         
         public bool IsValidPosition(int x, int y)
@@ -91,35 +91,7 @@ namespace GatchTycoon.Managers
             {
                 var targetBuilding = _grid[targetPos];
                 
-                if (sourceBuilding.data.category == targetBuilding.data.category && 
-                    sourceBuilding.data.level == targetBuilding.data.level &&
-                    sourceBuilding.data.nextLevelBuilding != null &&
-                    sourceBuilding.data.category != BuildingCategory.CityHall)
-                {
-                    var nextLevelData = sourceBuilding.data.nextLevelBuilding;
-                    RemoveBuilding(startX, startY);
-                    RemoveBuilding(targetX, targetY);
-                    PlaceBuilding(nextLevelData, targetX, targetY);
-                    return true;
-                }
-                
-                if (sourceBuilding.data.combinationResult != null && sourceBuilding.data.combinationMaterials != null && sourceBuilding.data.combinationMaterials.Contains(targetBuilding.data))
-                {
-                    var resultData = sourceBuilding.data.combinationResult;
-                    RemoveBuilding(startX, startY);
-                    RemoveBuilding(targetX, targetY);
-                    PlaceBuilding(resultData, targetX, targetY);
-                    return true;
-                }
-                if (targetBuilding.data.combinationResult != null && targetBuilding.data.combinationMaterials != null && targetBuilding.data.combinationMaterials.Contains(sourceBuilding.data))
-                {
-                    var resultData = targetBuilding.data.combinationResult;
-                    RemoveBuilding(startX, startY);
-                    RemoveBuilding(targetX, targetY);
-                    PlaceBuilding(resultData, targetX, targetY);
-                    return true;
-                }
-                
+                // Pure swap, merge is removed from here
                 _grid[startPos] = targetBuilding;
                 _grid[targetPos] = sourceBuilding;
                 
@@ -133,6 +105,7 @@ namespace GatchTycoon.Managers
             }
             else
             {
+                // Move
                 _grid.Remove(startPos);
                 _grid[targetPos] = sourceBuilding;
                 sourceBuilding.x = targetX;
@@ -141,6 +114,32 @@ namespace GatchTycoon.Managers
                 OnGridChanged?.Invoke();
                 return true;
             }
+        }
+        
+        public bool CanCombine(BuildingDataSO buildingType)
+        {
+            if (buildingType.nextLevelBuilding == null) return false;
+            int count = _grid.Values.Count(b => b.data == buildingType);
+            return count >= buildingType.requiredCount;
+        }
+        
+        public bool ExecuteCombine(BuildingDataSO buildingType)
+        {
+            if (!CanCombine(buildingType)) return false;
+            
+            var targets = _grid.Values.Where(b => b.data == buildingType).Take(buildingType.requiredCount).ToList();
+            
+            var firstTarget = targets[0];
+            int spawnX = firstTarget.x;
+            int spawnY = firstTarget.y;
+            
+            foreach (var t in targets)
+            {
+                RemoveBuilding(t.x, t.y);
+            }
+            
+            PlaceBuilding(buildingType.nextLevelBuilding, spawnX, spawnY);
+            return true;
         }
         
         public bool UpgradeCityHall()
