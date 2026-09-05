@@ -5,7 +5,7 @@ public class DefenseManager : MonoBehaviour
 {
     public static DefenseManager Instance { get; private set; }
     
-    public int currentGold = 1000;
+    public int currentGold = 3000;
     private bool _isGameOver = false;
     
     void Awake()
@@ -19,19 +19,28 @@ public class DefenseManager : MonoBehaviour
         MonsterManager.Instance.OnMonsterReachedEnd += HandleGameOver;
         MonsterManager.Instance.OnMonsterKilled += AddGold;
         
+        // 초기 타워 배치 (베이직 1개, 공속/사거리 타워 2개)
+        var basicTower = Resources.Load<BuildingDataSO>("Buildings/BasicTower");
+        var fastTower = Resources.Load<BuildingDataSO>("Buildings/FastLongTower");
+        if (basicTower != null) GridManager.Instance.PlaceBuilding(basicTower, 0, 0);
+        if (fastTower != null) GridManager.Instance.PlaceBuilding(fastTower, 0, 9);
+        if (fastTower != null) GridManager.Instance.PlaceBuilding(fastTower, 9, 0);
+        
         StartCoroutine(SpawnMonstersRoutine());
     }
     
     private System.Collections.IEnumerator SpawnMonstersRoutine()
     {
+        yield return new WaitForSeconds(30f);
+        
         while (!_isGameOver)
         {
-            yield return new WaitForSeconds(3f); 
             var monsterData = Resources.Load<MonsterDataSO>("Monsters/BasicMonster");
             if (monsterData != null)
             {
                 MonsterManager.Instance.SpawnMonster(monsterData);
             }
+            yield return new WaitForSeconds(3f); 
         }
     }
     

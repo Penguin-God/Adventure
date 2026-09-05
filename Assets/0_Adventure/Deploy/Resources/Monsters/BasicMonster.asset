@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BasicMonster
   m_EditorClassIdentifier: Deploy::MonsterDataSO
   maxHp: 50
-  speed: 2
+  speed: 1
   sprite: {fileID: 0}
   rewardGold: 20

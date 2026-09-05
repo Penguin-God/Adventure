@@ -157,13 +157,14 @@ public class SceneBuilderWindow : EditorWindow
         CreateBuildingData("BasicFactory", BuildingType.Factory, 2f, AmmoType.Normal, 2);
         CreateBuildingData("FireFactory", BuildingType.Factory, 3f, AmmoType.Fire, 2);
         CreateBuildingData("Road", BuildingType.Road, 0f, AmmoType.Normal, 1);
-        CreateBuildingData("BasicTower", BuildingType.Tower, 0f, AmmoType.Normal, 0, 10f, 1f, 3f, 10);
+        CreateBuildingData("BasicTower", BuildingType.Tower, 0f, AmmoType.Normal, 0, 10f, 1f, 3f, 10, 0);
+        CreateBuildingData("FastLongTower", BuildingType.Tower, 0f, AmmoType.Normal, 0, 5f, 0.3f, 7f, 15, 0);
         CreateBuildingData("SpeedBuff", BuildingType.FactorySpeedBuff, 0f, AmmoType.Normal, 2, 0, 0, 0, 0, 0.5f);
         CreateBuildingData("AttackBuff", BuildingType.TowerAttackBuff, 0f, AmmoType.Normal, 2, 0, 0, 0, 0, 5f);
         
         var monsterData = ScriptableObject.CreateInstance<MonsterDataSO>();
         monsterData.maxHp = 50f;
-        monsterData.speed = 2f;
+        monsterData.speed = 1f; // Slowed down from 2f to 1f
         monsterData.rewardGold = 20;
         AssetDatabase.CreateAsset(monsterData, "Assets/0_Adventure/Deploy/Resources/Monsters/BasicMonster.asset");
         

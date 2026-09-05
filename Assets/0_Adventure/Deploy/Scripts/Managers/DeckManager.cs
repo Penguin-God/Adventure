@@ -21,7 +21,15 @@ public class DeckManager : MonoBehaviour
     {
         if (fullDeck == null || fullDeck.Count == 0)
         {
-            fullDeck = new List<BuildingDataSO>(Resources.LoadAll<BuildingDataSO>("Buildings"));
+            var loadedBuildings = Resources.LoadAll<BuildingDataSO>("Buildings");
+            fullDeck = new List<BuildingDataSO>();
+            foreach (var building in loadedBuildings)
+            {
+                if (building.buildingType != BuildingType.Road)
+                {
+                    fullDeck.Add(building);
+                }
+            }
         }
         
         _deckQueue = new Queue<BuildingDataSO>(fullDeck);
