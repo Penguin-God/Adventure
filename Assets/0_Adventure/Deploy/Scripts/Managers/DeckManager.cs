@@ -7,6 +7,7 @@ public class DeckManager : MonoBehaviour
     
     public List<BuildingDataSO> fullDeck;
     private Queue<BuildingDataSO> _deckQueue;
+    public BuildingDataSO[] currentHand = new BuildingDataSO[2];
     
     public int summonCost = 100;
     
@@ -24,22 +25,23 @@ public class DeckManager : MonoBehaviour
         }
         
         _deckQueue = new Queue<BuildingDataSO>(fullDeck);
+        
+        // Draw initial hand
+        for (int i = 0; i < 2; i++)
+        {
+            if (_deckQueue.Count > 0)
+                currentHand[i] = _deckQueue.Dequeue();
+        }
     }
     
-    public BuildingDataSO PeekNext()
+    public void SummonFromHand(int index)
     {
-        if (_deckQueue.Count == 0) return null;
-        return _deckQueue.Peek();
-    }
-    
-    public void Summon()
-    {
-        if (_deckQueue.Count == 0) return;
+        if (index < 0 || index >= 2) return;
+        var data = currentHand[index];
+        if (data == null) return;
         
         if (DefenseManager.Instance.SpendGold(summonCost))
         {
-            var data = _deckQueue.Dequeue();
-            
             bool placed = false;
             int maxAttempts = 100;
             
@@ -63,25 +65,44 @@ public class DeckManager : MonoBehaviour
             }
             
             _deckQueue.Enqueue(data); 
+            
+            // Draw next
+            currentHand[index] = _deckQueue.Count > 0 ? _deckQueue.Dequeue() : null;
+        }
+    }
+    
+    private bool _isPlacingRoad = false;
+    
+    void Update()
+    {
+        if (_isPlacingRoad && Input.GetMouseButtonDown(0))
+        {
+            if (UnityEngine.EventSystems.EventSystem.current != null && 
+                UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) 
+                return;
+                
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            int posX = Mathf.RoundToInt(mousePos.x);
+            int posY = Mathf.RoundToInt(mousePos.y);
+            
+            var roadData = Resources.Load<BuildingDataSO>("Buildings/Road");
+            if (roadData != null)
+            {
+                if (DefenseManager.Instance.SpendGold(50))
+                {
+                    bool placed = GridManager.Instance.PlaceBuilding(roadData, posX, posY);
+                    if (!placed)
+                    {
+                        DefenseManager.Instance.AddGold(50); // Refund
+                    }
+                }
+            }
+            _isPlacingRoad = false;
         }
     }
     
     public void BuildRoad()
     {
-        var roadData = Resources.Load<BuildingDataSO>("Buildings/Road");
-        if (roadData == null) return;
-        
-        if (DefenseManager.Instance.SpendGold(50))
-        {
-            bool placed = false;
-            int maxAttempts = 100;
-            while (!placed && maxAttempts > 0)
-            {
-                int posX = Random.Range(0, 10);
-                int posY = Random.Range(0, 10);
-                placed = GridManager.Instance.PlaceBuilding(roadData, posX, posY);
-                maxAttempts--;
-            }
-        }
+        _isPlacingRoad = true;
     }
 }

@@ -30,7 +30,7 @@ public class ProjectileManager : MonoBehaviour
         var spriteRenderer = projectileObject.AddComponent<SpriteRenderer>();
         spriteRenderer.sprite = CreateCircleSprite();
         spriteRenderer.color = Color.yellow;
-        projectileObject.transform.localScale = new Vector3(0.3f, 0.3f, 1f);
+        projectileObject.transform.localScale = new Vector3(0.05f, 0.05f, 1f);
         spriteRenderer.sortingOrder = 15;
         
         _projectileObjects[newId] = projectileObject;

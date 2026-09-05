@@ -73,25 +73,45 @@ public class SceneBuilderWindow : EditorWindow
         topBarRt.sizeDelta = new Vector2(-40, 50);
         uiManager.topBarText = topBarText;
         
-        // Summon Button
-        var summonBtnGo = new GameObject("SummonButton");
-        summonBtnGo.transform.SetParent(canvasGo.transform, false);
-        summonBtnGo.AddComponent<Image>().color = Color.white;
-        var summonBtn = summonBtnGo.AddComponent<Button>();
-        var summonRt = summonBtnGo.GetComponent<RectTransform>();
-        summonRt.anchorMin = new Vector2(0.5f, 0);
-        summonRt.anchorMax = new Vector2(0.5f, 0);
-        summonRt.pivot = new Vector2(0.5f, 0);
-        summonRt.anchoredPosition = new Vector2(0, 20);
-        summonRt.sizeDelta = new Vector2(200, 80);
-        var summonTextGo = new GameObject("Text");
-        summonTextGo.transform.SetParent(summonBtnGo.transform, false);
-        var summonText = summonTextGo.AddComponent<TextMeshProUGUI>();
-        summonText.text = "Summon (100G)";
-        summonText.color = Color.black;
-        summonText.alignment = TextAlignmentOptions.Center;
-        summonText.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 80);
-        uiManager.summonButton = summonBtn;
+        // Summon Button 1
+        var summonBtn1Go = new GameObject("SummonButton1");
+        summonBtn1Go.transform.SetParent(canvasGo.transform, false);
+        summonBtn1Go.AddComponent<Image>().color = Color.white;
+        var summonBtn1 = summonBtn1Go.AddComponent<Button>();
+        var summon1Rt = summonBtn1Go.GetComponent<RectTransform>();
+        summon1Rt.anchorMin = new Vector2(0.3f, 0);
+        summon1Rt.anchorMax = new Vector2(0.3f, 0);
+        summon1Rt.pivot = new Vector2(0.5f, 0);
+        summon1Rt.anchoredPosition = new Vector2(0, 20);
+        summon1Rt.sizeDelta = new Vector2(200, 80);
+        var summonText1Go = new GameObject("Text");
+        summonText1Go.transform.SetParent(summonBtn1Go.transform, false);
+        var summonText1 = summonText1Go.AddComponent<TextMeshProUGUI>();
+        summonText1.text = "Summon 1";
+        summonText1.color = Color.black;
+        summonText1.alignment = TextAlignmentOptions.Center;
+        summonText1.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 80);
+        uiManager.summonButton1 = summonBtn1;
+        
+        // Summon Button 2
+        var summonBtn2Go = new GameObject("SummonButton2");
+        summonBtn2Go.transform.SetParent(canvasGo.transform, false);
+        summonBtn2Go.AddComponent<Image>().color = Color.white;
+        var summonBtn2 = summonBtn2Go.AddComponent<Button>();
+        var summon2Rt = summonBtn2Go.GetComponent<RectTransform>();
+        summon2Rt.anchorMin = new Vector2(0.55f, 0);
+        summon2Rt.anchorMax = new Vector2(0.55f, 0);
+        summon2Rt.pivot = new Vector2(0.5f, 0);
+        summon2Rt.anchoredPosition = new Vector2(0, 20);
+        summon2Rt.sizeDelta = new Vector2(200, 80);
+        var summonText2Go = new GameObject("Text");
+        summonText2Go.transform.SetParent(summonBtn2Go.transform, false);
+        var summonText2 = summonText2Go.AddComponent<TextMeshProUGUI>();
+        summonText2.text = "Summon 2";
+        summonText2.color = Color.black;
+        summonText2.alignment = TextAlignmentOptions.Center;
+        summonText2.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 80);
+        uiManager.summonButton2 = summonBtn2;
         
         // Build Road Button
         var roadBtnGo = new GameObject("BuildRoadButton");
@@ -99,15 +119,15 @@ public class SceneBuilderWindow : EditorWindow
         roadBtnGo.AddComponent<Image>().color = Color.gray;
         var roadBtn = roadBtnGo.AddComponent<Button>();
         var roadRt = roadBtnGo.GetComponent<RectTransform>();
-        roadRt.anchorMin = new Vector2(0.8f, 0);
-        roadRt.anchorMax = new Vector2(0.8f, 0);
+        roadRt.anchorMin = new Vector2(0.85f, 0);
+        roadRt.anchorMax = new Vector2(0.85f, 0);
         roadRt.pivot = new Vector2(0.5f, 0);
         roadRt.anchoredPosition = new Vector2(0, 20);
         roadRt.sizeDelta = new Vector2(200, 80);
         var roadTextGo = new GameObject("Text");
         roadTextGo.transform.SetParent(roadBtnGo.transform, false);
         var roadText = roadTextGo.AddComponent<TextMeshProUGUI>();
-        roadText.text = "Build Road (50G)";
+        roadText.text = "Build Road\n(Click Map)";
         roadText.color = Color.white;
         roadText.alignment = TextAlignmentOptions.Center;
         roadText.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 80);
