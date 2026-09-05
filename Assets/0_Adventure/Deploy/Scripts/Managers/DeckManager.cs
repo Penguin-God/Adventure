@@ -42,48 +42,13 @@ public class DeckManager : MonoBehaviour
         }
     }
     
-    public void SummonFromHand(int index)
-    {
-        if (index < 0 || index >= 2) return;
-        var data = currentHand[index];
-        if (data == null) return;
-        
-        if (DefenseManager.Instance.SpendGold(summonCost))
-        {
-            bool placed = false;
-            int maxAttempts = 100;
-            
-            while (!placed && maxAttempts > 0)
-            {
-                int posX, posY;
-                if (data.buildingType == BuildingType.Factory || data.buildingType == BuildingType.FactorySpeedBuff)
-                {
-                    posX = Random.Range(3, 7);
-                    posY = Random.Range(3, 7);
-                }
-                else
-                {
-                    posX = Random.Range(0, 10);
-                    posY = Random.Range(0, 10);
-                    if (posX >= 3 && posX <= 6 && posY >= 3 && posY <= 6) continue; 
-                }
-                
-                placed = GridManager.Instance.PlaceBuilding(data, posX, posY);
-                maxAttempts--;
-            }
-            
-            _deckQueue.Enqueue(data); 
-            
-            // Draw next
-            currentHand[index] = _deckQueue.Count > 0 ? _deckQueue.Dequeue() : null;
-        }
-    }
-    
-    private bool _isPlacingRoad = false;
+    private bool _isPlacing = false;
+    private BuildingDataSO _buildingToPlace = null;
+    private int _handIndexBeingPlaced = -1;
     
     void Update()
     {
-        if (_isPlacingRoad && Input.GetMouseButtonDown(0))
+        if (_isPlacing && _buildingToPlace != null && Input.GetMouseButtonDown(0))
         {
             if (UnityEngine.EventSystems.EventSystem.current != null && 
                 UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) 
@@ -93,24 +58,61 @@ public class DeckManager : MonoBehaviour
             int posX = Mathf.RoundToInt(mousePos.x);
             int posY = Mathf.RoundToInt(mousePos.y);
             
-            var roadData = Resources.Load<BuildingDataSO>("Buildings/Road");
-            if (roadData != null)
+            bool isValidPos = true;
+            if (_buildingToPlace.buildingType == BuildingType.Factory || _buildingToPlace.buildingType == BuildingType.FactorySpeedBuff)
             {
-                if (DefenseManager.Instance.SpendGold(50))
+                if (posX < 3 || posX > 6 || posY < 3 || posY > 6) isValidPos = false;
+            }
+            else if (_buildingToPlace.buildingType == BuildingType.Tower || _buildingToPlace.buildingType == BuildingType.TowerAttackBuff)
+            {
+                if (posX >= 3 && posX <= 6 && posY >= 3 && posY <= 6) isValidPos = false;
+            }
+            
+            if (isValidPos)
+            {
+                int cost = _handIndexBeingPlaced == -1 ? 50 : summonCost;
+                
+                if (DefenseManager.Instance.SpendGold(cost))
                 {
-                    bool placed = GridManager.Instance.PlaceBuilding(roadData, posX, posY);
-                    if (!placed)
+                    bool placed = GridManager.Instance.PlaceBuilding(_buildingToPlace, posX, posY);
+                    if (placed)
                     {
-                        DefenseManager.Instance.AddGold(50); // Refund
+                        if (_handIndexBeingPlaced != -1)
+                        {
+                            _deckQueue.Enqueue(_buildingToPlace);
+                            currentHand[_handIndexBeingPlaced] = _deckQueue.Count > 0 ? _deckQueue.Dequeue() : null;
+                        }
+                    }
+                    else
+                    {
+                        DefenseManager.Instance.AddGold(cost); 
                     }
                 }
             }
-            _isPlacingRoad = false;
+            
+            _isPlacing = false;
+            _buildingToPlace = null;
         }
+    }
+    
+    public void SummonFromHand(int index)
+    {
+        if (index < 0 || index >= 2) return;
+        var data = currentHand[index];
+        if (data == null) return;
+        
+        _buildingToPlace = data;
+        _handIndexBeingPlaced = index;
+        _isPlacing = true;
     }
     
     public void BuildRoad()
     {
-        _isPlacingRoad = true;
+        var roadData = Resources.Load<BuildingDataSO>("Buildings/Road");
+        if (roadData == null) return;
+        
+        _buildingToPlace = roadData;
+        _handIndexBeingPlaced = -1;
+        _isPlacing = true;
     }
 }
