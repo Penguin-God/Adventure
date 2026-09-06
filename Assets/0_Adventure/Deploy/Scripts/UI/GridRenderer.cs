@@ -43,34 +43,74 @@ public class GridRenderer : MonoBehaviour
         }
     }
     
+    private BuildingModel _selectedBuilding = null;
+    
     void Update()
     {
         if (DeckManager.Instance == null) return;
         
         bool isPlacing = DeckManager.Instance.IsPlacing;
         
+        if (!isPlacing && Input.GetMouseButtonDown(0))
+        {
+            if (UnityEngine.EventSystems.EventSystem.current != null && 
+                UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) 
+            {
+                _selectedBuilding = null;
+            }
+            else
+            {
+                Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                int clickX = Mathf.RoundToInt(mousePos.x);
+                int clickY = Mathf.RoundToInt(mousePos.y);
+                
+                var clickedBuilding = GridManager.Instance.GetBuildingAt(clickX, clickY);
+                if (clickedBuilding != null) _selectedBuilding = clickedBuilding;
+                else _selectedBuilding = null;
+            }
+        }
+        else if (isPlacing)
+        {
+            _selectedBuilding = null;
+        }
+        
         for (int i = 0; i < tilesParent.childCount; i++)
         {
             var tile = tilesParent.GetChild(i);
             var sr = tile.GetComponent<SpriteRenderer>();
             
+            int posX = Mathf.RoundToInt(tile.position.x);
+            int posY = Mathf.RoundToInt(tile.position.y);
+            
             if (isPlacing)
             {
-                int posX = Mathf.RoundToInt(tile.position.x);
-                int posY = Mathf.RoundToInt(tile.position.y);
+                if (DeckManager.Instance.IsValidPlacement(posX, posY)) sr.color = new Color(0.8f, 1.0f, 0.8f);
+                else sr.color = new Color(1.0f, 0.6f, 0.6f);
+            }
+            else if (_selectedBuilding != null)
+            {
+                bool inRange = false;
+                var type = _selectedBuilding.data.buildingType;
                 
-                if (DeckManager.Instance.IsValidPlacement(posX, posY))
+                if (type == BuildingType.Factory)
                 {
-                    sr.color = new Color(0.8f, 1.0f, 0.8f); // 연한 녹색 (설치 가능)
+                    if (GridDomainLogic.IsInRange(_selectedBuilding.x, _selectedBuilding.y, posX, posY, _selectedBuilding.data.connectionRange)) inRange = true;
                 }
-                else
+                else if (type == BuildingType.Road || type == BuildingType.FactorySpeedBuff || type == BuildingType.TowerAttackBuff)
                 {
-                    sr.color = new Color(1.0f, 0.6f, 0.6f); // 연한 빨간색 (설치 불가)
+                    if (GridDomainLogic.IsInRange(_selectedBuilding.x, _selectedBuilding.y, posX, posY, _selectedBuilding.data.buffRange)) inRange = true;
                 }
+                else if (type == BuildingType.Tower)
+                {
+                    if (Vector2.Distance(new Vector2(_selectedBuilding.x, _selectedBuilding.y), new Vector2(posX, posY)) <= _selectedBuilding.data.attackRange) inRange = true;
+                }
+                
+                if (inRange) sr.color = new Color(0.8f, 1.0f, 0.8f);
+                else sr.color = new Color(0.8f, 0.8f, 0.8f);
             }
             else
             {
-                sr.color = new Color(0.8f, 0.8f, 0.8f); // 기본 색
+                sr.color = new Color(0.8f, 0.8f, 0.8f);
             }
         }
     }
