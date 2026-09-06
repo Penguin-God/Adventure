@@ -174,8 +174,7 @@ public class SceneBuilderWindow : EditorWindow
         if (!AssetDatabase.IsValidFolder("Assets/0_Adventure/Deploy/Resources/Monsters"))
             AssetDatabase.CreateFolder("Assets/0_Adventure/Deploy/Resources", "Monsters");
         
-        CreateBuildingData("BasicFactory", BuildingType.Factory, 3f, AmmoType.Normal, 1, 0, 0, 0, 0, 0, 1, 200);
-        CreateBuildingData("FireFactory", BuildingType.Factory, 3f, AmmoType.Fire, 1, 0, 0, 0, 0, 0, 1, 200);
+        CreateBuildingData("Factory", BuildingType.Factory, 3f, AmmoType.Normal, 1, 0, 0, 0, 0, 0, 1, 200);
         CreateBuildingData("Road", BuildingType.Road, 0f, AmmoType.Normal, 1, 0, 0, 0, 0, 0, 1, 100);
         CreateBuildingData("Cannon", BuildingType.Tower, 0f, AmmoType.Normal, 0, 50f, 0.7f, 2f, 3, 0, 1, 150);
         CreateBuildingData("Archer", BuildingType.Tower, 0f, AmmoType.Normal, 0, 35f, 1.2f, 3f, 5, 0, 1, 200);

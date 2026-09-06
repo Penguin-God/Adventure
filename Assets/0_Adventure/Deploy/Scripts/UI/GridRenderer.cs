@@ -123,6 +123,22 @@ public class GridRenderer : MonoBehaviour
                 sr.color = new Color(0.8f, 0.8f, 0.8f);
             }
         }
+        
+        foreach (var building in GridManager.Instance.GetAllBuildings())
+        {
+            if (_buildingObjects.ContainsKey(building.id))
+            {
+                if (building.data.buildingType == BuildingType.Tower)
+                {
+                    var textMesh = _buildingObjects[building.id].GetComponentInChildren<TMPro.TextMeshPro>();
+                    if (textMesh != null)
+                    {
+                        textMesh.text = $"{building.currentAmmo}/{building.data.maxAmmo}";
+                        textMesh.color = (building.currentAmmo <= 0 || building.isReloading) ? Color.red : Color.black;
+                    }
+                }
+            }
+        }
     }
     
     private void OnBuildingPlaced(BuildingModel model)
@@ -139,7 +155,7 @@ public class GridRenderer : MonoBehaviour
         {
             case BuildingType.Factory: sr.color = Color.blue; break;
             case BuildingType.Road: sr.color = Color.gray; break;
-            case BuildingType.Tower: sr.color = Color.red; break;
+            case BuildingType.Tower: sr.color = Color.yellow; break;
             case BuildingType.FactorySpeedBuff: sr.color = Color.cyan; break;
             case BuildingType.TowerAttackBuff: sr.color = Color.magenta; break;
         }

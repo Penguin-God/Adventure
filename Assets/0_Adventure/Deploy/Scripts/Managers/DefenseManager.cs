@@ -31,7 +31,7 @@ public class DefenseManager : MonoBehaviour
     
     private System.Collections.IEnumerator SpawnMonstersRoutine()
     {
-        yield return new WaitForSeconds(30f);
+        yield return new WaitForSeconds(10f);
         
         while (!_isGameOver)
         {
@@ -40,7 +40,7 @@ public class DefenseManager : MonoBehaviour
             {
                 MonsterManager.Instance.SpawnMonster(monsterData);
             }
-            yield return new WaitForSeconds(3f); 
+            yield return new WaitForSeconds(1f); 
         }
     }
     

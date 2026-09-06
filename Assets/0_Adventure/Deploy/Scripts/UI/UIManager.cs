@@ -44,7 +44,7 @@ public class UIManager : MonoBehaviour
         var data = DeckManager.Instance.currentHand[index];
         if (data != null)
         {
-            textMesh.text = $"Summon {data.buildingName}\n({data.cost}G)";
+            textMesh.text = $"{data.buildingName}\n({data.cost}G)";
         }
         else
         {
