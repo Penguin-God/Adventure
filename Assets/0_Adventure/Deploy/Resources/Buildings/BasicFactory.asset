@@ -23,6 +23,6 @@ MonoBehaviour:
   ammoType: 0
   ammoProductionTime: 2
   producedAmmoType: 0
-  connectionRange: 2
+  connectionRange: 1
   buffAmount: 0
-  buffRange: 2
+  buffRange: 1

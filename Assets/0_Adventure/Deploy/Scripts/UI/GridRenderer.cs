@@ -24,7 +24,7 @@ public class GridRenderer : MonoBehaviour
                 for (int posY = 0; posY < 10; posY++)
                 {
                     var tileGo = new GameObject($"Tile_{posX}_{posY}");
-                    tileGo.transform.position = new Vector3(posX, posY, 0.1f); // 0.1f behind buildings (z=0)
+                    tileGo.transform.position = new Vector3(posX, posY, 0.1f); 
                     tileGo.transform.SetParent(tilesParent);
                     var sr = tileGo.AddComponent<SpriteRenderer>();
                     sr.sprite = CreateBoxSprite();
@@ -39,6 +39,38 @@ public class GridRenderer : MonoBehaviour
             if (_buildingObjects.ContainsKey(building.id))
             {
                 _buildingObjects[building.id].transform.position = new Vector3(building.x, building.y, 0);
+            }
+        }
+    }
+    
+    void Update()
+    {
+        if (DeckManager.Instance == null) return;
+        
+        bool isPlacing = DeckManager.Instance.IsPlacing;
+        
+        for (int i = 0; i < tilesParent.childCount; i++)
+        {
+            var tile = tilesParent.GetChild(i);
+            var sr = tile.GetComponent<SpriteRenderer>();
+            
+            if (isPlacing)
+            {
+                int posX = Mathf.RoundToInt(tile.position.x);
+                int posY = Mathf.RoundToInt(tile.position.y);
+                
+                if (DeckManager.Instance.IsValidPlacement(posX, posY))
+                {
+                    sr.color = new Color(0.8f, 1.0f, 0.8f); // 연한 녹색 (설치 가능)
+                }
+                else
+                {
+                    sr.color = new Color(1.0f, 0.6f, 0.6f); // 연한 빨간색 (설치 불가)
+                }
+            }
+            else
+            {
+                sr.color = new Color(0.8f, 0.8f, 0.8f); // 기본 색
             }
         }
     }

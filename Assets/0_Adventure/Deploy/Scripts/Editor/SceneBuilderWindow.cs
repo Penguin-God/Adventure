@@ -133,6 +133,26 @@ public class SceneBuilderWindow : EditorWindow
         roadText.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 80);
         uiManager.buildRoadButton = roadBtn;
         
+        // Cancel Button
+        var cancelBtnGo = new GameObject("CancelButton");
+        cancelBtnGo.transform.SetParent(canvasGo.transform, false);
+        cancelBtnGo.AddComponent<Image>().color = new Color(1f, 0.4f, 0.4f);
+        var cancelBtn = cancelBtnGo.AddComponent<Button>();
+        var cancelRt = cancelBtnGo.GetComponent<RectTransform>();
+        cancelRt.anchorMin = new Vector2(0.95f, 1);
+        cancelRt.anchorMax = new Vector2(0.95f, 1);
+        cancelRt.pivot = new Vector2(1f, 1);
+        cancelRt.anchoredPosition = new Vector2(0, -20);
+        cancelRt.sizeDelta = new Vector2(150, 50);
+        var cancelTextGo = new GameObject("Text");
+        cancelTextGo.transform.SetParent(cancelBtnGo.transform, false);
+        var cancelText = cancelTextGo.AddComponent<TextMeshProUGUI>();
+        cancelText.text = "Cancel";
+        cancelText.color = Color.white;
+        cancelText.alignment = TextAlignmentOptions.Center;
+        cancelText.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 50);
+        uiManager.cancelButton = cancelBtn;
+        
         if (Object.FindObjectOfType<UnityEngine.EventSystems.EventSystem>() == null)
         {
             var eventSystem = new GameObject("EventSystem");
@@ -154,8 +174,8 @@ public class SceneBuilderWindow : EditorWindow
         if (!AssetDatabase.IsValidFolder("Assets/0_Adventure/Deploy/Resources/Monsters"))
             AssetDatabase.CreateFolder("Assets/0_Adventure/Deploy/Resources", "Monsters");
         
-        CreateBuildingData("BasicFactory", BuildingType.Factory, 2f, AmmoType.Normal, 2);
-        CreateBuildingData("FireFactory", BuildingType.Factory, 3f, AmmoType.Fire, 2);
+        CreateBuildingData("BasicFactory", BuildingType.Factory, 2f, AmmoType.Normal, 1);
+        CreateBuildingData("FireFactory", BuildingType.Factory, 3f, AmmoType.Fire, 1);
         CreateBuildingData("Road", BuildingType.Road, 0f, AmmoType.Normal, 1);
         CreateBuildingData("BasicTower", BuildingType.Tower, 0f, AmmoType.Normal, 0, 10f, 1f, 3f, 10, 0);
         CreateBuildingData("FastLongTower", BuildingType.Tower, 0f, AmmoType.Normal, 0, 5f, 0.3f, 7f, 15, 0);

@@ -9,12 +9,14 @@ public class UIManager : MonoBehaviour
     public Button summonButton1;
     public Button summonButton2;
     public Button buildRoadButton;
+    public Button cancelButton;
     
     void Start()
     {
         if (summonButton1 != null) summonButton1.onClick.AddListener(() => DeckManager.Instance.SummonFromHand(0));
         if (summonButton2 != null) summonButton2.onClick.AddListener(() => DeckManager.Instance.SummonFromHand(1));
         if (buildRoadButton != null) buildRoadButton.onClick.AddListener(() => DeckManager.Instance.BuildRoad());
+        if (cancelButton != null) cancelButton.onClick.AddListener(() => DeckManager.Instance.CancelPlacement());
     }
     
     void Update()
@@ -25,6 +27,11 @@ public class UIManager : MonoBehaviour
             
             UpdateButtonText(summonButton1, 0);
             UpdateButtonText(summonButton2, 1);
+            
+            if (cancelButton != null)
+            {
+                cancelButton.gameObject.SetActive(DeckManager.Instance.IsPlacing);
+            }
         }
     }
     
