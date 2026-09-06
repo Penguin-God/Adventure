@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7afb96271eafc2c4dbae40fdffc285c8, type: 3}
-  m_Name: FireFactory
+  m_Name: Archer
   m_EditorClassIdentifier: Deploy::BuildingDataSO
-  buildingType: 0
-  buildingName: FireFactory
+  buildingType: 2
+  buildingName: Archer
   sprite: {fileID: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
-  attackDamage: 0
-  attackSpeed: 0
-  attackRange: 0
-  maxAmmo: 0
-  ammoType: 1
-  ammoProductionTime: 3
-  producedAmmoType: 1
-  connectionRange: 1
+  attackDamage: 35
+  attackSpeed: 1.2
+  attackRange: 3
+  maxAmmo: 5
+  ammoType: 0
+  ammoProductionTime: 0
+  producedAmmoType: 0
+  connectionRange: 0
   buffAmount: 0
   buffRange: 1
   cost: 200

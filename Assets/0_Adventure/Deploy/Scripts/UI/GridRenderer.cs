@@ -39,6 +39,16 @@ public class GridRenderer : MonoBehaviour
             if (_buildingObjects.ContainsKey(building.id))
             {
                 _buildingObjects[building.id].transform.position = new Vector3(building.x, building.y, 0);
+                
+                if (building.data.buildingType == BuildingType.Tower)
+                {
+                    var textMesh = _buildingObjects[building.id].GetComponentInChildren<TMPro.TextMeshPro>();
+                    if (textMesh != null)
+                    {
+                        textMesh.text = $"{building.currentAmmo}/{building.data.maxAmmo}";
+                        textMesh.color = (building.currentAmmo <= 0 || building.isReloading) ? Color.red : Color.black;
+                    }
+                }
             }
         }
     }
@@ -132,6 +142,20 @@ public class GridRenderer : MonoBehaviour
             case BuildingType.Tower: sr.color = Color.red; break;
             case BuildingType.FactorySpeedBuff: sr.color = Color.cyan; break;
             case BuildingType.TowerAttackBuff: sr.color = Color.magenta; break;
+        }
+        
+        if (model.data.buildingType == BuildingType.Tower)
+        {
+            var textGo = new GameObject("AmmoText");
+            textGo.transform.SetParent(buildingGo.transform);
+            textGo.transform.localPosition = new Vector3(0, 0.4f, -0.1f);
+            
+            var textMesh = textGo.AddComponent<TMPro.TextMeshPro>();
+            textMesh.alignment = TMPro.TextAlignmentOptions.Center;
+            textMesh.fontSize = 2.5f;
+            textMesh.text = $"{model.currentAmmo}/{model.data.maxAmmo}";
+            textMesh.color = Color.black;
+            textMesh.rectTransform.sizeDelta = new Vector2(1, 1);
         }
         
         buildingGo.transform.localScale = new Vector3(0.8f, 0.8f, 1);

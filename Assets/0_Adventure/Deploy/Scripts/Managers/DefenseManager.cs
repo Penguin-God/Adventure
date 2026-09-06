@@ -19,12 +19,12 @@ public class DefenseManager : MonoBehaviour
         MonsterManager.Instance.OnMonsterReachedEnd += HandleGameOver;
         MonsterManager.Instance.OnMonsterKilled += AddGold;
         
-        // 초기 타워 배치 (베이직 1개, 공속/사거리 타워 2개)
-        var basicTower = Resources.Load<BuildingDataSO>("Buildings/BasicTower");
-        var fastTower = Resources.Load<BuildingDataSO>("Buildings/FastLongTower");
-        if (basicTower != null) GridManager.Instance.PlaceBuilding(basicTower, 0, 0);
-        if (fastTower != null) GridManager.Instance.PlaceBuilding(fastTower, 0, 9);
-        if (fastTower != null) GridManager.Instance.PlaceBuilding(fastTower, 9, 0);
+        // 초기 타워 배치
+        var cannon = Resources.Load<BuildingDataSO>("Buildings/Cannon");
+        var archer = Resources.Load<BuildingDataSO>("Buildings/Archer");
+        if (cannon != null) GridManager.Instance.PlaceBuilding(cannon, 0, 0);
+        if (archer != null) GridManager.Instance.PlaceBuilding(archer, 0, 9);
+        if (archer != null) GridManager.Instance.PlaceBuilding(archer, 9, 0);
         
         StartCoroutine(SpawnMonstersRoutine());
     }
@@ -47,53 +47,65 @@ public class DefenseManager : MonoBehaviour
     void Update()
     {
         if (_isGameOver) return;
-        if (GridManager.Instance == null) return;
         
-        var buildings = GridManager.Instance.GetAllBuildings();
+        var allBuildings = GridManager.Instance.GetAllBuildings();
+        var factories = allBuildings.Where(b => b.data.buildingType == BuildingType.Factory).ToList();
+        var towers = allBuildings.Where(b => b.data.buildingType == BuildingType.Tower).ToList();
+        var monsters = MonsterManager.Instance.GetActiveMonsters().ToList();
         
-        foreach (var building in buildings)
+        // 공장 총알 생산 및 분배
+        foreach (var factory in factories)
         {
-            if (building.data.buildingType == BuildingType.Factory)
+            factory.productionTimer += Time.deltaTime;
+            if (factory.productionTimer >= 1f)
             {
-                float productionSpeed = GridDomainLogic.GetFactorySpeed(building, buildings);
-                building.productionTimer += Time.deltaTime;
-                if (building.productionTimer >= productionSpeed)
+                factory.productionTimer -= 1f;
+                int amountToProduce = Mathf.RoundToInt(GridDomainLogic.GetFactoryAmmoPerSecond(factory, allBuildings));
+                
+                var validTowers = GridDomainLogic.GetValidTowersForFactory(factory, allBuildings).ToList();
+                
+                for (int i = 0; i < amountToProduce; i++)
                 {
-                    building.productionTimer = 0f;
-                    DistributeAmmo(building, buildings);
-                }
-            }
-            else if (building.data.buildingType == BuildingType.Tower)
-            {
-                if (building.currentAmmo > 0)
-                {
-                    building.attackTimer += Time.deltaTime;
-                    if (building.attackTimer >= building.data.attackSpeed)
-                    {
-                        var targetMonster = GridDomainLogic.GetClosestMonster(building, MonsterManager.Instance.GetActiveMonsters());
-                        if (targetMonster != null)
-                        {
-                            building.attackTimer = 0f;
-                            building.currentAmmo--;
-                            float damage = GridDomainLogic.GetTowerAttackDamage(building, buildings);
-                            
-                            // Fire projectile instead of instant damage
-                            ProjectileManager.Instance.FireProjectile(new Vector3(building.x, building.y, 0), targetMonster.id, damage, 10f); // Speed 10
-                        }
-                    }
+                    // 장전되지 않은 타워 중 현재 총알이 제일 적은 타워 찾기
+                    var needyTowers = validTowers.Where(t => t.currentAmmo < t.data.maxAmmo).ToList();
+                    if (needyTowers.Count == 0) break; // 모두 풀장전이면 더이상 분배 안함
+                    
+                    var targetTower = needyTowers.OrderBy(t => t.currentAmmo)
+                                                 .ThenBy(t => Vector2.Distance(new Vector2(factory.x, factory.y), new Vector2(t.x, t.y)))
+                                                 .First();
+                                                 
+                    targetTower.currentAmmo++;
                 }
             }
         }
-    }
-    
-    private void DistributeAmmo(BuildingModel factory, System.Collections.Generic.IEnumerable<BuildingModel> buildings)
-    {
-        var towers = buildings.Where(building => building.data.buildingType == BuildingType.Tower).ToList();
+        
+        // 타워 공격 로직
         foreach (var tower in towers)
         {
-            if (tower.currentAmmo < tower.data.maxAmmo && GridDomainLogic.IsConnected(factory, tower, buildings))
+            if (tower.currentAmmo >= tower.data.maxAmmo && tower.isReloading)
             {
-                tower.currentAmmo++;
+                tower.isReloading = false;
+            }
+            
+            if (tower.currentAmmo <= 0)
+            {
+                tower.isReloading = true;
+            }
+            
+            if (tower.isReloading) continue;
+            
+            tower.attackTimer += Time.deltaTime;
+            if (tower.attackTimer >= tower.data.attackSpeed)
+            {
+                var targetMonster = GridDomainLogic.GetClosestMonster(tower, monsters);
+                if (targetMonster != null && tower.currentAmmo > 0)
+                {
+                    tower.attackTimer = 0f;
+                    tower.currentAmmo--;
+                    
+                    float damage = GridDomainLogic.GetTowerAttackDamage(tower, allBuildings);
+                    ProjectileManager.Instance.FireProjectile(new Vector3(tower.x, tower.y, 0), targetMonster.id, damage, 10f);
+                }
             }
         }
     }

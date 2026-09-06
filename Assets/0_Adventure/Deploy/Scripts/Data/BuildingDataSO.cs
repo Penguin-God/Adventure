@@ -20,4 +20,5 @@ public class BuildingDataSO : ScriptableObject
     
     public float buffAmount;
     public int buffRange;
+    public int cost = 100;
 }

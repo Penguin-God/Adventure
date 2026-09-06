@@ -63,7 +63,7 @@ public class DeckManager : MonoBehaviour
             
             if (IsValidPlacement(posX, posY))
             {
-                int cost = _handIndexBeingPlaced == -1 ? 50 : summonCost;
+                int cost = _buildingToPlace.cost;
                 
                 if (DefenseManager.Instance.SpendGold(cost))
                 {
@@ -115,13 +115,21 @@ public class DeckManager : MonoBehaviour
             }
             if (!hasAdjacent) return false;
         }
-        else if (_buildingToPlace.buildingType == BuildingType.Factory || _buildingToPlace.buildingType == BuildingType.FactorySpeedBuff)
+        else if (_buildingToPlace.buildingType == BuildingType.Factory)
         {
-            if (posX < 3 || posX > 6 || posY < 3 || posY > 6) return false;
+            if (posX < 3 || posX > 6 || posY < 3 || posY > 6) return false; // 4x4
         }
-        else if (_buildingToPlace.buildingType == BuildingType.Tower || _buildingToPlace.buildingType == BuildingType.TowerAttackBuff)
+        else if (_buildingToPlace.buildingType == BuildingType.FactorySpeedBuff)
         {
-            if (posX >= 3 && posX <= 6 && posY >= 3 && posY <= 6) return false;
+            if (posX < 2 || posX > 7 || posY < 2 || posY > 7) return false; // 6x6
+        }
+        else if (_buildingToPlace.buildingType == BuildingType.Tower)
+        {
+            if (posX >= 2 && posX <= 7 && posY >= 2 && posY <= 7) return false; // Outer 2 lines
+        }
+        else if (_buildingToPlace.buildingType == BuildingType.TowerAttackBuff)
+        {
+            if (posX >= 3 && posX <= 6 && posY >= 3 && posY <= 6) return false; // Outer 3 lines
         }
         
         return true;

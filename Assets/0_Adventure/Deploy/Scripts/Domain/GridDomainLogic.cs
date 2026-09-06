@@ -17,44 +17,56 @@ public static class GridDomainLogic
         return tower.data.attackDamage + attackBuffs;
     }
     
-    public static float GetFactorySpeed(BuildingModel factory, IEnumerable<BuildingModel> allBuildings)
+    public static float GetFactoryAmmoPerSecond(BuildingModel factory, IEnumerable<BuildingModel> allBuildings)
     {
-        var speedBuffs = allBuildings
+        var ammoBuffs = allBuildings
             .Where(building => building.data.buildingType == BuildingType.FactorySpeedBuff)
             .Where(building => IsInRange(factory.x, factory.y, building.x, building.y, building.data.buffRange))
             .Sum(building => building.data.buffAmount);
             
-        return Mathf.Max(0.1f, factory.data.ammoProductionTime - speedBuffs);
+        return factory.data.ammoProductionTime + ammoBuffs; // using ammoProductionTime as base ammo per second
     }
     
-    public static bool IsConnected(BuildingModel source, BuildingModel target, IEnumerable<BuildingModel> allBuildings)
+    public static IEnumerable<BuildingModel> GetValidTowersForFactory(BuildingModel factory, IEnumerable<BuildingModel> allBuildings)
     {
         var roads = allBuildings.Where(building => building.data.buildingType == BuildingType.Road).ToList();
-        var visitedIds = new HashSet<string>();
+        var networkNodes = new HashSet<BuildingModel>();
         var queue = new Queue<BuildingModel>();
         
-        queue.Enqueue(source);
-        visitedIds.Add(source.id);
+        queue.Enqueue(factory);
+        networkNodes.Add(factory);
         
         while (queue.Count > 0)
         {
             var currentBuilding = queue.Dequeue();
-            int currentRange = currentBuilding.data.buildingType == BuildingType.Factory ? currentBuilding.data.connectionRange : 
-                               (currentBuilding.data.buildingType == BuildingType.Road ? currentBuilding.data.buffRange : 1);
-            
-            if (IsInRange(currentBuilding.x, currentBuilding.y, target.x, target.y, currentRange)) return true;
+            int currentRange = currentBuilding.data.buildingType == BuildingType.Factory ? currentBuilding.data.connectionRange : currentBuilding.data.buffRange;
             
             foreach (var road in roads)
             {
-                if (!visitedIds.Contains(road.id) && IsInRange(currentBuilding.x, currentBuilding.y, road.x, road.y, currentRange))
+                if (!networkNodes.Contains(road) && IsInRange(currentBuilding.x, currentBuilding.y, road.x, road.y, currentRange))
                 {
-                    visitedIds.Add(road.id);
+                    networkNodes.Add(road);
                     queue.Enqueue(road);
                 }
             }
         }
         
-        return false;
+        var towers = allBuildings.Where(b => b.data.buildingType == BuildingType.Tower).ToList();
+        var validTowers = new HashSet<BuildingModel>();
+        
+        foreach (var node in networkNodes)
+        {
+            int nodeRange = node.data.buildingType == BuildingType.Factory ? node.data.connectionRange : node.data.buffRange;
+            foreach (var tower in towers)
+            {
+                if (IsInRange(node.x, node.y, tower.x, tower.y, nodeRange))
+                {
+                    validTowers.Add(tower);
+                }
+            }
+        }
+        
+        return validTowers;
     }
     
     public static MonsterModel GetClosestMonster(BuildingModel tower, IEnumerable<MonsterModel> monsters)

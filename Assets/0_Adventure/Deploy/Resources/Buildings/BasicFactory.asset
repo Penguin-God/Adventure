@@ -21,8 +21,9 @@ MonoBehaviour:
   attackRange: 0
   maxAmmo: 0
   ammoType: 0
-  ammoProductionTime: 2
+  ammoProductionTime: 3
   producedAmmoType: 0
   connectionRange: 1
   buffAmount: 0
   buffRange: 1
+  cost: 200

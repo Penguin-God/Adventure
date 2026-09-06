@@ -10,6 +10,7 @@ public class BuildingModel
     public int currentAmmo;
     public float attackTimer;
     public float productionTimer;
+    public bool isReloading;
     
     public BuildingModel(string id, int x, int y, BuildingDataSO data)
     {
@@ -17,6 +18,8 @@ public class BuildingModel
         this.x = x;
         this.y = y;
         this.data = data;
+        this.currentAmmo = data.maxAmmo;
+        this.isReloading = false;
     }
 }
 

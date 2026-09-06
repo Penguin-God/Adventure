@@ -26,3 +26,4 @@ MonoBehaviour:
   connectionRange: 1
   buffAmount: 0
   buffRange: 1
+  cost: 100
