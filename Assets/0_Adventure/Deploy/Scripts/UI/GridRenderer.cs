@@ -151,15 +151,6 @@ public class GridRenderer : MonoBehaviour
         if (model.data.sprite != null) sr.sprite = model.data.sprite;
         else sr.sprite = CreateBoxSprite();
         
-        switch(model.data.buildingType)
-        {
-            case BuildingType.Factory: sr.color = Color.blue; break;
-            case BuildingType.Road: sr.color = Color.gray; break;
-            case BuildingType.Tower: sr.color = Color.yellow; break;
-            case BuildingType.FactorySpeedBuff: sr.color = Color.cyan; break;
-            case BuildingType.TowerAttackBuff: sr.color = Color.magenta; break;
-        }
-        
         if (model.data.buildingType == BuildingType.Tower)
         {
             var textGo = new GameObject("AmmoText");
@@ -173,8 +164,13 @@ public class GridRenderer : MonoBehaviour
             textMesh.color = Color.black;
             textMesh.rectTransform.sizeDelta = new Vector2(1, 1);
         }
-        
-        buildingGo.transform.localScale = new Vector3(0.8f, 0.8f, 1);
+
+        if (model.data.buildingType == BuildingType.Road)
+        {
+            buildingGo.transform.localScale = new Vector3(0.8f, 0.8f, 1);
+            sr.color = Color.gray;
+        }
+            
         _buildingObjects[model.id] = buildingGo;
     }
     
