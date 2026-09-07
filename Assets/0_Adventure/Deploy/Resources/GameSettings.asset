@@ -15,6 +15,6 @@ MonoBehaviour:
   initialWaitTime: 10
   startingGold: 3000
   monsterSpawnDelay: 1
-  monsterBaseHp: 200
+  monsterBaseHp: 100
   monsterHpIncreaseStep: 10
-  monsterHpIncreasePercent: 0.1
+  monsterHpIncreasePercent: 0.2

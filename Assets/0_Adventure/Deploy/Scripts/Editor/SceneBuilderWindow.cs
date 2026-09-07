@@ -139,7 +139,7 @@ public class SceneBuilderWindow : EditorWindow
         CreateBuildingData("TowerBuff", BuildingType.TowerAttackBuff, 0f, AmmoType.Normal, 0, 0, 0, 0, 0, 0.5f, 1, 200);
         
         var monsterData = ScriptableObject.CreateInstance<MonsterDataSO>();
-        monsterData.maxHp = 200f; // changed base HP from 50 to 200 based on settings
+        monsterData.maxHp = 100f; // changed base HP from 50 to 200 based on settings
         monsterData.speed = 1f;
         monsterData.rewardGold = 20;
         AssetDatabase.CreateAsset(monsterData, "Assets/0_Adventure/Deploy/Resources/Monsters/BasicMonster.asset");
@@ -154,9 +154,9 @@ public class SceneBuilderWindow : EditorWindow
         settings.initialWaitTime = 10f;
         settings.startingGold = 3000;
         settings.monsterSpawnDelay = 1f;
-        settings.monsterBaseHp = 200f;
+        settings.monsterBaseHp = 100f;
         settings.monsterHpIncreaseStep = 10;
-        settings.monsterHpIncreasePercent = 0.1f;
+        settings.monsterHpIncreasePercent = 0.2f;
         EditorUtility.SetDirty(settings);
         
         AssetDatabase.SaveAssets();
