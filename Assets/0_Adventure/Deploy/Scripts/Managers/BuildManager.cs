@@ -1,15 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
-public class DeckManager : MonoBehaviour
+public class BuildManager : MonoBehaviour
 {
-    public static DeckManager Instance { get; private set; }
+    public static BuildManager Instance { get; private set; }
     
-    public List<BuildingDataSO> fullDeck;
-    private Queue<BuildingDataSO> _deckQueue;
-    public BuildingDataSO[] currentHand = new BuildingDataSO[2];
-    
-    public int summonCost = 100;
+    public List<BuildingDataSO> availableBuildings;
     
     void Awake()
     {
@@ -19,27 +16,7 @@ public class DeckManager : MonoBehaviour
     
     void Start()
     {
-        if (fullDeck == null || fullDeck.Count == 0)
-        {
-            var loadedBuildings = Resources.LoadAll<BuildingDataSO>("Buildings");
-            fullDeck = new List<BuildingDataSO>();
-            foreach (var building in loadedBuildings)
-            {
-                if (building.buildingType != BuildingType.Road)
-                {
-                    fullDeck.Add(building);
-                }
-            }
-        }
-        
-        _deckQueue = new Queue<BuildingDataSO>(fullDeck);
-        
-        // Draw initial hand
-        for (int i = 0; i < 2; i++)
-        {
-            if (_deckQueue.Count > 0)
-                currentHand[i] = _deckQueue.Dequeue();
-        }
+        availableBuildings = Resources.LoadAll<BuildingDataSO>("Buildings").ToList();
     }
     
     public bool IsPlacing => _isPlacing;
@@ -47,7 +24,6 @@ public class DeckManager : MonoBehaviour
     
     private bool _isPlacing = false;
     private BuildingDataSO _buildingToPlace = null;
-    private int _handIndexBeingPlaced = -1;
     
     void Update()
     {
@@ -68,26 +44,20 @@ public class DeckManager : MonoBehaviour
                 if (DefenseManager.Instance.SpendGold(cost))
                 {
                     bool placed = GridManager.Instance.PlaceBuilding(_buildingToPlace, posX, posY);
-                    if (placed)
+                    if (!placed)
                     {
-                        if (_handIndexBeingPlaced != -1)
-                        {
-                            _deckQueue.Enqueue(_buildingToPlace);
-                            currentHand[_handIndexBeingPlaced] = _deckQueue.Count > 0 ? _deckQueue.Dequeue() : null;
-                            _isPlacing = false; // 일반 건물은 설치 시 모드 취소
-                            _buildingToPlace = null;
-                        }
-                        // 도로는 모드 유지
+                        DefenseManager.Instance.AddGold(cost);
+                        CancelPlacement(); // If placement fails internally
                     }
-                    else
-                    {
-                        DefenseManager.Instance.AddGold(cost); 
-                    }
+                }
+                else
+                {
+                    CancelPlacement(); // If not enough gold
                 }
             }
             else
             {
-                // 유효하지 않은 위치 클릭 시 취소로직 없음 (피드백 기획: 연한 빨간색 표기)
+                CancelPlacement(); // If clicked invalid tile
             }
         }
     }
@@ -139,27 +109,13 @@ public class DeckManager : MonoBehaviour
     {
         _isPlacing = false;
         _buildingToPlace = null;
-        _handIndexBeingPlaced = -1;
     }
     
-    public void SummonFromHand(int index)
+    public void StartPlacement(BuildingDataSO buildingData)
     {
-        if (index < 0 || index >= 2) return;
-        var data = currentHand[index];
-        if (data == null) return;
+        if (buildingData == null) return;
         
-        _buildingToPlace = data;
-        _handIndexBeingPlaced = index;
-        _isPlacing = true;
-    }
-    
-    public void BuildRoad()
-    {
-        var roadData = Resources.Load<BuildingDataSO>("Buildings/Road");
-        if (roadData == null) return;
-        
-        _buildingToPlace = roadData;
-        _handIndexBeingPlaced = -1;
+        _buildingToPlace = buildingData;
         _isPlacing = true;
     }
 }

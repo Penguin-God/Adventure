@@ -57,9 +57,9 @@ public class GridRenderer : MonoBehaviour
     
     void Update()
     {
-        if (DeckManager.Instance == null) return;
+        if (BuildManager.Instance == null) return;
         
-        bool isPlacing = DeckManager.Instance.IsPlacing;
+        bool isPlacing = BuildManager.Instance.IsPlacing;
         
         if (!isPlacing && Input.GetMouseButtonDown(0))
         {
@@ -94,7 +94,7 @@ public class GridRenderer : MonoBehaviour
             
             if (isPlacing)
             {
-                if (DeckManager.Instance.IsValidPlacement(posX, posY)) sr.color = new Color(0.8f, 1.0f, 0.8f);
+                if (BuildManager.Instance.IsValidPlacement(posX, posY)) sr.color = new Color(0.8f, 1.0f, 0.8f);
                 else sr.color = new Color(1.0f, 0.6f, 0.6f);
             }
             else if (_selectedBuilding != null)

@@ -6,49 +6,59 @@ using System.Linq;
 public class UIManager : MonoBehaviour
 {
     public TextMeshProUGUI topBarText;
-    public Button summonButton1;
-    public Button summonButton2;
-    public Button buildRoadButton;
+    public Transform buttonsContainer;
     public Button cancelButton;
     
     void Start()
     {
-        if (summonButton1 != null) summonButton1.onClick.AddListener(() => DeckManager.Instance.SummonFromHand(0));
-        if (summonButton2 != null) summonButton2.onClick.AddListener(() => DeckManager.Instance.SummonFromHand(1));
-        if (buildRoadButton != null) buildRoadButton.onClick.AddListener(() => DeckManager.Instance.BuildRoad());
-        if (cancelButton != null) cancelButton.onClick.AddListener(() => DeckManager.Instance.CancelPlacement());
+        if (cancelButton != null) cancelButton.onClick.AddListener(() => BuildManager.Instance.CancelPlacement());
+        
+        // Dynamic buttons will be created in Update when BuildManager is ready
     }
+    
+    private bool _buttonsCreated = false;
     
     void Update()
     {
-        if (DefenseManager.Instance != null && DeckManager.Instance != null && MonsterManager.Instance != null)
+        if (DefenseManager.Instance != null && BuildManager.Instance != null && MonsterManager.Instance != null)
         {
-            topBarText.text = $"Defense Gold: {DefenseManager.Instance.currentGold} | Monsters: {MonsterManager.Instance.GetActiveMonsters().Count()}";
+            if (!_buttonsCreated && BuildManager.Instance.availableBuildings != null && BuildManager.Instance.availableBuildings.Count > 0)
+            {
+                CreateButtons();
+                _buttonsCreated = true;
+            }
             
-            UpdateButtonText(summonButton1, 0);
-            UpdateButtonText(summonButton2, 1);
+            topBarText.text = $"Defense Gold: {DefenseManager.Instance.currentGold} | Monsters: {MonsterManager.Instance.GetActiveMonsters().Count()}";
             
             if (cancelButton != null)
             {
-                cancelButton.gameObject.SetActive(DeckManager.Instance.IsPlacing);
+                cancelButton.gameObject.SetActive(BuildManager.Instance.IsPlacing);
             }
         }
     }
     
-    private void UpdateButtonText(Button btn, int index)
+    private void CreateButtons()
     {
-        if (btn == null) return;
-        var textMesh = btn.GetComponentInChildren<TextMeshProUGUI>();
-        if (textMesh == null) return;
-        
-        var data = DeckManager.Instance.currentHand[index];
-        if (data != null)
+        foreach (var data in BuildManager.Instance.availableBuildings)
         {
+            var btnGo = new GameObject($"Btn_{data.buildingName}");
+            btnGo.transform.SetParent(buttonsContainer, false);
+            btnGo.AddComponent<Image>().color = Color.white;
+            var btn = btnGo.AddComponent<Button>();
+            
+            var rt = btnGo.GetComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(150, 80);
+            
+            var textGo = new GameObject("Text");
+            textGo.transform.SetParent(btnGo.transform, false);
+            var textMesh = textGo.AddComponent<TextMeshProUGUI>();
             textMesh.text = $"{data.buildingName}\n({data.cost}G)";
-        }
-        else
-        {
-            textMesh.text = "Empty";
+            textMesh.color = Color.black;
+            textMesh.alignment = TextAlignmentOptions.Center;
+            textMesh.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 80);
+            
+            var capturedData = data; // capture for lambda
+            btn.onClick.AddListener(() => BuildManager.Instance.StartPlacement(capturedData));
         }
     }
 }

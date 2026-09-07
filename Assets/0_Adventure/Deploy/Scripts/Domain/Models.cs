@@ -18,8 +18,8 @@ public class BuildingModel
         this.x = x;
         this.y = y;
         this.data = data;
-        this.currentAmmo = data.maxAmmo;
-        this.isReloading = false;
+        this.currentAmmo = 0;
+        this.isReloading = true;
     }
 }
 
