@@ -11,14 +11,24 @@ public class ProjectileManager : MonoBehaviour
     
     public Transform projectilesParent;
     
+    private AudioClip _shotClip;
+    private AudioSource _audioSource;
+    
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+        
+        _audioSource = gameObject.GetComponent<AudioSource>();
+        _shotClip = Resources.Load<AudioClip>("Sounds/Shot");
     }
     
     public void FireProjectile(Vector3 startPosition, string targetMonsterId, float damage, float speed)
     {
+        if (_shotClip != null && _audioSource != null)
+        {
+            _audioSource.PlayOneShot(_shotClip);
+        }
         string newId = Guid.NewGuid().ToString();
         var projectileModel = new ProjectileModel(newId, startPosition, targetMonsterId, damage, speed);
         _activeProjectiles.Add(projectileModel);

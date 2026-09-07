@@ -183,6 +183,10 @@ public class SceneBuilderWindow : EditorWindow
         b.buffAmount = buffAmt;
         b.buffRange = buffRng;
         b.cost = cost;
+        
+        var sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/0_Adventure/Deploy/Resources/Sprites/{name}.png");
+        if (sprite != null) b.sprite = sprite;
+        
         EditorUtility.SetDirty(b);
     }
 }
