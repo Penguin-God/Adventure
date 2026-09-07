@@ -5,8 +5,9 @@ public class DefenseManager : MonoBehaviour
 {
     public static DefenseManager Instance { get; private set; }
     
-    public int currentGold = 3000;
+    public int currentGold;
     private bool _isGameOver = false;
+    private GameSettingsSO _settings;
     
     void Awake()
     {
@@ -16,31 +17,37 @@ public class DefenseManager : MonoBehaviour
     
     void Start()
     {
+        _settings = Resources.Load<GameSettingsSO>("GameSettings");
+        if (_settings != null) currentGold = _settings.startingGold;
+        else currentGold = 3000;
+        
         MonsterManager.Instance.OnMonsterReachedEnd += HandleGameOver;
         MonsterManager.Instance.OnMonsterKilled += AddGold;
-        
-        // 초기 타워 배치
-        var cannon = Resources.Load<BuildingDataSO>("Buildings/Cannon");
-        var archer = Resources.Load<BuildingDataSO>("Buildings/Archer");
-        if (cannon != null) GridManager.Instance.PlaceBuilding(cannon, 0, 0);
-        if (archer != null) GridManager.Instance.PlaceBuilding(archer, 0, 9);
-        if (archer != null) GridManager.Instance.PlaceBuilding(archer, 9, 0);
         
         StartCoroutine(SpawnMonstersRoutine());
     }
     
     private System.Collections.IEnumerator SpawnMonstersRoutine()
     {
-        yield return new WaitForSeconds(10f);
+        float waitTime = _settings != null ? _settings.initialWaitTime : 30f;
+        yield return new WaitForSeconds(waitTime);
+        
+        int spawnedCount = 0;
         
         while (!_isGameOver)
         {
             var monsterData = Resources.Load<MonsterDataSO>("Monsters/BasicMonster");
             if (monsterData != null)
             {
-                MonsterManager.Instance.SpawnMonster(monsterData);
+                int step = _settings != null ? _settings.monsterHpIncreaseStep : 10;
+                float percent = _settings != null ? _settings.monsterHpIncreasePercent : 0.1f;
+                float hpMultiplier = 1f + (spawnedCount / step) * percent;
+                
+                MonsterManager.Instance.SpawnMonster(monsterData, hpMultiplier);
+                spawnedCount++;
             }
-            yield return new WaitForSeconds(1f); 
+            float delay = _settings != null ? _settings.monsterSpawnDelay : 1f;
+            yield return new WaitForSeconds(delay);
         }
     }
     

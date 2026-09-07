@@ -21,7 +21,7 @@ MonoBehaviour:
   attackRange: 0
   maxAmmo: 0
   ammoType: 0
-  ammoProductionTime: 1
+  ammoProductionTime: 3
   producedAmmoType: 0
   connectionRange: 1
   buffAmount: 0

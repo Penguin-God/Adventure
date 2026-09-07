@@ -43,10 +43,10 @@ public class MonsterManager : MonoBehaviour
     
     public IEnumerable<MonsterModel> GetActiveMonsters() => _activeMonsters;
     
-    public void SpawnMonster(MonsterDataSO monsterData)
+    public void SpawnMonster(MonsterDataSO monsterData, float hpMultiplier = 1f)
     {
         string newId = Guid.NewGuid().ToString();
-        var monsterModel = new MonsterModel(newId, monsterData, _pathPositions[0]);
+        var monsterModel = new MonsterModel(newId, monsterData, _pathPositions[0], hpMultiplier);
         _activeMonsters.Add(monsterModel);
         
         var monsterObject = new GameObject($"Monster_{newId}");
@@ -88,7 +88,7 @@ public class MonsterManager : MonoBehaviour
         
         if (_monsterHpBars.ContainsKey(monsterId))
         {
-            float hpRatio = Mathf.Clamp01(monsterModel.currentHp / monsterModel.data.maxHp);
+            float hpRatio = Mathf.Clamp01(monsterModel.currentHp / monsterModel.maxHp);
             _monsterHpBars[monsterId].localScale = new Vector3(hpRatio, 1f, 1f);
         }
         

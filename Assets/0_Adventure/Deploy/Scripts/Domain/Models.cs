@@ -27,15 +27,17 @@ public class MonsterModel
 {
     public string id;
     public MonsterDataSO data;
+    public float maxHp;
     public float currentHp;
     public Vector3 currentPosition;
     public int currentPathIndex;
     
-    public MonsterModel(string id, MonsterDataSO data, Vector3 startPosition)
+    public MonsterModel(string id, MonsterDataSO data, Vector3 startPosition, float hpMultiplier = 1f)
     {
         this.id = id;
         this.data = data;
-        this.currentHp = data.maxHp;
+        this.maxHp = data.maxHp * hpMultiplier;
+        this.currentHp = this.maxHp;
         this.currentPosition = startPosition;
         this.currentPathIndex = 0;
     }
