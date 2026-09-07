@@ -28,7 +28,12 @@ public class UIManager : MonoBehaviour
                 _buttonsCreated = true;
             }
             
-            topBarText.text = $"Defense Gold: {DefenseManager.Instance.currentGold} | Monsters: {MonsterManager.Instance.GetActiveMonsters().Count()}";
+            int timeInSeconds = Mathf.FloorToInt(DefenseManager.Instance.elapsedTime);
+            int minutes = timeInSeconds / 60;
+            int seconds = timeInSeconds % 60;
+            string timeString = $"{minutes:00}:{seconds:00}";
+            
+            topBarText.text = $"Gold: {DefenseManager.Instance.currentGold} | Monsters: {MonsterManager.Instance.GetActiveMonsters().Count()} | Time: {timeString}";
             
             if (cancelButton != null)
             {

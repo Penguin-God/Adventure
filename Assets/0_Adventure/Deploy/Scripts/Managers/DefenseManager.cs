@@ -6,6 +6,7 @@ public class DefenseManager : MonoBehaviour
     public static DefenseManager Instance { get; private set; }
     
     public int currentGold;
+    public float elapsedTime = 0f;
     private bool _isGameOver = false;
     private GameSettingsSO _settings;
     
@@ -54,6 +55,8 @@ public class DefenseManager : MonoBehaviour
     void Update()
     {
         if (_isGameOver) return;
+        
+        elapsedTime += Time.deltaTime;
         
         var allBuildings = GridManager.Instance.GetAllBuildings();
         var factories = allBuildings.Where(b => b.data.buildingType == BuildingType.Factory).ToList();
