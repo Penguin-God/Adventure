@@ -129,7 +129,7 @@ public class SupplyChainManager : MonoBehaviour
     
     private List<BuildingModel> GetConnectedConsumers(BuildingModel source, ResourceType type, List<BuildingModel> allBuildings)
     {
-        var roads = allBuildings.Where(b => b.data.buildingType == BuildingType.Road || b.data.buildingType == BuildingType.Entrance).ToList();
+        var conduits = allBuildings.Where(b => b.data.buildingType == BuildingType.Road || b.data.buildingType == BuildingType.Entrance || b.data.buildingType == BuildingType.Factory).ToList();
         var networkNodes = new HashSet<BuildingModel>();
         var queue = new Queue<BuildingModel>();
         
@@ -139,23 +139,23 @@ public class SupplyChainManager : MonoBehaviour
         while (queue.Count > 0)
         {
             var currentBuilding = queue.Dequeue();
-            int currentRange = currentBuilding.data.buildingType == BuildingType.Road || currentBuilding.data.buildingType == BuildingType.Entrance ? 1 : currentBuilding.data.connectionRange;
+            int currentRange = currentBuilding.data.buildingType == BuildingType.Factory ? currentBuilding.data.connectionRange : 1;
             
-            foreach (var road in roads)
+            foreach (var node in conduits)
             {
-                if (!networkNodes.Contains(road) && GridDomainLogic.IsInRange(currentBuilding.x, currentBuilding.y, road.x, road.y, currentRange))
+                if (!networkNodes.Contains(node) && GridDomainLogic.IsInRange(currentBuilding.x, currentBuilding.y, node.x, node.y, currentRange))
                 {
-                    networkNodes.Add(road);
-                    queue.Enqueue(road);
+                    networkNodes.Add(node);
+                    queue.Enqueue(node);
                 }
             }
         }
         
-        var validConsumers = new List<BuildingModel>();
+        var validConsumers = new HashSet<BuildingModel>();
         
         foreach (var node in networkNodes)
         {
-            int nodeRange = node.data.buildingType == BuildingType.Road || node.data.buildingType == BuildingType.Entrance ? 1 : node.data.connectionRange;
+            int nodeRange = node.data.buildingType == BuildingType.Factory ? node.data.connectionRange : 1;
             
             foreach (var factory in allBuildings.Where(b => b.data.buildingType == BuildingType.Factory))
             {

@@ -152,7 +152,7 @@ public class SceneBuilderWindow : EditorWindow
         CreateBuildingData("TowerBuff", BuildingType.TowerAttackBuff, 200, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 0.5f, buffRng: 1);
 
         // Towers
-        CreateBuildingData("Slingshot", BuildingType.Tower, 150, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 0.7f, atkRange: 6, maxAmmo: 3, reqAmmo: ResourceType.Stone);
+        CreateBuildingData("Slingshot", BuildingType.Tower, 150, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 0.7f, atkRange: 6, maxAmmo: 3, reqAmmo: ResourceType.RoundStone);
         CreateBuildingData("Archer", BuildingType.Tower, 200, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 35f, atkSpd: 1.2f, atkRange: 10, maxAmmo: 5, reqAmmo: ResourceType.Arrow);
         CreateBuildingData("Gun", BuildingType.Tower, 300, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 2f, atkRange: 15, maxAmmo: 10, reqAmmo: ResourceType.GunAmmo);
         

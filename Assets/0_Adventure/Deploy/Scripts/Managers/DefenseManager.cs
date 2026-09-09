@@ -78,7 +78,8 @@ public class DefenseManager : MonoBehaviour
             if (tower.isShutdown) continue;
             
             tower.attackTimer += Time.deltaTime;
-            if (tower.attackTimer >= tower.data.attackSpeed)
+            float cooldown = tower.data.attackSpeed > 0f ? 1f / tower.data.attackSpeed : float.MaxValue;
+            if (tower.attackTimer >= cooldown)
             {
                 var targetMonster = GridDomainLogic.GetClosestMonster(tower, monsters);
                 if (targetMonster != null && tower.currentInput1 > 0)
