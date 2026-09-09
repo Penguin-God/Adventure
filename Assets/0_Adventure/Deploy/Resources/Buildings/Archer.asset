@@ -12,18 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7afb96271eafc2c4dbae40fdffc285c8, type: 3}
   m_Name: Archer
   m_EditorClassIdentifier: Deploy::BuildingDataSO
-  buildingType: 2
+  buildingType: 1
   buildingName: Archer
   sprite: {fileID: 21300000, guid: 32b0de9455f84cb4eb043eed97e49877, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
   attackDamage: 35
   attackSpeed: 1.2
-  attackRange: 3
+  attackRange: 10
   maxAmmo: 5
-  ammoType: 0
-  ammoProductionTime: 0
-  producedAmmoType: 0
-  connectionRange: 0
+  requiredAmmoType: 4
+  productionTime: 0
+  inputType1: 0
+  inputType2: 0
+  maxInputCapacity: 0
+  outputType: 0
+  maxOutputCapacity: 0
+  connectionRange: 1
   buffAmount: 0
-  buffRange: 1
+  buffRange: 0
   cost: 200

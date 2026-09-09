@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Enums are moved to Enums.cs
+
 public class BuildingModel
 {
     public string id;
@@ -7,10 +9,18 @@ public class BuildingModel
     public int y;
     public BuildingDataSO data;
     
-    public int currentAmmo;
+    // Inventory
+    public int currentInput1;
+    public int currentInput2;
+    public int currentOutput;
+    
+    // Logic Timers
     public float attackTimer;
     public float productionTimer;
-    public bool isReloading;
+    public float mineTimer;
+    
+    // Shutdown state
+    public bool isShutdown;
     
     public BuildingModel(string id, int x, int y, BuildingDataSO data)
     {
@@ -18,8 +28,13 @@ public class BuildingModel
         this.x = x;
         this.y = y;
         this.data = data;
-        this.currentAmmo = 0;
-        this.isReloading = true;
+        
+        this.currentInput1 = 0;
+        this.currentInput2 = 0;
+        this.currentOutput = 0;
+        
+        // Start as shutdown since inputs/outputs are 0
+        this.isShutdown = true; 
     }
 }
 

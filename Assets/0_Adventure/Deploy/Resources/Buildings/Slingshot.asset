@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7afb96271eafc2c4dbae40fdffc285c8, type: 3}
-  m_Name: Road
+  m_Name: Slingshot
   m_EditorClassIdentifier: Deploy::BuildingDataSO
-  buildingType: 2
-  buildingName: Road
+  buildingType: 1
+  buildingName: Slingshot
   sprite: {fileID: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
-  attackDamage: 0
-  attackSpeed: 0
-  attackRange: 0
-  maxAmmo: 0
-  requiredAmmoType: 0
+  attackDamage: 50
+  attackSpeed: 0.7
+  attackRange: 6
+  maxAmmo: 3
+  requiredAmmoType: 1
   productionTime: 0
   inputType1: 0
   inputType2: 0
@@ -30,4 +30,4 @@ MonoBehaviour:
   connectionRange: 1
   buffAmount: 0
   buffRange: 0
-  cost: 100
+  cost: 150

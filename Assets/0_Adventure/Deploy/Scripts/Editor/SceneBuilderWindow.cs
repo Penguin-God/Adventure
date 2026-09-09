@@ -26,6 +26,7 @@ public class SceneBuilderWindow : EditorWindow
         managersParent.AddComponent<DefenseManager>();
         managersParent.AddComponent<BuildManager>();
         managersParent.AddComponent<ProjectileManager>();
+        managersParent.AddComponent<SupplyChainManager>();
         
         var environmentParent = new GameObject("Environment");
         var gridRenderer = environmentParent.AddComponent<GridRenderer>();
@@ -131,15 +132,32 @@ public class SceneBuilderWindow : EditorWindow
         if (!AssetDatabase.IsValidFolder("Assets/0_Adventure/Deploy/Resources/Monsters"))
             AssetDatabase.CreateFolder("Assets/0_Adventure/Deploy/Resources", "Monsters");
         
-        CreateBuildingData("Factory", BuildingType.Factory, 1f, AmmoType.Normal, 1, 0, 0, 0, 0, 0, 1, 200);
-        CreateBuildingData("Road", BuildingType.Road, 0f, AmmoType.Normal, 1, 0, 0, 0, 0, 0, 1, 100);
-        CreateBuildingData("Cannon", BuildingType.Tower, 0f, AmmoType.Normal, 0, 50f, 0.7f, 2f, 3, 0, 1, 150);
-        CreateBuildingData("Archer", BuildingType.Tower, 0f, AmmoType.Normal, 0, 35f, 1.2f, 3f, 5, 0, 1, 200);
-        CreateBuildingData("FactoryBuff", BuildingType.FactorySpeedBuff, 0f, AmmoType.Normal, 0, 0, 0, 0, 0, 1f, 1, 100);
-        CreateBuildingData("TowerBuff", BuildingType.TowerAttackBuff, 0f, AmmoType.Normal, 0, 0, 0, 0, 0, 0.5f, 1, 200);
+        // Mines
+        CreateBuildingData("StoneMine", BuildingType.Mine, 100, 1, 0.1f, ResourceType.None, ResourceType.None, 0, ResourceType.Stone, 50);
+        CreateBuildingData("IronMine", BuildingType.Mine, 100, 1, 0.1f, ResourceType.None, ResourceType.None, 0, ResourceType.Iron, 50);
+        
+        // Entrance
+        CreateBuildingData("Entrance", BuildingType.Entrance, 0, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0);
+
+        // Road
+        CreateBuildingData("Road", BuildingType.Road, 100, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0);
+        
+        // Factories
+        CreateBuildingData("StoneFactory", BuildingType.Factory, 100, 1, 1f, ResourceType.Stone, ResourceType.None, 5, ResourceType.RoundStone, 5);
+        CreateBuildingData("ArrowFactory", BuildingType.Factory, 150, 1, 1f, ResourceType.Iron, ResourceType.None, 5, ResourceType.Arrow, 5);
+        CreateBuildingData("AmmoFactory", BuildingType.Factory, 200, 1, 1f, ResourceType.Arrow, ResourceType.RoundStone, 5, ResourceType.GunAmmo, 5);
+        
+        // Buffs
+        CreateBuildingData("FactoryBuff", BuildingType.FactorySpeedBuff, 100, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 1f, buffRng: 1);
+        CreateBuildingData("TowerBuff", BuildingType.TowerAttackBuff, 200, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 0.5f, buffRng: 1);
+
+        // Towers
+        CreateBuildingData("Slingshot", BuildingType.Tower, 150, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 0.7f, atkRange: 6, maxAmmo: 3, reqAmmo: ResourceType.Stone);
+        CreateBuildingData("Archer", BuildingType.Tower, 200, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 35f, atkSpd: 1.2f, atkRange: 10, maxAmmo: 5, reqAmmo: ResourceType.Arrow);
+        CreateBuildingData("Gun", BuildingType.Tower, 300, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 2f, atkRange: 15, maxAmmo: 10, reqAmmo: ResourceType.GunAmmo);
         
         var monsterData = ScriptableObject.CreateInstance<MonsterDataSO>();
-        monsterData.maxHp = 100f; // changed base HP from 50 to 200 based on settings
+        monsterData.maxHp = 150f;
         monsterData.speed = 1f;
         monsterData.rewardGold = 20;
         AssetDatabase.CreateAsset(monsterData, "Assets/0_Adventure/Deploy/Resources/Monsters/BasicMonster.asset");
@@ -154,15 +172,20 @@ public class SceneBuilderWindow : EditorWindow
         settings.initialWaitTime = 10f;
         settings.startingGold = 3000;
         settings.monsterSpawnDelay = 1f;
-        settings.monsterBaseHp = 100f;
+        settings.monsterBaseHp = 150f;
         settings.monsterHpIncreaseStep = 10;
-        settings.monsterHpIncreasePercent = 0.2f;
+        settings.monsterHpIncreasePercent = 0.1f;
         EditorUtility.SetDirty(settings);
         
         AssetDatabase.SaveAssets();
     }
     
-    private static void CreateBuildingData(string name, BuildingType type, float ammoProdSec, AmmoType ammoType, int connRange, float atk, float atkSpd, float atkRange, int maxAmmo, float buffAmt, int buffRng, int cost)
+    private static void CreateBuildingData(
+        string name, BuildingType type, int cost, int connRange, 
+        float prodTime, ResourceType in1, ResourceType in2, int maxIn, 
+        ResourceType outType, int maxOut, 
+        float buffAmt = 0, int buffRng = 0, 
+        float atk = 0, float atkSpd = 0, float atkRange = 0, int maxAmmo = 0, ResourceType reqAmmo = ResourceType.None)
     {
         string path = $"Assets/0_Adventure/Deploy/Resources/Buildings/{name}.asset";
         var b = AssetDatabase.LoadAssetAtPath<BuildingDataSO>(path);
@@ -173,16 +196,24 @@ public class SceneBuilderWindow : EditorWindow
         }
         b.buildingName = name;
         b.buildingType = type;
-        b.ammoProductionTime = ammoProdSec;
-        b.ammoType = ammoType;
+        b.cost = cost;
         b.connectionRange = connRange;
+        
+        b.productionTime = prodTime;
+        b.inputType1 = in1;
+        b.inputType2 = in2;
+        b.maxInputCapacity = maxIn;
+        b.outputType = outType;
+        b.maxOutputCapacity = maxOut;
+        
+        b.buffAmount = buffAmt;
+        b.buffRange = buffRng;
+        
         b.attackDamage = atk;
         b.attackSpeed = atkSpd;
         b.attackRange = atkRange;
         b.maxAmmo = maxAmmo;
-        b.buffAmount = buffAmt;
-        b.buffRange = buffRng;
-        b.cost = cost;
+        b.requiredAmmoType = reqAmmo;
         
         var sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/0_Adventure/Deploy/Resources/Sprites/{name}.png");
         if (sprite != null) b.sprite = sprite;

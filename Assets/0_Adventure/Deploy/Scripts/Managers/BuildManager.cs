@@ -16,7 +16,9 @@ public class BuildManager : MonoBehaviour
     
     void Start()
     {
-        availableBuildings = Resources.LoadAll<BuildingDataSO>("Buildings").ToList();
+        availableBuildings = Resources.LoadAll<BuildingDataSO>("Buildings")
+            .Where(b => b.buildingType != BuildingType.Mine && b.buildingType != BuildingType.Entrance)
+            .ToList();
     }
     
     public bool IsPlacing => _isPlacing;
@@ -64,45 +66,10 @@ public class BuildManager : MonoBehaviour
     
     public bool IsValidPlacement(int posX, int posY)
     {
-        if (posX < 0 || posX >= 10 || posY < 0 || posY >= 10) return false;
         if (GridManager.Instance.GetBuildingAt(posX, posY) != null) return false;
-        
         if (_buildingToPlace == null) return false;
         
-        if (_buildingToPlace.buildingType == BuildingType.Road)
-        {
-            // 도로는 상하좌우 중에 공장이나 다른 도로가 있어야 함
-            bool hasAdjacent = false;
-            var adjacentPositions = new (int x, int y)[] { (posX-1, posY), (posX+1, posY), (posX, posY-1), (posX, posY+1) };
-            foreach (var pos in adjacentPositions)
-            {
-                var building = GridManager.Instance.GetBuildingAt(pos.x, pos.y);
-                if (building != null && (building.data.buildingType == BuildingType.Road || building.data.buildingType == BuildingType.Factory || building.data.buildingType == BuildingType.FactorySpeedBuff))
-                {
-                    hasAdjacent = true;
-                    break;
-                }
-            }
-            if (!hasAdjacent) return false;
-        }
-        else if (_buildingToPlace.buildingType == BuildingType.Factory)
-        {
-            if (posX < 3 || posX > 6 || posY < 3 || posY > 6) return false; // 4x4
-        }
-        else if (_buildingToPlace.buildingType == BuildingType.FactorySpeedBuff)
-        {
-            if (posX < 2 || posX > 7 || posY < 2 || posY > 7) return false; // 6x6
-        }
-        else if (_buildingToPlace.buildingType == BuildingType.Tower)
-        {
-            if (posX >= 2 && posX <= 7 && posY >= 2 && posY <= 7) return false; // Outer 2 lines
-        }
-        else if (_buildingToPlace.buildingType == BuildingType.TowerAttackBuff)
-        {
-            if (posX >= 3 && posX <= 6 && posY >= 3 && posY <= 6) return false; // Outer 3 lines
-        }
-        
-        return true;
+        return GridManager.Instance.IsValidCoordinateForType(_buildingToPlace.buildingType, posX, posY);
     }
     
     public void CancelPlacement()

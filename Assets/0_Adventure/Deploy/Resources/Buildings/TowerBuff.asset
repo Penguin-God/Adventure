@@ -20,10 +20,14 @@ MonoBehaviour:
   attackSpeed: 0
   attackRange: 0
   maxAmmo: 0
-  ammoType: 0
-  ammoProductionTime: 0
-  producedAmmoType: 0
-  connectionRange: 0
+  requiredAmmoType: 0
+  productionTime: 0
+  inputType1: 0
+  inputType2: 0
+  maxInputCapacity: 0
+  outputType: 0
+  maxOutputCapacity: 0
+  connectionRange: 1
   buffAmount: 0.5
   buffRange: 1
   cost: 200

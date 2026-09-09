@@ -28,17 +28,10 @@ public class MonsterManager : MonoBehaviour
     private void GeneratePath()
     {
         _pathPositions = new List<Vector3>();
-        float minBound = -1f;
-        float maxBound = 10f;
-        
-        // Bottom edge: (-1,-1) to (10,-1)
-        for (float xPos = minBound; xPos <= maxBound; xPos++) _pathPositions.Add(new Vector3(xPos, minBound, 0));
-        // Right edge: (10, 0) to (10, 10)
-        for (float yPos = 0; yPos <= maxBound; yPos++) _pathPositions.Add(new Vector3(maxBound, yPos, 0));
-        // Top edge: (9, 10) to (-1, 10)
-        for (float xPos = maxBound - 1; xPos >= minBound; xPos--) _pathPositions.Add(new Vector3(xPos, maxBound, 0));
-        // Left edge: (-1, 9) to (-1, 0)
-        for (float yPos = maxBound - 1; yPos >= 0; yPos--) _pathPositions.Add(new Vector3(minBound, yPos, 0));
+        for (float xPos = -1f; xPos <= 15f; xPos++)
+        {
+            _pathPositions.Add(new Vector3(xPos, -5f, 0));
+        }
     }
     
     public IEnumerable<MonsterModel> GetActiveMonsters() => _activeMonsters;

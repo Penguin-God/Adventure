@@ -59,59 +59,32 @@ public class DefenseManager : MonoBehaviour
         elapsedTime += Time.deltaTime;
         
         var allBuildings = GridManager.Instance.GetAllBuildings();
-        var factories = allBuildings.Where(b => b.data.buildingType == BuildingType.Factory).ToList();
         var towers = allBuildings.Where(b => b.data.buildingType == BuildingType.Tower).ToList();
         var monsters = MonsterManager.Instance.GetActiveMonsters().ToList();
-        
-        // 공장 총알 생산 및 분배
-        foreach (var factory in factories)
-        {
-            factory.productionTimer += Time.deltaTime;
-            if (factory.productionTimer >= 1f)
-            {
-                factory.productionTimer -= 1f;
-                int amountToProduce = Mathf.RoundToInt(GridDomainLogic.GetFactoryAmmoPerSecond(factory, allBuildings));
-                
-                var validTowers = GridDomainLogic.GetValidTowersForFactory(factory, allBuildings).ToList();
-                
-                for (int i = 0; i < amountToProduce; i++)
-                {
-                    // 장전되지 않은 타워 중 현재 총알이 제일 적은 타워 찾기
-                    var needyTowers = validTowers.Where(t => t.currentAmmo < t.data.maxAmmo).ToList();
-                    if (needyTowers.Count == 0) break; // 모두 풀장전이면 더이상 분배 안함
-                    
-                    var targetTower = needyTowers.OrderBy(t => t.currentAmmo)
-                                                 .ThenBy(t => Vector2.Distance(new Vector2(factory.x, factory.y), new Vector2(t.x, t.y)))
-                                                 .First();
-                                                 
-                    targetTower.currentAmmo++;
-                }
-            }
-        }
         
         // 타워 공격 로직
         foreach (var tower in towers)
         {
-            if (tower.currentAmmo >= tower.data.maxAmmo && tower.isReloading)
+            if (tower.currentInput1 >= tower.data.maxAmmo && tower.isShutdown)
             {
-                tower.isReloading = false;
+                tower.isShutdown = false;
             }
             
-            if (tower.currentAmmo <= 0)
+            if (tower.currentInput1 <= 0)
             {
-                tower.isReloading = true;
+                tower.isShutdown = true;
             }
             
-            if (tower.isReloading) continue;
+            if (tower.isShutdown) continue;
             
             tower.attackTimer += Time.deltaTime;
             if (tower.attackTimer >= tower.data.attackSpeed)
             {
                 var targetMonster = GridDomainLogic.GetClosestMonster(tower, monsters);
-                if (targetMonster != null && tower.currentAmmo > 0)
+                if (targetMonster != null && tower.currentInput1 > 0)
                 {
                     tower.attackTimer = 0f;
-                    tower.currentAmmo--;
+                    tower.currentInput1--;
                     
                     float damage = GridDomainLogic.GetTowerAttackDamage(tower, allBuildings);
                     ProjectileManager.Instance.FireProjectile(new Vector3(tower.x, tower.y, 0), targetMonster.id, damage, 10f);

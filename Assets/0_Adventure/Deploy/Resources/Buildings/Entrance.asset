@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7afb96271eafc2c4dbae40fdffc285c8, type: 3}
-  m_Name: Road
+  m_Name: Entrance
   m_EditorClassIdentifier: Deploy::BuildingDataSO
-  buildingType: 2
-  buildingName: Road
+  buildingType: 6
+  buildingName: Entrance
   sprite: {fileID: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
   attackDamage: 0
@@ -30,4 +30,4 @@ MonoBehaviour:
   connectionRange: 1
   buffAmount: 0
   buffRange: 0
-  cost: 100
+  cost: 0

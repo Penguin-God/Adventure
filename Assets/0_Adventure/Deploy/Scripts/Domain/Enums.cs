@@ -1,15 +1,20 @@
-public enum BuildingType
-{
-    Factory,
-    Road,
-    Tower,
-    FactorySpeedBuff,
-    TowerAttackBuff
+public enum BuildingType 
+{ 
+    Factory, 
+    Tower, 
+    Road, 
+    FactorySpeedBuff, 
+    TowerAttackBuff,
+    Mine,
+    Entrance
 }
 
-public enum AmmoType
+public enum ResourceType
 {
-    Normal,
-    Fire,
-    Ice
+    None,
+    Stone,
+    Iron,
+    RoundStone,
+    Arrow,
+    GunAmmo
 }

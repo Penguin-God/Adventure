@@ -12,26 +12,44 @@ public class GridRenderer : MonoBehaviour
     {
         GridManager.Instance.OnGridChanged += DrawGrid;
         GridManager.Instance.OnBuildingPlaced += OnBuildingPlaced;
+        GridManager.Instance.OnBuildingRemoved += OnBuildingRemoved;
         DrawGrid();
+    }
+    
+    private void OnBuildingRemoved(string id)
+    {
+        if (_buildingObjects.ContainsKey(id))
+        {
+            Destroy(_buildingObjects[id]);
+            _buildingObjects.Remove(id);
+        }
+        if (SelectedBuilding != null && SelectedBuilding.id == id) SelectedBuilding = null;
     }
     
     private void DrawGrid()
     {
         if (tilesParent.childCount == 0)
         {
-            for (int posX = 0; posX < 10; posX++)
+            // Village
+            for (int posX = 0; posX < 15; posX++)
             {
-                for (int posY = 0; posY < 10; posY++)
+                for (int posY = 0; posY < 8; posY++)
                 {
-                    var tileGo = new GameObject($"Tile_{posX}_{posY}");
-                    tileGo.transform.position = new Vector3(posX, posY, 0.1f); 
-                    tileGo.transform.SetParent(tilesParent);
-                    var sr = tileGo.AddComponent<SpriteRenderer>();
-                    sr.sprite = CreateBoxSprite();
-                    sr.color = new Color(0.8f, 0.8f, 0.8f);
-                    tileGo.transform.localScale = new Vector3(0.95f, 0.95f, 1);
+                    CreateGridTile(posX, posY, new Color(0.8f, 0.8f, 0.8f));
                 }
             }
+            // Tower Zones (4 width x 2 height)
+            for (int posY = -3; posY <= -2; posY++)
+            {
+                for (int posX = 2; posX <= 5; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 6; posX <= 9; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 10; posX <= 13; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+            }
+            
+            // Separator Roads
+            CreateGridTile(3, -1, new Color(0.85f, 0.8f, 0.7f));
+            CreateGridTile(7, -1, new Color(0.85f, 0.8f, 0.7f));
+            CreateGridTile(11, -1, new Color(0.85f, 0.8f, 0.7f));
         }
         
         foreach (var building in GridManager.Instance.GetAllBuildings())
@@ -40,21 +58,32 @@ public class GridRenderer : MonoBehaviour
             {
                 _buildingObjects[building.id].transform.position = new Vector3(building.x, building.y, 0);
                 
-                if (building.data.buildingType == BuildingType.Tower)
+                var textMesh = _buildingObjects[building.id].GetComponentInChildren<TMPro.TextMeshPro>();
+                if (textMesh != null)
                 {
-                    var textMesh = _buildingObjects[building.id].GetComponentInChildren<TMPro.TextMeshPro>();
-                    if (textMesh != null)
+                    if (building.data.buildingType == BuildingType.Tower)
                     {
-                        textMesh.text = $"{building.currentAmmo}/{building.data.maxAmmo}";
-                        textMesh.color = (building.currentAmmo <= 0 || building.isReloading) ? Color.red : Color.black;
+                        textMesh.text = $"{building.currentInput1}/{building.data.maxAmmo}";
+                        textMesh.color = building.isShutdown ? Color.red : Color.black;
+                    }
+                    else if (building.data.buildingType == BuildingType.Factory || building.data.buildingType == BuildingType.Mine)
+                    {
+                        textMesh.text = $"{building.currentOutput}/{building.data.maxOutputCapacity}";
+                        textMesh.color = building.isShutdown ? Color.red : Color.black;
+                    }
+                    else
+                    {
+                        textMesh.text = "";
                     }
                 }
             }
         }
     }
     
-    private BuildingModel _selectedBuilding = null;
+    public BuildingModel SelectedBuilding { get; private set; }
     private GameObject _rangeOverlay = null;
+    
+    private BuildingModel _draggingBuilding = null;
     
     void Update()
     {
@@ -62,27 +91,45 @@ public class GridRenderer : MonoBehaviour
         
         bool isPlacing = BuildManager.Instance.IsPlacing;
         
-        if (!isPlacing && Input.GetMouseButtonDown(0))
+        if (!isPlacing)
         {
-            if (UnityEngine.EventSystems.EventSystem.current != null && 
-                UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) 
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            int gridX = Mathf.RoundToInt(mousePos.x);
+            int gridY = Mathf.RoundToInt(mousePos.y);
+            
+            if (Input.GetMouseButtonDown(0))
             {
-                _selectedBuilding = null;
+                if (UnityEngine.EventSystems.EventSystem.current != null && 
+                    UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) 
+                {
+                    SelectedBuilding = null;
+                    _draggingBuilding = null;
+                }
+                else
+                {
+                    var clickedBuilding = GridManager.Instance.GetBuildingAt(gridX, gridY);
+                    SelectedBuilding = clickedBuilding;
+                    
+                    if (clickedBuilding != null && clickedBuilding.data.buildingType != BuildingType.Mine && clickedBuilding.data.buildingType != BuildingType.Entrance) 
+                    {
+                        _draggingBuilding = clickedBuilding;
+                    }
+                    else
+                    {
+                        _draggingBuilding = null;
+                    }
+                }
             }
-            else
+            else if (Input.GetMouseButtonUp(0) && _draggingBuilding != null)
             {
-                Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                int clickX = Mathf.RoundToInt(mousePos.x);
-                int clickY = Mathf.RoundToInt(mousePos.y);
-                
-                var clickedBuilding = GridManager.Instance.GetBuildingAt(clickX, clickY);
-                if (clickedBuilding != null) _selectedBuilding = clickedBuilding;
-                else _selectedBuilding = null;
+                GridManager.Instance.MoveBuilding(_draggingBuilding.id, gridX, gridY);
+                _draggingBuilding = null;
             }
         }
         else if (isPlacing)
         {
-            _selectedBuilding = null;
+            SelectedBuilding = null;
+            _draggingBuilding = null;
         }
         
         // Reset grid tiles to base color
@@ -90,7 +137,9 @@ public class GridRenderer : MonoBehaviour
         {
             var tile = tilesParent.GetChild(i);
             var sr = tile.GetComponent<SpriteRenderer>();
-            sr.color = new Color(0.8f, 0.8f, 0.8f);
+            var baseColor = tile.GetComponent<TileBaseColor>();
+            if (baseColor != null) sr.color = baseColor.baseColor;
+            else sr.color = new Color(0.8f, 0.8f, 0.8f);
         }
         
         // Handle Range Overlay
@@ -127,13 +176,33 @@ public class GridRenderer : MonoBehaviour
             if (BuildManager.Instance.IsValidPlacement(posX, posY)) sr.color = new Color(0f, 1f, 0f, 0.3f);
             else sr.color = new Color(1f, 0f, 0f, 0.3f);
         }
-        else if (_selectedBuilding != null)
+        else if (_draggingBuilding != null)
         {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            int gridX = Mathf.RoundToInt(mousePos.x);
+            int gridY = Mathf.RoundToInt(mousePos.y);
+            
             _rangeOverlay.SetActive(true);
-            _rangeOverlay.transform.position = new Vector3(_selectedBuilding.x, _selectedBuilding.y, -0.1f);
+            _rangeOverlay.transform.position = new Vector3(gridX, gridY, -0.1f);
             
             float size = 1f;
-            var data = _selectedBuilding.data;
+            var data = _draggingBuilding.data;
+            if (data.buildingType == BuildingType.Tower) size = data.attackRange;
+            else if (data.buildingType == BuildingType.Factory) size = 1f + 2f * data.connectionRange;
+            else if (data.buildingType == BuildingType.Road || data.buildingType == BuildingType.FactorySpeedBuff || data.buildingType == BuildingType.TowerAttackBuff) size = 1f + 2f * data.buffRange;
+            
+            _rangeOverlay.transform.localScale = new Vector3(size, size, 1f);
+            
+            bool valid = GridManager.Instance.GetBuildingAt(gridX, gridY) == null && GridManager.Instance.IsValidCoordinateForType(data.buildingType, gridX, gridY);
+            _rangeOverlay.GetComponent<SpriteRenderer>().color = valid ? new Color(0f, 1f, 0f, 0.3f) : new Color(1f, 0f, 0f, 0.3f);
+        }
+        else if (SelectedBuilding != null)
+        {
+            _rangeOverlay.SetActive(true);
+            _rangeOverlay.transform.position = new Vector3(SelectedBuilding.x, SelectedBuilding.y, -0.1f);
+            
+            float size = 1f;
+            var data = SelectedBuilding.data;
             if (data.buildingType == BuildingType.Tower) size = data.attackRange;
             else if (data.buildingType == BuildingType.Factory) size = 1f + 2f * data.connectionRange;
             else if (data.buildingType == BuildingType.Road || data.buildingType == BuildingType.FactorySpeedBuff || data.buildingType == BuildingType.TowerAttackBuff) size = 1f + 2f * data.buffRange;
@@ -150,13 +219,34 @@ public class GridRenderer : MonoBehaviour
         {
             if (_buildingObjects.ContainsKey(building.id))
             {
-                if (building.data.buildingType == BuildingType.Tower)
+                if (_draggingBuilding == building) 
                 {
-                    var textMesh = _buildingObjects[building.id].GetComponentInChildren<TMPro.TextMeshPro>();
-                    if (textMesh != null)
+                    Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    int gridX = Mathf.RoundToInt(mousePos.x);
+                    int gridY = Mathf.RoundToInt(mousePos.y);
+                    _buildingObjects[building.id].transform.position = new Vector3(gridX, gridY, 0);
+                }
+                else
+                {
+                    _buildingObjects[building.id].transform.position = new Vector3(building.x, building.y, 0);
+                }
+                
+                var textMesh = _buildingObjects[building.id].GetComponentInChildren<TMPro.TextMeshPro>();
+                if (textMesh != null)
+                {
+                    if (building.data.buildingType == BuildingType.Tower)
                     {
-                        textMesh.text = $"{building.currentAmmo}/{building.data.maxAmmo}";
-                        textMesh.color = (building.currentAmmo <= 0 || building.isReloading) ? Color.red : Color.black;
+                        textMesh.text = $"{building.currentInput1}/{building.data.maxAmmo}";
+                        textMesh.color = building.isShutdown ? Color.red : Color.black;
+                    }
+                    else if (building.data.buildingType == BuildingType.Factory || building.data.buildingType == BuildingType.Mine)
+                    {
+                        textMesh.text = $"{building.currentOutput}/{building.data.maxOutputCapacity}";
+                        textMesh.color = building.isShutdown ? Color.red : Color.black;
+                    }
+                    else
+                    {
+                        textMesh.text = "";
                     }
                 }
             }
@@ -173,7 +263,7 @@ public class GridRenderer : MonoBehaviour
         if (model.data.sprite != null) sr.sprite = model.data.sprite;
         else sr.sprite = CreateBoxSprite();
         
-        if (model.data.buildingType == BuildingType.Tower)
+        if (model.data.buildingType == BuildingType.Tower || model.data.buildingType == BuildingType.Factory || model.data.buildingType == BuildingType.Mine)
         {
             var textGo = new GameObject("AmmoText");
             textGo.transform.SetParent(buildingGo.transform);
@@ -182,7 +272,7 @@ public class GridRenderer : MonoBehaviour
             var textMesh = textGo.AddComponent<TMPro.TextMeshPro>();
             textMesh.alignment = TMPro.TextAlignmentOptions.Center;
             textMesh.fontSize = 2.5f;
-            textMesh.text = $"{model.currentAmmo}/{model.data.maxAmmo}";
+            textMesh.text = "";
             textMesh.color = Color.black;
             textMesh.rectTransform.sizeDelta = new Vector2(1, 1);
         }
@@ -196,6 +286,21 @@ public class GridRenderer : MonoBehaviour
         _buildingObjects[model.id] = buildingGo;
     }
     
+    private void CreateGridTile(int posX, int posY, Color defaultColor)
+    {
+        var tileGo = new GameObject($"Tile_{posX}_{posY}");
+        tileGo.transform.position = new Vector3(posX, posY, 0.1f); 
+        tileGo.transform.SetParent(tilesParent);
+        var sr = tileGo.AddComponent<SpriteRenderer>();
+        sr.sprite = CreateBoxSprite();
+        sr.color = defaultColor;
+        tileGo.transform.localScale = new Vector3(0.95f, 0.95f, 1);
+        
+        // Store base color so we can reset correctly
+        var baseColorComponent = tileGo.AddComponent<TileBaseColor>();
+        baseColorComponent.baseColor = defaultColor;
+    }
+    
     private Sprite CreateBoxSprite()
     {
         Texture2D texture = new Texture2D(1, 1);
@@ -203,4 +308,9 @@ public class GridRenderer : MonoBehaviour
         texture.Apply();
         return Sprite.Create(texture, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1f);
     }
+}
+
+public class TileBaseColor : MonoBehaviour
+{
+    public Color baseColor;
 }
