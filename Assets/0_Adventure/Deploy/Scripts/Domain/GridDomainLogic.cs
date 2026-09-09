@@ -79,12 +79,19 @@ public static class GridDomainLogic
         foreach (var monster in monsters)
         {
             Vector2 monsterPosition = new Vector2(monster.currentPosition.x, monster.currentPosition.y);
-            float distance = Vector2.Distance(towerPosition, monsterPosition);
             
-            if (distance <= tower.data.attackRange && distance < minDistance)
+            float dx = Mathf.Abs(towerPosition.x - monsterPosition.x);
+            float dy = Mathf.Abs(towerPosition.y - monsterPosition.y);
+            float halfRange = tower.data.attackRange / 2f;
+            
+            if (dx <= halfRange && dy <= halfRange)
             {
-                minDistance = distance;
-                closestMonster = monster;
+                float distance = Vector2.Distance(towerPosition, monsterPosition);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestMonster = monster;
+                }
             }
         }
         

@@ -54,6 +54,7 @@ public class GridRenderer : MonoBehaviour
     }
     
     private BuildingModel _selectedBuilding = null;
+    private GameObject _rangeOverlay = null;
     
     void Update()
     {
@@ -84,44 +85,65 @@ public class GridRenderer : MonoBehaviour
             _selectedBuilding = null;
         }
         
+        // Reset grid tiles to base color
         for (int i = 0; i < tilesParent.childCount; i++)
         {
             var tile = tilesParent.GetChild(i);
             var sr = tile.GetComponent<SpriteRenderer>();
+            sr.color = new Color(0.8f, 0.8f, 0.8f);
+        }
+        
+        // Handle Range Overlay
+        if (_rangeOverlay == null)
+        {
+            _rangeOverlay = new GameObject("RangeOverlay");
+            var sr = _rangeOverlay.AddComponent<SpriteRenderer>();
+            sr.sprite = CreateBoxSprite();
+            sr.color = new Color(0f, 1f, 0f, 0.3f);
+            sr.sortingOrder = 5;
+        }
+        
+        if (isPlacing)
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            int posX = Mathf.RoundToInt(mousePos.x);
+            int posY = Mathf.RoundToInt(mousePos.y);
             
-            int posX = Mathf.RoundToInt(tile.position.x);
-            int posY = Mathf.RoundToInt(tile.position.y);
+            _rangeOverlay.SetActive(true);
+            _rangeOverlay.transform.position = new Vector3(posX, posY, -0.1f);
             
-            if (isPlacing)
+            float size = 1f;
+            var data = BuildManager.Instance.BuildingToPlace;
+            if (data != null)
             {
-                if (BuildManager.Instance.IsValidPlacement(posX, posY)) sr.color = new Color(0.8f, 1.0f, 0.8f);
-                else sr.color = new Color(1.0f, 0.6f, 0.6f);
+                if (data.buildingType == BuildingType.Tower) size = data.attackRange;
+                else if (data.buildingType == BuildingType.Factory) size = 1f + 2f * data.connectionRange;
+                else if (data.buildingType == BuildingType.Road || data.buildingType == BuildingType.FactorySpeedBuff || data.buildingType == BuildingType.TowerAttackBuff) size = 1f + 2f * data.buffRange;
             }
-            else if (_selectedBuilding != null)
-            {
-                bool inRange = false;
-                var type = _selectedBuilding.data.buildingType;
-                
-                if (type == BuildingType.Factory)
-                {
-                    if (GridDomainLogic.IsInRange(_selectedBuilding.x, _selectedBuilding.y, posX, posY, _selectedBuilding.data.connectionRange)) inRange = true;
-                }
-                else if (type == BuildingType.Road || type == BuildingType.FactorySpeedBuff || type == BuildingType.TowerAttackBuff)
-                {
-                    if (GridDomainLogic.IsInRange(_selectedBuilding.x, _selectedBuilding.y, posX, posY, _selectedBuilding.data.buffRange)) inRange = true;
-                }
-                else if (type == BuildingType.Tower)
-                {
-                    if (Vector2.Distance(new Vector2(_selectedBuilding.x, _selectedBuilding.y), new Vector2(posX, posY)) <= _selectedBuilding.data.attackRange) inRange = true;
-                }
-                
-                if (inRange) sr.color = new Color(0.8f, 1.0f, 0.8f);
-                else sr.color = new Color(0.8f, 0.8f, 0.8f);
-            }
-            else
-            {
-                sr.color = new Color(0.8f, 0.8f, 0.8f);
-            }
+            
+            _rangeOverlay.transform.localScale = new Vector3(size, size, 1f);
+            
+            var sr = _rangeOverlay.GetComponent<SpriteRenderer>();
+            if (BuildManager.Instance.IsValidPlacement(posX, posY)) sr.color = new Color(0f, 1f, 0f, 0.3f);
+            else sr.color = new Color(1f, 0f, 0f, 0.3f);
+        }
+        else if (_selectedBuilding != null)
+        {
+            _rangeOverlay.SetActive(true);
+            _rangeOverlay.transform.position = new Vector3(_selectedBuilding.x, _selectedBuilding.y, -0.1f);
+            
+            float size = 1f;
+            var data = _selectedBuilding.data;
+            if (data.buildingType == BuildingType.Tower) size = data.attackRange;
+            else if (data.buildingType == BuildingType.Factory) size = 1f + 2f * data.connectionRange;
+            else if (data.buildingType == BuildingType.Road || data.buildingType == BuildingType.FactorySpeedBuff || data.buildingType == BuildingType.TowerAttackBuff) size = 1f + 2f * data.buffRange;
+            
+            _rangeOverlay.transform.localScale = new Vector3(size, size, 1f);
+            _rangeOverlay.GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 0f, 0.3f);
+        }
+        else
+        {
+            _rangeOverlay.SetActive(false);
         }
         
         foreach (var building in GridManager.Instance.GetAllBuildings())
