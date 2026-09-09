@@ -41,15 +41,15 @@ public class GridRenderer : MonoBehaviour
             // Tower Zones (4 width x 2 height)
             for (int posY = -3; posY <= -2; posY++)
             {
-                for (int posX = 2; posX <= 5; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
-                for (int posX = 6; posX <= 9; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
-                for (int posX = 10; posX <= 13; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 0; posX <= 3; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 5; posX <= 8; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 11; posX <= 14; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
             }
             
             // Separator Roads
-            CreateGridTile(3, -1, new Color(0.85f, 0.8f, 0.7f));
+            CreateGridTile(0, -1, new Color(0.85f, 0.8f, 0.7f));
             CreateGridTile(7, -1, new Color(0.85f, 0.8f, 0.7f));
-            CreateGridTile(11, -1, new Color(0.85f, 0.8f, 0.7f));
+            CreateGridTile(14, -1, new Color(0.85f, 0.8f, 0.7f));
         }
         
         foreach (var building in GridManager.Instance.GetAllBuildings())

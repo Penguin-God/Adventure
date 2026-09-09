@@ -171,8 +171,12 @@ public class SupplyChainManager : MonoBehaviour
             
             if (node.data.buildingType == BuildingType.Entrance)
             {
-                int zoneXStart = node.x - 1;
-                int zoneXEnd = node.x + 2;
+                int zoneXStart = node.x;
+                int zoneXEnd = node.x;
+                if (node.x == 0) { zoneXStart = 0; zoneXEnd = 3; }
+                else if (node.x == 7) { zoneXStart = 5; zoneXEnd = 8; }
+                else if (node.x == 14) { zoneXStart = 11; zoneXEnd = 14; }
+                
                 int zoneYStart = -3;
                 int zoneYEnd = -2;
                 

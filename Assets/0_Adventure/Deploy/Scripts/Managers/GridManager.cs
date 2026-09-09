@@ -31,9 +31,9 @@ public class GridManager : MonoBehaviour
         // Generate fixed buildings
         PlaceFixedBuilding("StoneMine", 0, 7);
         PlaceFixedBuilding("IronMine", 14, 7);
-        PlaceFixedBuilding("Entrance", 3, 0);
+        PlaceFixedBuilding("Entrance", 0, 0);
         PlaceFixedBuilding("Entrance", 7, 0);
-        PlaceFixedBuilding("Entrance", 11, 0);
+        PlaceFixedBuilding("Entrance", 14, 0);
     }
     
     private void PlaceFixedBuilding(string buildingName, int x, int y)
@@ -60,16 +60,16 @@ public class GridManager : MonoBehaviour
         // Tower Zone is 4 (width) x 2 (height), starting at Y=-2 to leave Y=-1 as a separator road gap
         if (gridY >= -3 && gridY <= -2)
         {
-            if (gridX >= 2 && gridX <= 5) isTowerZone = true; // Entrance at 3
-            else if (gridX >= 6 && gridX <= 9) isTowerZone = true; // Entrance at 7
-            else if (gridX >= 10 && gridX <= 13) isTowerZone = true; // Entrance at 11
+            if (gridX >= 0 && gridX <= 3) isTowerZone = true; // Entrance at 0
+            else if (gridX >= 5 && gridX <= 8) isTowerZone = true; // Entrance at 7
+            else if (gridX >= 11 && gridX <= 14) isTowerZone = true; // Entrance at 14
         }
         
         bool isTowerType = type == BuildingType.Tower || type == BuildingType.TowerAttackBuff;
         if (isTowerType) return isTowerZone;
         
         // Allow Roads in the gap (Y=-1) at the entrance X coordinates
-        if (type == BuildingType.Road && gridY == -1 && (gridX == 3 || gridX == 7 || gridX == 11)) return true;
+        if (type == BuildingType.Road && gridY == -1 && (gridX == 0 || gridX == 7 || gridX == 14)) return true;
         
         return isVillage;
     }
