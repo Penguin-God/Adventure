@@ -13,6 +13,15 @@ public class GridRenderer : MonoBehaviour
         GridManager.Instance.OnGridChanged += DrawGrid;
         GridManager.Instance.OnBuildingPlaced += OnBuildingPlaced;
         GridManager.Instance.OnBuildingRemoved += OnBuildingRemoved;
+        
+        foreach (var building in GridManager.Instance.GetAllBuildings())
+        {
+            if (!_buildingObjects.ContainsKey(building.id))
+            {
+                OnBuildingPlaced(building);
+            }
+        }
+        
         DrawGrid();
     }
     
