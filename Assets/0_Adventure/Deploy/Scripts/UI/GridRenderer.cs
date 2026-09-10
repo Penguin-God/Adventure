@@ -47,18 +47,40 @@ public class GridRenderer : MonoBehaviour
                     CreateGridTile(posX, posY, new Color(0.8f, 0.8f, 0.8f));
                 }
             }
-            // Tower Zones (4 width x 2 height)
+            // Tower Zones (3 width x 2 height)
             for (int posY = -3; posY <= -2; posY++)
             {
-                for (int posX = 0; posX <= 3; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
-                for (int posX = 5; posX <= 8; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
-                for (int posX = 11; posX <= 14; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 0; posX <= 2; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 6; posX <= 8; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 12; posX <= 14; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
             }
             
             // Separator Roads
             CreateGridTile(0, -1, new Color(0.85f, 0.8f, 0.7f));
             CreateGridTile(7, -1, new Color(0.85f, 0.8f, 0.7f));
             CreateGridTile(14, -1, new Color(0.85f, 0.8f, 0.7f));
+            
+            // Monster Path Visuals
+            for (int posX = -1; posX <= 14; posX++)
+            {
+                CreateGridTile(posX, -5, new Color(0.6f, 0.5f, 0.4f)); // Dirt path color
+            }
+            
+            // Destination Marker
+            var destGo = new GameObject("DestinationMarker");
+            destGo.transform.SetParent(tilesParent);
+            destGo.transform.position = new Vector3(15, -5, 0);
+            var sr = destGo.AddComponent<SpriteRenderer>();
+            sr.sprite = CreateBoxSprite();
+            sr.color = Color.red; // Danger/Goal
+            var textMesh = new GameObject("DestText").AddComponent<TMPro.TextMeshPro>();
+            textMesh.transform.SetParent(destGo.transform);
+            textMesh.transform.localPosition = new Vector3(0, 0, -1);
+            textMesh.text = "Goal";
+            textMesh.fontSize = 3;
+            textMesh.alignment = TMPro.TextAlignmentOptions.Center;
+            textMesh.color = Color.white;
+            textMesh.GetComponent<RectTransform>().sizeDelta = new Vector2(1, 1);
         }
         
         foreach (var building in GridManager.Instance.GetAllBuildings())

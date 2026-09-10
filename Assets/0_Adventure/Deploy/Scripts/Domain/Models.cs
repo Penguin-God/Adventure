@@ -34,7 +34,8 @@ public class BuildingModel
         this.currentOutput = 0;
         
         // Start as shutdown since inputs/outputs are 0
-        this.isShutdown = true; 
+        this.isShutdown = true;
+        this.attackTimer = 999f; // Start ready to attack
     }
 }
 

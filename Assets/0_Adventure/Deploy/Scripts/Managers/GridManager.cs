@@ -79,12 +79,12 @@ public class GridManager : MonoBehaviour
         bool isVillage = (gridX >= 0 && gridX <= 14 && gridY >= 0 && gridY <= 7);
         bool isTowerZone = false;
         
-        // Tower Zone is 4 (width) x 2 (height), starting at Y=-2 to leave Y=-1 as a separator road gap
+        // Tower Zone is 3 (width) x 2 (height), starting at Y=-2
         if (gridY >= -3 && gridY <= -2)
         {
-            if (gridX >= 0 && gridX <= 3) isTowerZone = true; // Entrance at 0
-            else if (gridX >= 5 && gridX <= 8) isTowerZone = true; // Entrance at 7
-            else if (gridX >= 11 && gridX <= 14) isTowerZone = true; // Entrance at 14
+            if (gridX >= 0 && gridX <= 2) isTowerZone = true;      // Entrance at 0 (X: 0, 1, 2)
+            else if (gridX >= 6 && gridX <= 8) isTowerZone = true; // Entrance at 7 (X: 6, 7, 8)
+            else if (gridX >= 12 && gridX <= 14) isTowerZone = true; // Entrance at 14 (X: 12, 13, 14)
         }
         
         bool isTowerType = type == BuildingType.Tower || type == BuildingType.TowerAttackBuff;

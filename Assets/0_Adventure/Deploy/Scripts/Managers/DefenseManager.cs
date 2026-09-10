@@ -73,7 +73,7 @@ public class DefenseManager : MonoBehaviour
         // 타워 공격 로직
         foreach (var tower in towers)
         {
-            if (tower.currentInput1 >= tower.data.maxAmmo && tower.isShutdown)
+            if (tower.currentInput1 > 0 && tower.isShutdown)
             {
                 tower.isShutdown = false;
             }
