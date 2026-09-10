@@ -80,20 +80,21 @@ public class GridRenderer : MonoBehaviour
         }
     }
     
-    public BuildingModel SelectedBuilding { get; private set; }
+    public BuildingModel SelectedBuilding { get; set; }
     private GameObject _rangeOverlay = null;
     
     private BuildingModel _draggingBuilding = null;
     
     void Update()
     {
-        if (BuildManager.Instance == null) return;
-        
-        bool isPlacing = BuildManager.Instance.IsPlacing;
+        bool isPlacing = BuildManager.Instance != null && BuildManager.Instance.IsPlacing;
+        bool canEdit = BuildManager.Instance != null && BuildManager.Instance.isBuildModeActive;
         
         if (!isPlacing)
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var cam = Camera.main ?? Object.FindObjectOfType<Camera>();
+            if (cam == null) return;
+            Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
             int gridX = Mathf.RoundToInt(mousePos.x);
             int gridY = Mathf.RoundToInt(mousePos.y);
             
@@ -110,7 +111,7 @@ public class GridRenderer : MonoBehaviour
                     var clickedBuilding = GridManager.Instance.GetBuildingAt(gridX, gridY);
                     SelectedBuilding = clickedBuilding;
                     
-                    if (clickedBuilding != null && clickedBuilding.data.buildingType != BuildingType.Mine && clickedBuilding.data.buildingType != BuildingType.Entrance) 
+                    if (canEdit && clickedBuilding != null && clickedBuilding.data.buildingType != BuildingType.Mine && clickedBuilding.data.buildingType != BuildingType.Entrance) 
                     {
                         _draggingBuilding = clickedBuilding;
                     }
@@ -126,7 +127,7 @@ public class GridRenderer : MonoBehaviour
                 _draggingBuilding = null;
             }
         }
-        else if (isPlacing)
+        else
         {
             SelectedBuilding = null;
             _draggingBuilding = null;
@@ -152,9 +153,11 @@ public class GridRenderer : MonoBehaviour
             sr.sortingOrder = 5;
         }
         
-        if (isPlacing)
+        var currentCam = Camera.main ?? Object.FindObjectOfType<Camera>();
+        
+        if (isPlacing && currentCam != null)
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mousePos = currentCam.ScreenToWorldPoint(Input.mousePosition);
             int posX = Mathf.RoundToInt(mousePos.x);
             int posY = Mathf.RoundToInt(mousePos.y);
             

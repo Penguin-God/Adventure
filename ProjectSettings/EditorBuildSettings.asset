@@ -6,8 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/0_Adventure/RecipeCliker/RecipeCliker.unity
-    guid: 1ee632b57a202d642bd2c2b7d5d96542
+    path: Assets/0_Adventure/Deploy/Lobby.unity
+    guid: 21632ea672bddb64590cec49dd8e41a7
+  - enabled: 1
+    path: Assets/0_Adventure/Deploy/Defense.unity
+    guid: 13aeef932d5ef5441a4471cd86c5fc6f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

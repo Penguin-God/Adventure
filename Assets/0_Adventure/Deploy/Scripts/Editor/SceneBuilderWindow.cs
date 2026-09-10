@@ -1,71 +1,85 @@
-using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class SceneBuilderWindow : EditorWindow
 {
-    [MenuItem("Deploy/Setup Defense Scene")]
-    public static void SetupScene()
+    [MenuItem("Adventure/Build Scenes")]
+    public static void BuildScenes()
     {
-        var camera = Camera.main;
-        if (camera == null)
+        GenerateScriptableObjects();
+        
+        // Build Lobby Scene
+        var lobbyScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+        lobbyScene.name = "Lobby";
+        BuildLobbyScene();
+        EditorSceneManager.SaveScene(lobbyScene, "Assets/0_Adventure/Deploy/Lobby.unity");
+        
+        // Build Defense Scene
+        var defenseScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+        defenseScene.name = "Defense";
+        BuildDefenseScene();
+        EditorSceneManager.SaveScene(defenseScene, "Assets/0_Adventure/Deploy/Defense.unity");
+        
+        // Update Build Settings
+        var scenes = new List<EditorBuildSettingsScene>
         {
-            var cameraGo = new GameObject("Main Camera");
-            camera = cameraGo.AddComponent<Camera>();
-            cameraGo.tag = "MainCamera";
-        }
-        camera.orthographic = true;
-        camera.orthographicSize = 8f;
-        camera.transform.position = new Vector3(4.5f, 4.5f, -10f);
-        camera.transform.rotation = Quaternion.identity;
+            new EditorBuildSettingsScene("Assets/0_Adventure/Deploy/Lobby.unity", true),
+            new EditorBuildSettingsScene("Assets/0_Adventure/Deploy/Defense.unity", true)
+        };
+        EditorBuildSettings.scenes = scenes.ToArray();
         
-        var managersParent = new GameObject("Managers");
-        managersParent.AddComponent<GridManager>();
-        managersParent.AddComponent<MonsterManager>();
-        managersParent.AddComponent<DefenseManager>();
-        managersParent.AddComponent<BuildManager>();
-        managersParent.AddComponent<ProjectileManager>();
-        managersParent.AddComponent<SupplyChainManager>();
+        // Load Lobby as start
+        EditorSceneManager.OpenScene("Assets/0_Adventure/Deploy/Lobby.unity");
         
-        var environmentParent = new GameObject("Environment");
-        var gridRenderer = environmentParent.AddComponent<GridRenderer>();
+        Debug.Log("Lobby and Defense scenes created successfully!");
+    }
+    
+    private static void BuildLobbyScene()
+    {
+        var mainCam = new GameObject("Main Camera");
+        mainCam.tag = "MainCamera";
+        var cam = mainCam.AddComponent<Camera>();
+        cam.orthographic = true;
+        cam.orthographicSize = 9f;
+        mainCam.transform.position = new Vector3(7f, 0f, -10f);
         
-        var tilesParent = new GameObject("Tiles").transform;
-        tilesParent.SetParent(environmentParent.transform);
-        var buildingsParent = new GameObject("Buildings").transform;
-        buildingsParent.SetParent(environmentParent.transform);
-        var monstersParent = new GameObject("Monsters").transform;
-        monstersParent.SetParent(environmentParent.transform);
-        var projectilesParent = new GameObject("Projectiles").transform;
-        projectilesParent.SetParent(environmentParent.transform);
+        var gridManagerGo = new GameObject("GridManager");
+        var gridManager = gridManagerGo.AddComponent<GridManager>();
         
-        gridRenderer.tilesParent = tilesParent;
-        gridRenderer.buildingsParent = buildingsParent;
+        var gridRendererGo = new GameObject("GridRenderer");
+        var gridRenderer = gridRendererGo.AddComponent<GridRenderer>();
+        var tilesGo = new GameObject("Tiles");
+        var buildingsGo = new GameObject("Buildings");
+        tilesGo.transform.SetParent(gridRendererGo.transform);
+        buildingsGo.transform.SetParent(gridRendererGo.transform);
+        gridRenderer.tilesParent = tilesGo.transform;
+        gridRenderer.buildingsParent = buildingsGo.transform;
         
-        var monsterManager = managersParent.GetComponent<MonsterManager>();
-        if(monsterManager != null) monsterManager.monstersParent = monstersParent;
+        var buildManagerGo = new GameObject("BuildManager");
+        var buildManager = buildManagerGo.AddComponent<BuildManager>();
         
-        var projectileManager = managersParent.GetComponent<ProjectileManager>();
-        if(projectileManager != null) projectileManager.projectilesParent = projectilesParent;
+        var uiManagerGo = new GameObject("UIManager");
+        var uiManager = uiManagerGo.AddComponent<UIManager>();
         
         var canvasGo = new GameObject("Canvas");
         var canvas = canvasGo.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvasGo.AddComponent<CanvasScaler>();
         canvasGo.AddComponent<GraphicRaycaster>();
-        
-        var uiManagerGo = new GameObject("UIManager");
-        uiManagerGo.transform.SetParent(canvasGo.transform, false);
-        var uiManager = uiManagerGo.AddComponent<UIManager>();
+        uiManagerGo.transform.SetParent(canvasGo.transform);
         
         // Top Bar
         var topBarGo = new GameObject("TopBarText");
         topBarGo.transform.SetParent(canvasGo.transform, false);
         var topBarText = topBarGo.AddComponent<TextMeshProUGUI>();
-        topBarText.text = "Defense Gold: 0 | Wave: 1";
+        topBarText.alignment = TextAlignmentOptions.Center;
         topBarText.fontSize = 24;
-        topBarText.alignment = TextAlignmentOptions.TopLeft;
+        topBarText.color = Color.black;
         var topBarRt = topBarGo.GetComponent<RectTransform>();
         topBarRt.anchorMin = new Vector2(0, 1);
         topBarRt.anchorMax = new Vector2(1, 1);
@@ -74,7 +88,7 @@ public class SceneBuilderWindow : EditorWindow
         topBarRt.sizeDelta = new Vector2(-40, 50);
         uiManager.topBarText = topBarText;
         
-        // Buttons Container
+        // Build Mode Buttons Container
         var buttonsContainerGo = new GameObject("ButtonsContainer");
         buttonsContainerGo.transform.SetParent(canvasGo.transform, false);
         var containerRt = buttonsContainerGo.AddComponent<RectTransform>();
@@ -90,6 +104,19 @@ public class SceneBuilderWindow : EditorWindow
         layoutGroup.childControlHeight = true;
         layoutGroup.childForceExpandWidth = false;
         uiManager.buttonsContainer = buttonsContainerGo.transform;
+        
+        // Stage Container
+        var stageContainerGo = new GameObject("StageContainer");
+        stageContainerGo.transform.SetParent(canvasGo.transform, false);
+        var stageContainerRt = stageContainerGo.AddComponent<RectTransform>();
+        stageContainerRt.anchorMin = new Vector2(0.5f, 0.5f);
+        stageContainerRt.anchorMax = new Vector2(0.5f, 0.5f);
+        stageContainerRt.pivot = new Vector2(0.5f, 0.5f);
+        stageContainerRt.anchoredPosition = new Vector2(0, 250);
+        stageContainerRt.sizeDelta = new Vector2(600, 100);
+        var stageLayout = stageContainerGo.AddComponent<HorizontalLayoutGroup>();
+        stageLayout.childAlignment = TextAnchor.MiddleCenter;
+        stageLayout.spacing = 20;
         
         // Cancel Button
         var cancelBtnGo = new GameObject("CancelButton");
@@ -117,10 +144,71 @@ public class SceneBuilderWindow : EditorWindow
             eventSystem.AddComponent<UnityEngine.EventSystems.EventSystem>();
             eventSystem.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
         }
+    }
+    
+    private static void BuildDefenseScene()
+    {
+        var mainCam = new GameObject("Main Camera");
+        mainCam.tag = "MainCamera";
+        var cam = mainCam.AddComponent<Camera>();
+        cam.orthographic = true;
+        cam.orthographicSize = 9f;
+        mainCam.transform.position = new Vector3(7f, 0f, -10f);
         
-        GenerateScriptableObjects();
+        var gridManagerGo = new GameObject("GridManager");
+        var gridManager = gridManagerGo.AddComponent<GridManager>();
         
-        Debug.Log("Defense Scene setup complete!");
+        var gridRendererGo = new GameObject("GridRenderer");
+        var gridRenderer = gridRendererGo.AddComponent<GridRenderer>();
+        var tilesGo = new GameObject("Tiles");
+        var buildingsGo = new GameObject("Buildings");
+        tilesGo.transform.SetParent(gridRendererGo.transform);
+        buildingsGo.transform.SetParent(gridRendererGo.transform);
+        gridRenderer.tilesParent = tilesGo.transform;
+        gridRenderer.buildingsParent = buildingsGo.transform;
+        
+        var supplyChainGo = new GameObject("SupplyChainManager");
+        var supplyChain = supplyChainGo.AddComponent<SupplyChainManager>();
+        
+        var defenseManagerGo = new GameObject("DefenseManager");
+        var defenseManager = defenseManagerGo.AddComponent<DefenseManager>();
+        
+        var monsterManagerGo = new GameObject("MonsterManager");
+        var monsterManager = monsterManagerGo.AddComponent<MonsterManager>();
+        
+        var projectileManagerGo = new GameObject("ProjectileManager");
+        var projectileManager = projectileManagerGo.AddComponent<ProjectileManager>();
+        
+        var uiManagerGo = new GameObject("UIManager");
+        var uiManager = uiManagerGo.AddComponent<UIManager>();
+        
+        var canvasGo = new GameObject("Canvas");
+        var canvas = canvasGo.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvasGo.AddComponent<CanvasScaler>();
+        canvasGo.AddComponent<GraphicRaycaster>();
+        uiManagerGo.transform.SetParent(canvasGo.transform);
+        
+        var topBarGo = new GameObject("TopBarText");
+        topBarGo.transform.SetParent(canvasGo.transform, false);
+        var topBarText = topBarGo.AddComponent<TextMeshProUGUI>();
+        topBarText.alignment = TextAlignmentOptions.Center;
+        topBarText.fontSize = 24;
+        topBarText.color = Color.black;
+        var topBarRt = topBarGo.GetComponent<RectTransform>();
+        topBarRt.anchorMin = new Vector2(0, 1);
+        topBarRt.anchorMax = new Vector2(1, 1);
+        topBarRt.pivot = new Vector2(0.5f, 1);
+        topBarRt.anchoredPosition = new Vector2(0, -20);
+        topBarRt.sizeDelta = new Vector2(-40, 50);
+        uiManager.topBarText = topBarText;
+        
+        if (Object.FindObjectOfType<UnityEngine.EventSystems.EventSystem>() == null)
+        {
+            var eventSystem = new GameObject("EventSystem");
+            eventSystem.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            eventSystem.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+        }
     }
     
     private static void GenerateScriptableObjects()
@@ -131,15 +219,15 @@ public class SceneBuilderWindow : EditorWindow
             AssetDatabase.CreateFolder("Assets/0_Adventure/Deploy/Resources", "Buildings");
         if (!AssetDatabase.IsValidFolder("Assets/0_Adventure/Deploy/Resources/Monsters"))
             AssetDatabase.CreateFolder("Assets/0_Adventure/Deploy/Resources", "Monsters");
-        
+        if (!AssetDatabase.IsValidFolder("Assets/0_Adventure/Deploy/Resources/Stages"))
+            AssetDatabase.CreateFolder("Assets/0_Adventure/Deploy/Resources", "Stages");
+            
         // Mines
         CreateBuildingData("StoneMine", BuildingType.Mine, 100, 1, 0.1f, ResourceType.None, ResourceType.None, 0, ResourceType.Stone, 50);
         CreateBuildingData("IronMine", BuildingType.Mine, 100, 1, 0.1f, ResourceType.None, ResourceType.None, 0, ResourceType.Iron, 50);
         
-        // Entrance
+        // Entrance & Road
         CreateBuildingData("Entrance", BuildingType.Entrance, 0, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0);
-
-        // Road
         CreateBuildingData("Road", BuildingType.Road, 100, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0);
         
         // Factories
@@ -177,7 +265,57 @@ public class SceneBuilderWindow : EditorWindow
         settings.monsterHpIncreasePercent = 0.1f;
         EditorUtility.SetDirty(settings);
         
+        // Generate StageDataSO
+        CreateStageData(1, 150f, 2.0f, 10, new List<BuildingCount> {
+            new BuildingCount { buildingName = "StoneFactory", count = 3 },
+            new BuildingCount { buildingName = "Road", count = 10 },
+            new BuildingCount { buildingName = "Slingshot", count = 3 }
+        });
+        
+        CreateStageData(2, 200f, 1.0f, 10, new List<BuildingCount> {
+            new BuildingCount { buildingName = "Archer", count = 3 },
+            new BuildingCount { buildingName = "ArrowFactory", count = 3 },
+            new BuildingCount { buildingName = "Road", count = 5 }
+        });
+        
+        CreateStageData(3, 300f, 1.0f, 15, new List<BuildingCount> {
+            new BuildingCount { buildingName = "AmmoFactory", count = 3 },
+            new BuildingCount { buildingName = "Road", count = 5 },
+            new BuildingCount { buildingName = "Gun", count = 3 }
+        });
+        
+        CreateStageData(4, 500f, 1.0f, 15, new List<BuildingCount> {
+            new BuildingCount { buildingName = "TowerBuff", count = 3 },
+            new BuildingCount { buildingName = "FactoryBuff", count = 3 }
+        });
+        
+        CreateStageData(5, 1000f, 0.8f, 25, new List<BuildingCount> {
+            new BuildingCount { buildingName = "StoneFactory", count = 3 },
+            new BuildingCount { buildingName = "ArrowFactory", count = 3 },
+            new BuildingCount { buildingName = "AmmoFactory", count = 3 },
+            new BuildingCount { buildingName = "Slingshot", count = 2 },
+            new BuildingCount { buildingName = "Archer", count = 2 },
+            new BuildingCount { buildingName = "Gun", count = 2 }
+        });
+        
         AssetDatabase.SaveAssets();
+    }
+    
+    private static void CreateStageData(int stageNum, float hp, float delay, int count, List<BuildingCount> rewards)
+    {
+        string path = $"Assets/0_Adventure/Deploy/Resources/Stages/Stage_{stageNum}.asset";
+        var s = AssetDatabase.LoadAssetAtPath<StageDataSO>(path);
+        if (s == null)
+        {
+            s = ScriptableObject.CreateInstance<StageDataSO>();
+            AssetDatabase.CreateAsset(s, path);
+        }
+        s.stageNumber = stageNum;
+        s.monsterHp = hp;
+        s.spawnDelay = delay;
+        s.totalMonsters = count;
+        s.buildingRewards = rewards;
+        EditorUtility.SetDirty(s);
     }
     
     private static void CreateBuildingData(

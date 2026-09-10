@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -9,44 +10,28 @@ public class UIManager : MonoBehaviour
     public Transform buttonsContainer;
     public Button cancelButton;
     
-    void Start()
-    {
-        if (cancelButton != null) cancelButton.onClick.AddListener(() => BuildManager.Instance.CancelPlacement());
-        
-        // Dynamic buttons will be created in Update when BuildManager is ready
-    }
-    
     private bool _buttonsCreated = false;
     private Button _sellButton;
+    private Button _buildModeBtn;
+    private GameObject _stageContainer;
+    private GameObject _endGameContainer;
     
-    void Update()
+    void Start()
     {
-        if (DefenseManager.Instance != null && BuildManager.Instance != null && MonsterManager.Instance != null)
+        if (cancelButton != null) cancelButton.onClick.AddListener(() => {
+            if (BuildManager.Instance != null) BuildManager.Instance.CancelPlacement();
+        });
+        
+        bool isLobby = SceneManager.GetActiveScene().name == "Lobby";
+        CreateDynamicUI(isLobby);
+        
+        if (!isLobby)
         {
-            if (!_buttonsCreated && BuildManager.Instance.availableBuildings != null && BuildManager.Instance.availableBuildings.Count > 0)
-            {
-                CreateButtons();
-                CreateDynamicUI();
-                _buttonsCreated = true;
-            }
-            
-            int timeInSeconds = Mathf.FloorToInt(DefenseManager.Instance.elapsedTime);
-            int minutes = timeInSeconds / 60;
-            int seconds = timeInSeconds % 60;
-            string timeString = $"{minutes:00}:{seconds:00}";
-            
-            topBarText.text = $"Gold: {DefenseManager.Instance.currentGold} | Monsters: {MonsterManager.Instance.GetActiveMonsters().Count()} | Time: {timeString}";
-            
-            if (cancelButton != null)
-            {
-                cancelButton.gameObject.SetActive(BuildManager.Instance.IsPlacing);
-            }
-            
-            UpdateSelectionUI();
+            CreateDefenseEndGameUI();
         }
     }
     
-    private void CreateDynamicUI()
+    private void CreateDynamicUI(bool isLobby)
     {
         var canvas = transform.parent;
         
@@ -68,8 +53,181 @@ public class UIManager : MonoBehaviour
         sellText.color = Color.black;
         sellText.alignment = TextAlignmentOptions.Center;
         sellText.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 60);
+        
         _sellButton.onClick.AddListener(OnSellClicked);
         _sellButton.gameObject.SetActive(false);
+        
+        if (isLobby)
+        {
+            // Build Mode Button
+            var buildModeBtnGo = new GameObject("BuildModeButton");
+            buildModeBtnGo.transform.SetParent(canvas, false);
+            buildModeBtnGo.AddComponent<Image>().color = new Color(0.2f, 0.8f, 0.2f);
+            _buildModeBtn = buildModeBtnGo.AddComponent<Button>();
+            var bmRt = buildModeBtnGo.GetComponent<RectTransform>();
+            bmRt.anchorMin = new Vector2(1, 0);
+            bmRt.anchorMax = new Vector2(1, 0);
+            bmRt.pivot = new Vector2(1f, 0f);
+            bmRt.anchoredPosition = new Vector2(-20, 20);
+            bmRt.sizeDelta = new Vector2(150, 80);
+            var bmTextGo = new GameObject("Text");
+            bmTextGo.transform.SetParent(buildModeBtnGo.transform, false);
+            var bmText = bmTextGo.AddComponent<TextMeshProUGUI>();
+            bmText.text = "Build Mode";
+            bmText.color = Color.white;
+            bmText.alignment = TextAlignmentOptions.Center;
+            bmText.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 80);
+            _buildModeBtn.onClick.AddListener(() => {
+                BuildManager.Instance.ToggleBuildMode();
+            });
+            
+            // Stage Buttons
+            _stageContainer = new GameObject("Stages");
+            _stageContainer.transform.SetParent(canvas, false);
+            var scRt = _stageContainer.AddComponent<RectTransform>();
+            // Anchor to Bottom Right, above the Build Mode button
+            scRt.anchorMin = new Vector2(1, 0);
+            scRt.anchorMax = new Vector2(1, 0);
+            scRt.pivot = new Vector2(1f, 0f);
+            scRt.anchoredPosition = new Vector2(-20, 120);
+            scRt.sizeDelta = new Vector2(150, 500); // Enough for 5 vertical buttons
+            var layout = _stageContainer.AddComponent<VerticalLayoutGroup>();
+            layout.spacing = 15;
+            layout.childAlignment = TextAnchor.LowerCenter;
+            layout.childControlWidth = false;
+            layout.childControlHeight = false;
+            
+            for (int i = 1; i <= 5; i++)
+            {
+                int stageNum = i;
+                var sBtnGo = new GameObject($"Stage_{i}");
+                sBtnGo.transform.SetParent(_stageContainer.transform, false);
+                var img = sBtnGo.AddComponent<Image>();
+                img.color = GameState.unlockedStage >= i ? Color.white : Color.gray;
+                var sBtn = sBtnGo.AddComponent<Button>();
+                sBtn.interactable = GameState.unlockedStage >= i;
+                var sRt = sBtnGo.GetComponent<RectTransform>();
+                sRt.sizeDelta = new Vector2(120, 50);
+                
+                var stTextGo = new GameObject("Text");
+                stTextGo.transform.SetParent(sBtnGo.transform, false);
+                var stText = stTextGo.AddComponent<TextMeshProUGUI>();
+                stText.text = $"Stage {i}";
+                stText.color = Color.black;
+                stText.alignment = TextAlignmentOptions.Center;
+                stText.GetComponent<RectTransform>().sizeDelta = new Vector2(120, 50);
+                
+                sBtn.onClick.AddListener(() => {
+                    GameState.currentPlayingStage = stageNum;
+                    SceneManager.LoadScene("Defense");
+                });
+            }
+        }
+    }
+    
+    private void CreateDefenseEndGameUI()
+    {
+        var canvas = transform.parent;
+        
+        _endGameContainer = new GameObject("EndGameContainer");
+        _endGameContainer.transform.SetParent(canvas, false);
+        var img = _endGameContainer.AddComponent<Image>();
+        img.color = new Color(0, 0, 0, 0.8f);
+        var egRt = _endGameContainer.GetComponent<RectTransform>();
+        egRt.anchorMin = Vector2.zero;
+        egRt.anchorMax = Vector2.one;
+        egRt.offsetMin = Vector2.zero;
+        egRt.offsetMax = Vector2.zero;
+        
+        var resultTextGo = new GameObject("ResultText");
+        resultTextGo.transform.SetParent(_endGameContainer.transform, false);
+        var resultText = resultTextGo.AddComponent<TextMeshProUGUI>();
+        resultText.text = "Result";
+        resultText.fontSize = 60;
+        resultText.alignment = TextAlignmentOptions.Center;
+        resultText.color = Color.white;
+        var rRt = resultTextGo.GetComponent<RectTransform>();
+        rRt.anchoredPosition = new Vector2(0, 50);
+        rRt.sizeDelta = new Vector2(600, 100);
+        
+        var retBtnGo = new GameObject("ReturnBtn");
+        retBtnGo.transform.SetParent(_endGameContainer.transform, false);
+        retBtnGo.AddComponent<Image>().color = Color.white;
+        var retBtn = retBtnGo.AddComponent<Button>();
+        var rbRt = retBtnGo.GetComponent<RectTransform>();
+        rbRt.anchoredPosition = new Vector2(0, -50);
+        rbRt.sizeDelta = new Vector2(200, 60);
+        
+        var retTextGo = new GameObject("Text");
+        retTextGo.transform.SetParent(retBtnGo.transform, false);
+        var retText = retTextGo.AddComponent<TextMeshProUGUI>();
+        retText.text = "Return to Lobby";
+        retText.color = Color.black;
+        retText.alignment = TextAlignmentOptions.Center;
+        retText.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 60);
+        
+        retBtn.onClick.AddListener(() => {
+            SceneManager.LoadScene("Lobby");
+        });
+        
+        _endGameContainer.SetActive(false);
+    }
+    
+    public void ShowEndGame(bool isWin)
+    {
+        if (_endGameContainer != null)
+        {
+            _endGameContainer.SetActive(true);
+            var tmp = _endGameContainer.transform.Find("ResultText").GetComponent<TextMeshProUGUI>();
+            tmp.text = isWin ? "STAGE CLEAR" : "STAGE FAILED";
+            tmp.color = isWin ? Color.green : Color.red;
+        }
+    }
+    
+    void Update()
+    {
+        bool isLobby = SceneManager.GetActiveScene().name == "Lobby";
+        
+        string timeString = "00:00";
+        int monsterCount = 0;
+        if (!isLobby && DefenseManager.Instance != null && MonsterManager.Instance != null)
+        {
+            int timeInSeconds = Mathf.FloorToInt(DefenseManager.Instance.elapsedTime);
+            timeString = string.Format("{0:00}:{1:00}", timeInSeconds / 60, timeInSeconds % 60);
+            monsterCount = MonsterManager.Instance.GetActiveMonsters().Count();
+        }
+        
+        if (topBarText != null)
+            topBarText.text = $"Gold: {GameState.currentGold} | Monsters: {monsterCount} | Time: {timeString}";
+            
+        if (isLobby && BuildManager.Instance != null)
+        {
+            if (cancelButton != null) cancelButton.gameObject.SetActive(BuildManager.Instance.IsPlacing);
+            
+            if (BuildManager.Instance.isBuildModeActive)
+            {
+                if (!_buttonsCreated && BuildManager.Instance.availableBuildings != null && BuildManager.Instance.availableBuildings.Count > 0)
+                {
+                    CreateBuildButtons();
+                    _buttonsCreated = true;
+                }
+                if (buttonsContainer != null) buttonsContainer.gameObject.SetActive(true);
+                UpdateBuildButtons();
+                if (_stageContainer != null) _stageContainer.SetActive(false);
+            }
+            else
+            {
+                if (buttonsContainer != null) buttonsContainer.gameObject.SetActive(false);
+                if (_stageContainer != null) _stageContainer.SetActive(true);
+            }
+        }
+        else
+        {
+            if (cancelButton != null) cancelButton.gameObject.SetActive(false);
+            if (buttonsContainer != null) buttonsContainer.gameObject.SetActive(false);
+        }
+        
+        UpdateSelectionUI();
     }
     
     private void UpdateSelectionUI()
@@ -89,26 +247,13 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            _sellButton.gameObject.SetActive(false);
+            if (_sellButton != null) _sellButton.gameObject.SetActive(false);
         }
     }
     
-    private void OnSellClicked()
+    private void CreateBuildButtons()
     {
-        var gridRenderer = Object.FindObjectOfType<GridRenderer>();
-        if (gridRenderer != null && gridRenderer.SelectedBuilding != null)
-        {
-            var selected = gridRenderer.SelectedBuilding;
-            if (selected.data.buildingType == BuildingType.Mine || selected.data.buildingType == BuildingType.Entrance) return;
-            
-            int refund = Mathf.FloorToInt(selected.data.cost * 0.9f);
-            DefenseManager.Instance.AddGold(refund);
-            GridManager.Instance.RemoveBuilding(selected.id);
-        }
-    }
-    
-    private void CreateButtons()
-    {
+        if (buttonsContainer == null) return;
         foreach (var data in BuildManager.Instance.availableBuildings)
         {
             var btnGo = new GameObject($"Btn_{data.buildingName}");
@@ -122,13 +267,56 @@ public class UIManager : MonoBehaviour
             var textGo = new GameObject("Text");
             textGo.transform.SetParent(btnGo.transform, false);
             var textMesh = textGo.AddComponent<TextMeshProUGUI>();
-            textMesh.text = $"{data.buildingName}\n({data.cost}G)";
+            textMesh.text = $"{data.buildingName}\n({data.cost}G)\nX0";
             textMesh.color = Color.black;
             textMesh.alignment = TextAlignmentOptions.Center;
             textMesh.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 80);
             
-            var capturedData = data; // capture for lambda
-            btn.onClick.AddListener(() => BuildManager.Instance.StartPlacement(capturedData));
+            var capturedData = data; 
+            btn.onClick.AddListener(() => {
+                if (BuildManager.Instance.GetRemainingCount(capturedData.buildingName) > 0)
+                    BuildManager.Instance.StartPlacement(capturedData);
+            });
+        }
+    }
+    
+    private void UpdateBuildButtons()
+    {
+        if (buttonsContainer == null) return;
+        for (int i = 0; i < buttonsContainer.childCount; i++)
+        {
+            var child = buttonsContainer.GetChild(i);
+            string bName = child.name.Replace("Btn_", "");
+            int remain = BuildManager.Instance.GetRemainingCount(bName);
+            var btn = child.GetComponent<Button>();
+            var txt = child.GetComponentInChildren<TextMeshProUGUI>();
+            
+            if (txt != null)
+            {
+                var bData = BuildManager.Instance.availableBuildings.FirstOrDefault(b => b.buildingName == bName);
+                if (bData != null)
+                {
+                    txt.text = $"{bData.buildingName}\n({bData.cost}G)\nX{remain}";
+                }
+            }
+            
+            btn.interactable = remain > 0;
+            child.GetComponent<Image>().color = remain > 0 ? Color.white : new Color(0.8f, 0.8f, 0.8f);
+        }
+    }
+    
+    private void OnSellClicked()
+    {
+        var gridRenderer = Object.FindObjectOfType<GridRenderer>();
+        if (gridRenderer != null && gridRenderer.SelectedBuilding != null)
+        {
+            var selected = gridRenderer.SelectedBuilding;
+            if (selected.data.buildingType == BuildingType.Mine || selected.data.buildingType == BuildingType.Entrance) return;
+            
+            int refund = Mathf.FloorToInt(selected.data.cost * 0.9f);
+            GameState.currentGold += refund;
+            GridManager.Instance.RemoveBuilding(selected.id);
+            gridRenderer.SelectedBuilding = null;
         }
     }
 }

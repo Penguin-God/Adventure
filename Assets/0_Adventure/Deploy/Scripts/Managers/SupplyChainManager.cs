@@ -32,7 +32,7 @@ public class SupplyChainManager : MonoBehaviour
             }
             
             if (mine.currentOutput <= 0) mine.isShutdown = true;
-            else if (mine.currentOutput >= mine.data.maxOutputCapacity) mine.isShutdown = false;
+            else mine.isShutdown = false;
             
             if (!mine.isShutdown && mine.currentOutput > 0)
             {
@@ -43,13 +43,13 @@ public class SupplyChainManager : MonoBehaviour
         // 2. Process Factories
         foreach (var factory in allBuildings.Where(b => b.data.buildingType == BuildingType.Factory))
         {
-            if (factory.currentOutput <= 0) factory.isShutdown = true;
-            else if (factory.currentOutput >= factory.data.maxOutputCapacity) factory.isShutdown = false;
-            
             bool hasInput1 = factory.data.inputType1 == ResourceType.None || factory.currentInput1 > 0;
             bool hasInput2 = factory.data.inputType2 == ResourceType.None || factory.currentInput2 > 0;
             
-            if (hasInput1 && hasInput2 && factory.currentOutput < factory.data.maxOutputCapacity)
+            if (!hasInput1 || !hasInput2) factory.isShutdown = true;
+            else factory.isShutdown = false;
+            
+            if (!factory.isShutdown && factory.currentOutput < factory.data.maxOutputCapacity)
             {
                 factory.productionTimer += Time.deltaTime;
                 float prodTime = factory.data.productionTime > 0 ? factory.data.productionTime : 1f;

@@ -28,23 +28,37 @@ public class GridManager : MonoBehaviour
             Camera.main.orthographicSize = 9f;
         }
         
-        // Generate fixed buildings
-        PlaceFixedBuilding("StoneMine", 0, 7);
-        PlaceFixedBuilding("IronMine", 14, 7);
-        PlaceFixedBuilding("Entrance", 0, 0);
-        PlaceFixedBuilding("Entrance", 7, 0);
-        PlaceFixedBuilding("Entrance", 14, 0);
+        if (GameState.savedBuildings.Count == 0)
+        {
+            // First time generate fixed buildings
+            PlaceFixedBuilding("StoneMine", 0, 7);
+            PlaceFixedBuilding("IronMine", 14, 7);
+            PlaceFixedBuilding("Entrance", 0, 0);
+            PlaceFixedBuilding("Entrance", 7, 0);
+            PlaceFixedBuilding("Entrance", 14, 0);
+        }
+        else
+        {
+            // Load from GameState
+            foreach (var b in GameState.savedBuildings)
+            {
+                PlaceFixedBuilding(b.buildingName, b.x, b.y, b.id);
+            }
+        }
     }
     
-    private void PlaceFixedBuilding(string buildingName, int x, int y)
+    private void PlaceFixedBuilding(string buildingName, int x, int y, string existingId = null)
     {
         var data = Resources.Load<BuildingDataSO>($"Buildings/{buildingName}");
         if (data != null)
         {
-            string newId = System.Guid.NewGuid().ToString();
+            string newId = string.IsNullOrEmpty(existingId) ? System.Guid.NewGuid().ToString() : existingId;
             var buildingModel = new BuildingModel(newId, x, y, data);
             _buildings[newId] = buildingModel;
             OnBuildingPlaced?.Invoke(buildingModel);
+            
+            if (string.IsNullOrEmpty(existingId))
+                GameState.SaveGrid(_buildings.Values);
         }
     }
     
@@ -85,6 +99,7 @@ public class GridManager : MonoBehaviour
         
         OnBuildingPlaced?.Invoke(buildingModel);
         OnGridChanged?.Invoke();
+        GameState.SaveGrid(_buildings.Values);
         return true;
     }
     
@@ -95,6 +110,7 @@ public class GridManager : MonoBehaviour
             _buildings.Remove(buildingId);
             OnBuildingRemoved?.Invoke(buildingId);
             OnGridChanged?.Invoke();
+            GameState.SaveGrid(_buildings.Values);
         }
     }
     
@@ -112,6 +128,7 @@ public class GridManager : MonoBehaviour
         building.x = targetX;
         building.y = targetY;
         OnGridChanged?.Invoke();
+        GameState.SaveGrid(_buildings.Values);
         return true;
     }
 }

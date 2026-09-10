@@ -1,14 +1,17 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Linq;
 
 public class DefenseManager : MonoBehaviour
 {
     public static DefenseManager Instance { get; private set; }
     
-    public int currentGold;
     public float elapsedTime = 0f;
     private bool _isGameOver = false;
     private GameSettingsSO _settings;
+    
+    private StageDataSO _currentStageData;
+    private int _monstersSpawned = 0;
+    private int _monstersKilled = 0;
     
     void Awake()
     {
@@ -19,35 +22,44 @@ public class DefenseManager : MonoBehaviour
     void Start()
     {
         _settings = Resources.Load<GameSettingsSO>("GameSettings");
-        if (_settings != null) currentGold = _settings.startingGold;
-        else currentGold = 3000;
+        _currentStageData = Resources.Load<StageDataSO>($"Stages/Stage_{GameState.currentPlayingStage}");
         
         MonsterManager.Instance.OnMonsterReachedEnd += HandleGameOver;
-        MonsterManager.Instance.OnMonsterKilled += AddGold;
+        MonsterManager.Instance.OnMonsterKilled += HandleMonsterKilled;
         
         StartCoroutine(SpawnMonstersRoutine());
     }
     
+    private void HandleMonsterKilled(int reward)
+    {
+        GameState.currentGold += reward;
+        _monstersKilled++;
+        
+        if (_monstersKilled >= _currentStageData.totalMonsters && !_isGameOver)
+        {
+            HandleGameWin();
+        }
+    }
+    
     private System.Collections.IEnumerator SpawnMonstersRoutine()
     {
-        float waitTime = _settings != null ? _settings.initialWaitTime : 30f;
+        float waitTime = _settings != null ? _settings.initialWaitTime : 3f;
         yield return new WaitForSeconds(waitTime);
         
-        int spawnedCount = 0;
-        
-        while (!_isGameOver)
+        while (!_isGameOver && _monstersSpawned < _currentStageData.totalMonsters)
         {
             var monsterData = Resources.Load<MonsterDataSO>("Monsters/BasicMonster");
             if (monsterData != null)
             {
-                int step = _settings != null ? _settings.monsterHpIncreaseStep : 10;
-                float percent = _settings != null ? _settings.monsterHpIncreasePercent : 0.1f;
-                float hpMultiplier = 1f + (spawnedCount / step) * percent;
+                // We use StageDataSO monsterHp
+                float hp = _currentStageData.monsterHp;
                 
-                MonsterManager.Instance.SpawnMonster(monsterData, hpMultiplier);
-                spawnedCount++;
+                MonsterManager.Instance.SpawnMonster(monsterData, hp / monsterData.maxHp); 
+                // Wait, SpawnMonster's second param is hpMultiplier. 
+                // So if we want exact hp, hpMultiplier = stageHp / baseHp
+                _monstersSpawned++;
             }
-            float delay = _settings != null ? _settings.monsterSpawnDelay : 1f;
+            float delay = _currentStageData.spawnDelay;
             yield return new WaitForSeconds(delay);
         }
     }
@@ -96,22 +108,26 @@ public class DefenseManager : MonoBehaviour
     
     private void HandleGameOver()
     {
+        if (_isGameOver) return;
         _isGameOver = true;
         Debug.Log("Game Over! A monster reached the end.");
+        
+        var uiManager = FindObjectOfType<UIManager>();
+        if (uiManager != null) uiManager.ShowEndGame(false);
     }
     
-    public void AddGold(int amount)
+    private void HandleGameWin()
     {
-        currentGold += amount;
-    }
-    
-    public bool SpendGold(int amount)
-    {
-        if (currentGold >= amount)
+        if (_isGameOver) return;
+        _isGameOver = true;
+        Debug.Log("Stage Clear!");
+        
+        if (GameState.unlockedStage == GameState.currentPlayingStage && GameState.unlockedStage < 5)
         {
-            currentGold -= amount;
-            return true;
+            GameState.unlockedStage++;
         }
-        return false;
+        
+        var uiManager = FindObjectOfType<UIManager>();
+        if (uiManager != null) uiManager.ShowEndGame(true);
     }
 }

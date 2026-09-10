@@ -20,7 +20,7 @@ MonoBehaviour:
   attackSpeed: 0.7
   attackRange: 6
   maxAmmo: 3
-  requiredAmmoType: 1
+  requiredAmmoType: 3
   productionTime: 0
   inputType1: 0
   inputType2: 0
