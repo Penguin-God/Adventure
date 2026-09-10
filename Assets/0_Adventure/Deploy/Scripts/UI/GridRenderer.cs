@@ -134,12 +134,11 @@ public class GridRenderer : MonoBehaviour
                 if (UnityEngine.EventSystems.EventSystem.current != null && 
                     UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) 
                 {
-                    SelectedBuilding = null;
-                    _draggingBuilding = null;
+                    // Do not deselect. Let the UI handle the click.
+                    return;
                 }
-                else
-                {
-                    var clickedBuilding = GridManager.Instance.GetBuildingAt(gridX, gridY);
+                
+                var clickedBuilding = GridManager.Instance.GetBuildingAt(gridX, gridY);
                     SelectedBuilding = clickedBuilding;
                     
                     if (canEdit && clickedBuilding != null && clickedBuilding.data.buildingType != BuildingType.Mine && clickedBuilding.data.buildingType != BuildingType.Entrance) 
@@ -151,7 +150,6 @@ public class GridRenderer : MonoBehaviour
                         _draggingBuilding = null;
                     }
                 }
-            }
             else if (Input.GetMouseButtonUp(0) && _draggingBuilding != null)
             {
                 GridManager.Instance.MoveBuilding(_draggingBuilding.id, gridX, gridY);
