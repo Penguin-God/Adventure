@@ -90,10 +90,6 @@ public class BuildManager : MonoBehaviour
                     CancelPlacement();
                 }
             }
-            else
-            {
-                CancelPlacement();
-            }
         }
         
         if (Input.GetMouseButtonDown(1))

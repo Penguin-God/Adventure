@@ -139,9 +139,16 @@ public class GridRenderer : MonoBehaviour
                 }
                 
                 var clickedBuilding = GridManager.Instance.GetBuildingAt(gridX, gridY);
+                
+                if (canEdit)
+                {
+                    SelectedBuilding = null;
+                    _draggingBuilding = null; // Also disable dragging in build mode
+                }
+                else
+                {
                     SelectedBuilding = clickedBuilding;
-                    
-                    if (canEdit && clickedBuilding != null && clickedBuilding.data.buildingType != BuildingType.Mine && clickedBuilding.data.buildingType != BuildingType.Entrance) 
+                    if (clickedBuilding != null && clickedBuilding.data.buildingType != BuildingType.Mine && clickedBuilding.data.buildingType != BuildingType.Entrance) 
                     {
                         _draggingBuilding = clickedBuilding;
                     }
@@ -150,6 +157,7 @@ public class GridRenderer : MonoBehaviour
                         _draggingBuilding = null;
                     }
                 }
+            }
             else if (Input.GetMouseButtonUp(0) && _draggingBuilding != null)
             {
                 GridManager.Instance.MoveBuilding(_draggingBuilding.id, gridX, gridY);

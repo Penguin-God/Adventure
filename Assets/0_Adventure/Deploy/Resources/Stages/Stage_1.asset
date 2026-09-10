@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Stage_1
   m_EditorClassIdentifier: Deploy::StageDataSO
   stageNumber: 1
-  monsterHp: 100
-  monsterSpeed: 7
+  monsterHp: 120
+  monsterSpeed: 1
   spawnDelay: 2
-  totalMonsters: 10
+  totalMonsters: 3
   clearRewardGold: 0
   buildingRewards:
   - buildingName: StoneFactory
