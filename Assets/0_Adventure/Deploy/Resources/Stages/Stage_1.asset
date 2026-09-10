@@ -17,7 +17,7 @@ MonoBehaviour:
   monsterSpeed: 1
   spawnDelay: 2
   totalMonsters: 3
-  clearRewardGold: 0
+  clearRewardGold: 1000
   buildingRewards:
   - buildingName: StoneFactory
     count: 3

@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Stage_3
   m_EditorClassIdentifier: Deploy::StageDataSO
   stageNumber: 3
-  monsterHp: 300
+  monsterHp: 200
+  monsterSpeed: 4
   spawnDelay: 1
-  totalMonsters: 15
+  totalMonsters: 7
+  clearRewardGold: 0
   buildingRewards:
   - buildingName: AmmoFactory
     count: 3

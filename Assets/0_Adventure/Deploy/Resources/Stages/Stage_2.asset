@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Stage_2
   m_EditorClassIdentifier: Deploy::StageDataSO
   stageNumber: 2
-  monsterHp: 200
+  monsterHp: 150
+  monsterSpeed: 2
   spawnDelay: 1
-  totalMonsters: 10
+  totalMonsters: 5
+  clearRewardGold: 333333
   buildingRewards:
   - buildingName: Archer
     count: 3
