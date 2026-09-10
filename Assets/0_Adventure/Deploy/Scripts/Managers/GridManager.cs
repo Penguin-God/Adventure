@@ -42,18 +42,26 @@ public class GridManager : MonoBehaviour
             // Load from GameState
             foreach (var b in GameState.savedBuildings)
             {
-                PlaceFixedBuilding(b.buildingName, b.x, b.y, b.id);
+                PlaceFixedBuilding(b.buildingName, b.x, b.y, b.id, b);
             }
         }
     }
     
-    private void PlaceFixedBuilding(string buildingName, int x, int y, string existingId = null)
+    private void PlaceFixedBuilding(string buildingName, int x, int y, string existingId = null, BuildingSaveData saveData = null)
     {
         var data = Resources.Load<BuildingDataSO>($"Buildings/{buildingName}");
         if (data != null)
         {
             string newId = string.IsNullOrEmpty(existingId) ? System.Guid.NewGuid().ToString() : existingId;
             var buildingModel = new BuildingModel(newId, x, y, data);
+            
+            if (saveData != null)
+            {
+                buildingModel.currentInput1 = saveData.currentInput1;
+                buildingModel.currentInput2 = saveData.currentInput2;
+                buildingModel.currentOutput = saveData.currentOutput;
+            }
+            
             _buildings[newId] = buildingModel;
             OnBuildingPlaced?.Invoke(buildingModel);
             

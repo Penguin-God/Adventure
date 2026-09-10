@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +10,9 @@ public class BuildingSaveData
     public int x;
     public int y;
     
-    // Additional state if needed, though mostly starting at 0 is fine according to doc.
+    public int currentInput1;
+    public int currentInput2;
+    public int currentOutput;
 }
 
 public static class GameState
@@ -31,7 +33,10 @@ public static class GameState
                 id = b.id,
                 buildingName = b.data.buildingName,
                 x = b.x,
-                y = b.y
+                y = b.y,
+                currentInput1 = b.currentInput1,
+                currentInput2 = b.currentInput2,
+                currentOutput = b.currentOutput
             });
         }
     }

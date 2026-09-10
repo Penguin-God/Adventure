@@ -119,6 +119,8 @@ public class UIManager : MonoBehaviour
                 
                 sBtn.onClick.AddListener(() => {
                     GameState.currentPlayingStage = stageNum;
+                    if (GridManager.Instance != null)
+                        GameState.SaveGrid(GridManager.Instance.GetAllBuildings());
                     SceneManager.LoadScene("Defense");
                 });
             }
@@ -167,6 +169,8 @@ public class UIManager : MonoBehaviour
         retText.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 60);
         
         retBtn.onClick.AddListener(() => {
+            if (GridManager.Instance != null)
+                GameState.SaveGrid(GridManager.Instance.GetAllBuildings());
             SceneManager.LoadScene("Lobby");
         });
         

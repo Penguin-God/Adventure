@@ -63,6 +63,9 @@ public class SceneBuilderWindow : EditorWindow
         var buildManagerGo = new GameObject("BuildManager");
         var buildManager = buildManagerGo.AddComponent<BuildManager>();
         
+        var supplyChainGo = new GameObject("SupplyChainManager");
+        var supplyChain = supplyChainGo.AddComponent<SupplyChainManager>();
+        
         var uiManagerGo = new GameObject("UIManager");
         var uiManager = uiManagerGo.AddComponent<UIManager>();
         
