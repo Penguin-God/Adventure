@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,7 +14,9 @@ public class StageDataSO : ScriptableObject
 {
     public int stageNumber;
     public float monsterHp;
+    public float monsterSpeed;
     public float spawnDelay;
     public int totalMonsters;
+    public int clearRewardGold;
     public List<BuildingCount> buildingRewards = new List<BuildingCount>();
 }

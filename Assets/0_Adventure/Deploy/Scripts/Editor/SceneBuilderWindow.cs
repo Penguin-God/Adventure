@@ -260,8 +260,7 @@ public class SceneBuilderWindow : EditorWindow
             settings = ScriptableObject.CreateInstance<GameSettingsSO>();
             AssetDatabase.CreateAsset(settings, settingsPath);
         }
-        settings.initialWaitTime = 10f;
-        settings.startingGold = 3000;
+        settings.startingGold = 1000;
         settings.monsterSpawnDelay = 1f;
         settings.monsterBaseHp = 150f;
         settings.monsterHpIncreaseStep = 10;
@@ -269,42 +268,27 @@ public class SceneBuilderWindow : EditorWindow
         EditorUtility.SetDirty(settings);
         
         // Generate StageDataSO
-        CreateStageData(1, 150f, 2.0f, 10, new List<BuildingCount> {
+        CreateStageData(1, 150f, 1.0f, 7f, 10, 1000, new List<BuildingCount> {
             new BuildingCount { buildingName = "StoneFactory", count = 3 },
-            new BuildingCount { buildingName = "Road", count = 10 },
-            new BuildingCount { buildingName = "Slingshot", count = 3 }
+            new BuildingCount { buildingName = "Road", count = 3 },
+            new BuildingCount { buildingName = "Slingshot", count = 3 },
+            new BuildingCount { buildingName = "ArrowFactory", count = 3 }
         });
         
-        CreateStageData(2, 200f, 1.0f, 10, new List<BuildingCount> {
+        CreateStageData(2, 200f, 0.7f, 10f, 10, 2000, new List<BuildingCount> {
             new BuildingCount { buildingName = "Archer", count = 3 },
-            new BuildingCount { buildingName = "ArrowFactory", count = 3 },
-            new BuildingCount { buildingName = "Road", count = 5 }
-        });
-        
-        CreateStageData(3, 300f, 1.0f, 15, new List<BuildingCount> {
+            new BuildingCount { buildingName = "ArrowFactory", count = 5 },
+            new BuildingCount { buildingName = "Road", count = 3 },
             new BuildingCount { buildingName = "AmmoFactory", count = 3 },
-            new BuildingCount { buildingName = "Road", count = 5 },
             new BuildingCount { buildingName = "Gun", count = 3 }
         });
         
-        CreateStageData(4, 500f, 1.0f, 15, new List<BuildingCount> {
-            new BuildingCount { buildingName = "TowerBuff", count = 3 },
-            new BuildingCount { buildingName = "FactoryBuff", count = 3 }
-        });
-        
-        CreateStageData(5, 1000f, 0.8f, 25, new List<BuildingCount> {
-            new BuildingCount { buildingName = "StoneFactory", count = 3 },
-            new BuildingCount { buildingName = "ArrowFactory", count = 3 },
-            new BuildingCount { buildingName = "AmmoFactory", count = 3 },
-            new BuildingCount { buildingName = "Slingshot", count = 2 },
-            new BuildingCount { buildingName = "Archer", count = 2 },
-            new BuildingCount { buildingName = "Gun", count = 2 }
-        });
+        CreateStageData(3, 300f, 0.5f, 12f, 15, 0, new List<BuildingCount>());
         
         AssetDatabase.SaveAssets();
     }
     
-    private static void CreateStageData(int stageNum, float hp, float delay, int count, List<BuildingCount> rewards)
+    private static void CreateStageData(int stageNum, float hp, float delay, float speed, int count, int clearRewardGold, List<BuildingCount> rewards)
     {
         string path = $"Assets/0_Adventure/Deploy/Resources/Stages/Stage_{stageNum}.asset";
         var s = AssetDatabase.LoadAssetAtPath<StageDataSO>(path);
@@ -315,8 +299,10 @@ public class SceneBuilderWindow : EditorWindow
         }
         s.stageNumber = stageNum;
         s.monsterHp = hp;
+        s.monsterSpeed = speed;
         s.spawnDelay = delay;
         s.totalMonsters = count;
+        s.clearRewardGold = clearRewardGold;
         s.buildingRewards = rewards;
         EditorUtility.SetDirty(s);
     }

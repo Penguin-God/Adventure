@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Linq;
 
 public class DefenseManager : MonoBehaviour
@@ -43,9 +43,6 @@ public class DefenseManager : MonoBehaviour
     
     private System.Collections.IEnumerator SpawnMonstersRoutine()
     {
-        float waitTime = _settings != null ? _settings.initialWaitTime : 3f;
-        yield return new WaitForSeconds(waitTime);
-        
         while (!_isGameOver && _monstersSpawned < _currentStageData.totalMonsters)
         {
             var monsterData = Resources.Load<MonsterDataSO>("Monsters/BasicMonster");
@@ -53,10 +50,9 @@ public class DefenseManager : MonoBehaviour
             {
                 // We use StageDataSO monsterHp
                 float hp = _currentStageData.monsterHp;
+                float speed = _currentStageData.monsterSpeed;
                 
-                MonsterManager.Instance.SpawnMonster(monsterData, hp / monsterData.maxHp); 
-                // Wait, SpawnMonster's second param is hpMultiplier. 
-                // So if we want exact hp, hpMultiplier = stageHp / baseHp
+                MonsterManager.Instance.SpawnMonster(monsterData, hp / monsterData.maxHp, speed); 
                 _monstersSpawned++;
             }
             float delay = _currentStageData.spawnDelay;
@@ -122,12 +118,14 @@ public class DefenseManager : MonoBehaviour
         _isGameOver = true;
         Debug.Log("Stage Clear!");
         
-        if (GameState.unlockedStage == GameState.currentPlayingStage && GameState.unlockedStage < 5)
+        GameState.currentGold += _currentStageData.clearRewardGold;
+        
+        if (GameState.unlockedStage == GameState.currentPlayingStage && GameState.unlockedStage < 3)
         {
             GameState.unlockedStage++;
         }
         
         var uiManager = FindObjectOfType<UIManager>();
-        if (uiManager != null) uiManager.ShowEndGame(true);
+        if (uiManager != null) uiManager.ShowEndGame(true, _currentStageData.clearRewardGold);
     }
 }

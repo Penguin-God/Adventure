@@ -19,7 +19,7 @@ public static class GameState
 {
     public static int unlockedStage = 1;
     public static int currentPlayingStage = 1;
-    public static int currentGold = 3000;
+    public static int currentGold = 1000;
     
     public static List<BuildingSaveData> savedBuildings = new List<BuildingSaveData>();
     

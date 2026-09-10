@@ -36,10 +36,10 @@ public class MonsterManager : MonoBehaviour
     
     public IEnumerable<MonsterModel> GetActiveMonsters() => _activeMonsters;
     
-    public void SpawnMonster(MonsterDataSO monsterData, float hpMultiplier = 1f)
+    public void SpawnMonster(MonsterDataSO monsterData, float hpMultiplier = 1f, float speedOverride = -1f)
     {
         string newId = Guid.NewGuid().ToString();
-        var monsterModel = new MonsterModel(newId, monsterData, _pathPositions[0], hpMultiplier);
+        var monsterModel = new MonsterModel(newId, monsterData, _pathPositions[0], hpMultiplier, speedOverride);
         _activeMonsters.Add(monsterModel);
         
         var monsterObject = new GameObject($"Monster_{newId}");
@@ -111,7 +111,7 @@ public class MonsterManager : MonoBehaviour
             var targetPosition = _pathPositions[Mathf.Min(monsterModel.currentPathIndex + 1, _pathPositions.Count - 1)];
             
             float distanceToTarget = Vector3.Distance(monsterModel.currentPosition, targetPosition);
-            float moveStep = monsterModel.data.speed * Time.deltaTime;
+            float moveStep = monsterModel.speed * Time.deltaTime;
             
             if (moveStep >= distanceToTarget)
             {

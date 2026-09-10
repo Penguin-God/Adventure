@@ -97,7 +97,7 @@ public class UIManager : MonoBehaviour
             layout.childControlWidth = false;
             layout.childControlHeight = false;
             
-            for (int i = 1; i <= 5; i++)
+            for (int i = 1; i <= 3; i++)
             {
                 int stageNum = i;
                 var sBtnGo = new GameObject($"Stage_{i}");
@@ -177,14 +177,22 @@ public class UIManager : MonoBehaviour
         _endGameContainer.SetActive(false);
     }
     
-    public void ShowEndGame(bool isWin)
+    public void ShowEndGame(bool isWin, int rewardGold = 0)
     {
         if (_endGameContainer != null)
         {
             _endGameContainer.SetActive(true);
             var tmp = _endGameContainer.transform.Find("ResultText").GetComponent<TextMeshProUGUI>();
-            tmp.text = isWin ? "STAGE CLEAR" : "STAGE FAILED";
-            tmp.color = isWin ? Color.green : Color.red;
+            if (isWin)
+            {
+                tmp.text = $"STAGE CLEAR\n<size=30>Reward: {rewardGold} G</size>";
+                tmp.color = Color.green;
+            }
+            else
+            {
+                tmp.text = "STAGE FAILED";
+                tmp.color = Color.red;
+            }
         }
     }
     
@@ -192,17 +200,15 @@ public class UIManager : MonoBehaviour
     {
         bool isLobby = SceneManager.GetActiveScene().name == "Lobby";
         
-        string timeString = "00:00";
-        int monsterCount = 0;
-        if (!isLobby && DefenseManager.Instance != null && MonsterManager.Instance != null)
-        {
-            int timeInSeconds = Mathf.FloorToInt(DefenseManager.Instance.elapsedTime);
-            timeString = string.Format("{0:00}:{1:00}", timeInSeconds / 60, timeInSeconds % 60);
-            monsterCount = MonsterManager.Instance.GetActiveMonsters().Count();
-        }
+
         
         if (topBarText != null)
-            topBarText.text = $"Gold: {GameState.currentGold} | Monsters: {monsterCount} | Time: {timeString}";
+        {
+            if (isLobby)
+                topBarText.text = $"Gold: {GameState.currentGold}";
+            else
+                topBarText.text = "";
+        }
             
         if (isLobby && BuildManager.Instance != null)
         {
