@@ -313,8 +313,22 @@ public class GridRenderer : MonoBehaviour
         buildingGo.transform.SetParent(buildingsParent);
         
         var sr = buildingGo.AddComponent<SpriteRenderer>();
-        if (model.data.sprite != null) sr.sprite = model.data.sprite;
-        else sr.sprite = CreateBoxSprite();
+        if (model.data.sprite != null) 
+        {
+            sr.sprite = model.data.sprite;
+            // Auto-scale to fit within 1x1 grid cell (1 unit)
+            float maxDim = Mathf.Max(sr.sprite.bounds.size.x, sr.sprite.bounds.size.y);
+            if (maxDim > 0)
+            {
+                float targetScale = 1f / maxDim;
+                // Leave a little margin (e.g. 0.9f) or fill it completely
+                buildingGo.transform.localScale = new Vector3(targetScale * 0.95f, targetScale * 0.95f, 1f);
+            }
+        }
+        else 
+        {
+            sr.sprite = CreateBoxSprite();
+        }
         
         if (model.data.buildingType == BuildingType.Tower || model.data.buildingType == BuildingType.Factory || model.data.buildingType == BuildingType.Mine)
         {

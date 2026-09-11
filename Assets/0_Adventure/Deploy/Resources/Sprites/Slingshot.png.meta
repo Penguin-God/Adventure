@@ -1,13 +1,19 @@
 fileFormatVersion: 2
-guid: 06b195abccea64844ba14400afcf799b
+guid: 3c0cfdea60be4d946af057c21cbc62bc
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6809907661698028246
-    second: Cannon_0
+      213: 6585782344118268744
+    second: Gemini_Generated_Image_202sc9202sc9202s-Photoroom_0
   - first:
-      213: -7488512282933653102
-    second: Cannon_1
+      213: 5033471163243505852
+    second: Gemini_Generated_Image_202sc9202sc9202s-Photoroom_1
+  - first:
+      213: 6039852106187591773
+    second: Gemini_Generated_Image_202sc9202sc9202s-Photoroom_2
+  - first:
+      213: -576095990318333065
+    second: Gemini_Generated_Image_202sc9202sc9202s-Photoroom_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -40,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -75,10 +81,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 8192
-    resizeAlgorithm: 1
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -116,13 +122,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cannon_0
+      name: Gemini_Generated_Image_202sc9202sc9202s-Photoroom_0
       rect:
         serializedVersion: 2
-        x: 25
-        y: 25
-        width: 63
-        height: 64
+        x: 0
+        y: 0
+        width: 2048
+        height: 2048
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +137,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a2d2747ef095e71a0800000000000000
-      internalID: -6809907661698028246
+      spriteID: 84375352626656b50800000000000000
+      internalID: 6585782344118268744
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cannon_1
+      name: Gemini_Generated_Image_202sc9202sc9202s-Photoroom_1
       rect:
         serializedVersion: 2
-        x: 62
-        y: 79
-        width: 41
-        height: 24
+        x: 340
+        y: 340
+        width: 722
+        height: 772
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,8 +159,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 291179721c5731890800000000000000
-      internalID: -7488512282933653102
+      spriteID: cb82d40ca5b7ad540800000000000000
+      internalID: 5033471163243505852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gemini_Generated_Image_202sc9202sc9202s-Photoroom_2
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 1109
+        width: 134
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d50d4357d7dd1d350800000000000000
+      internalID: 6039852106187591773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Gemini_Generated_Image_202sc9202sc9202s-Photoroom_3
+      rect:
+        serializedVersion: 2
+        x: 1055
+        y: 746
+        width: 111
+        height: 137
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7738c84cfbb4108f0800000000000000
+      internalID: -576095990318333065
       vertices: []
       indices: 
       edges: []
@@ -173,8 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Cannon_0: -6809907661698028246
-      Cannon_1: -7488512282933653102
+      Gemini_Generated_Image_202sc9202sc9202s-Photoroom_0: 6585782344118268744
+      Gemini_Generated_Image_202sc9202sc9202s-Photoroom_1: 5033471163243505852
+      Gemini_Generated_Image_202sc9202sc9202s-Photoroom_2: 6039852106187591773
+      Gemini_Generated_Image_202sc9202sc9202s-Photoroom_3: -576095990318333065
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
