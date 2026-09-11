@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Deploy::BuildingDataSO
   buildingType: 1
   buildingName: Archer
-  sprite: {fileID: 21300000, guid: 32b0de9455f84cb4eb043eed97e49877, type: 3}
+  sprite: {fileID: 21300000, guid: 41e710190bb1b3d47b5f460f2423a571, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
   attackDamage: 35
   attackSpeed: 1.2

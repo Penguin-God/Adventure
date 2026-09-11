@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Deploy::BuildingDataSO
   buildingType: 5
   buildingName: IronMine
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: aaafdf8b5467e7847af6ec1c243c9f63, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
   attackDamage: 0
   attackSpeed: 0

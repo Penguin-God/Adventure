@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 41e710190bb1b3d47b5f460f2423a571
+guid: 32b0de9455f84cb4eb043eed97e49877
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3989193552243501014
-    second: function_icon_archer_0
+      213: -7132172409892320828
+    second: Archer_0
+  - first:
+      213: -1353735933490891112
+    second: Archer_1
+  - first:
+      213: 3001767060249510921
+    second: Archer_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +43,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -72,10 +78,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
+    maxTextureSize: 8192
+    resizeAlgorithm: 1
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -113,13 +119,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: function_icon_archer_0
+      name: Archer_0
       rect:
         serializedVersion: 2
-        x: 61
-        y: 60
-        width: 136
-        height: 136
+        x: 25
+        y: 25
+        width: 57
+        height: 50
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +134,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6d7a0cd66667c5730800000000000000
-      internalID: 3989193552243501014
+      spriteID: 4c9c6872bfe650d90800000000000000
+      internalID: -7132172409892320828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Archer_1
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 69
+        width: 34
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 896f7944750963de0800000000000000
+      internalID: -1353735933490891112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Archer_2
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 66
+        width: 28
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90404acbc3b68a920800000000000000
+      internalID: 3001767060249510921
       vertices: []
       indices: 
       edges: []
@@ -148,7 +198,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      function_icon_archer_0: 3989193552243501014
+      Archer_0: -7132172409892320828
+      Archer_1: -1353735933490891112
+      Archer_2: 3001767060249510921
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

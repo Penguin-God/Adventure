@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Deploy::BuildingDataSO
   buildingType: 0
   buildingName: StoneFactory
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 188fe65b495d04c4ca50ba3911ee02bb, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
   attackDamage: 0
   attackSpeed: 0

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Deploy::BuildingDataSO
   buildingType: 0
   buildingName: AmmoFactory
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 0410b42165552f7419f836f3d4927796, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
   attackDamage: 0
   attackSpeed: 0
