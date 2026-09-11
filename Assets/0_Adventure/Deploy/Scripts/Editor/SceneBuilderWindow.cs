@@ -1,7 +1,7 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
@@ -363,3 +363,4 @@ public class SceneBuilderWindow : EditorWindow
         EditorUtility.SetDirty(b);
     }
 }
+#endif

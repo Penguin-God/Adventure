@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Stage_4
   m_EditorClassIdentifier: Deploy::StageDataSO
   stageNumber: 4
-  monsterHp: 500
-  monsterSpeed: 6
-  spawnDelay: 0.5
+  monsterHp: 400
+  monsterSpeed: 5
+  spawnDelay: 0.8
   totalMonsters: 15
   clearRewardGold: 0
   buildingRewards:
