@@ -284,18 +284,7 @@ public class GridRenderer : MonoBehaviour
                         textMesh.text = $"{building.currentOutput}/{building.data.maxOutputCapacity}";
                         textMesh.color = building.isShutdown ? Color.red : Color.black;
                         
-                        if (building.data.buildingType == BuildingType.Factory)
-                        {
-                            var inputText = _buildingObjects[building.id].transform.Find("InputText");
-                            if (inputText != null)
-                            {
-                                var tmp = inputText.GetComponent<TMPro.TextMeshPro>();
-                                string info = "";
-                                if (building.data.inputType1 != ResourceType.None) info += $"{building.data.inputType1}:{building.currentInput1}/{building.data.maxInputCapacity} ";
-                                if (building.data.inputType2 != ResourceType.None) info += $"{building.data.inputType2}:{building.currentInput2}/{building.data.maxInputCapacity}";
-                                tmp.text = info.Trim();
-                            }
-                        }
+
                     }
                     else
                     {
@@ -341,18 +330,7 @@ public class GridRenderer : MonoBehaviour
             textMesh.fontSize = 2.5f;
             textMesh.text = "";
             
-            if (model.data.buildingType == BuildingType.Factory)
-            {
-                var inputTextGo = new GameObject("InputText");
-                inputTextGo.transform.SetParent(buildingGo.transform);
-                inputTextGo.transform.localPosition = new Vector3(0, -0.4f, -0.1f);
-                
-                var inputTmp = inputTextGo.AddComponent<TMPro.TextMeshPro>();
-                inputTmp.alignment = TMPro.TextAlignmentOptions.Center;
-                inputTmp.fontSize = 1.8f;
-                inputTmp.color = Color.blue;
-                inputTmp.text = "";
-            }
+
             textMesh.color = Color.black;
             textMesh.rectTransform.sizeDelta = new Vector2(1, 1);
         }

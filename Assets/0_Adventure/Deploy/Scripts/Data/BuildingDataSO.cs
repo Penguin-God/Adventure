@@ -7,6 +7,7 @@ public class BuildingDataSO : ScriptableObject
     public string buildingName;
     public Sprite sprite;
     public Color color = Color.white;
+    public string description;
     
     public float attackDamage;
     public float attackSpeed;

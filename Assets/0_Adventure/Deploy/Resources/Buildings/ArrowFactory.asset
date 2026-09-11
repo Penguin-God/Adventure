@@ -16,6 +16,7 @@ MonoBehaviour:
   buildingName: ArrowFactory
   sprite: {fileID: 21300000, guid: 32b0de9455f84cb4eb043eed97e49877, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
+  description: "\uCCA0\uC744 \uD654\uC0B4\uB85C \uB9CC\uB4DC\uB294 \uACF5\uC7A5"
   attackDamage: 0
   attackSpeed: 0
   attackRange: 0

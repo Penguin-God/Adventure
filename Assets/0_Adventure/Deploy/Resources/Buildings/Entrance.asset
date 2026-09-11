@@ -16,6 +16,7 @@ MonoBehaviour:
   buildingName: Entrance
   sprite: {fileID: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
+  description: "\uD0C0\uC6CC \uAD6C\uC5ED \uC785\uAD6C"
   attackDamage: 0
   attackSpeed: 0
   attackRange: 0

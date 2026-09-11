@@ -16,6 +16,8 @@ MonoBehaviour:
   buildingName: Road
   sprite: {fileID: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
+  description: "\uAC74\uBB3C \uAC04 \uC7AC\uB8CC\uB4E4\uC758 \uC5F0\uACB0 \uBC94\uC704\uB97C
+    \uB298\uB824\uC90C"
   attackDamage: 0
   attackSpeed: 0
   attackRange: 0

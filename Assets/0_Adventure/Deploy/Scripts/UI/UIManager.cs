@@ -16,8 +16,16 @@ public class UIManager : MonoBehaviour
     private GameObject _stageContainer;
     private GameObject _endGameContainer;
     
+    private TMP_FontAsset _koreanFont;
+    private GameObject _infoPopup;
+    private TextMeshProUGUI _infoNameText;
+    private TextMeshProUGUI _infoDescText;
+    
     void Start()
     {
+        _koreanFont = Resources.Load<TMP_FontAsset>("font/MaplestoryBold");
+        if (topBarText != null && _koreanFont != null) topBarText.font = _koreanFont;
+        
         if (cancelButton != null) cancelButton.onClick.AddListener(() => {
             if (BuildManager.Instance != null) BuildManager.Instance.CancelPlacement();
         });
@@ -49,6 +57,7 @@ public class UIManager : MonoBehaviour
         var sellTextGo = new GameObject("Text");
         sellTextGo.transform.SetParent(sellBtnGo.transform, false);
         var sellText = sellTextGo.AddComponent<TextMeshProUGUI>();
+        if (_koreanFont != null) sellText.font = _koreanFont;
         sellText.text = "Sell";
         sellText.color = Color.black;
         sellText.alignment = TextAlignmentOptions.Center;
@@ -56,6 +65,48 @@ public class UIManager : MonoBehaviour
         
         _sellButton.onClick.AddListener(OnSellClicked);
         _sellButton.gameObject.SetActive(false);
+        
+        // Info Popup
+        _infoPopup = new GameObject("InfoPopup");
+        _infoPopup.transform.SetParent(canvas, false);
+        _infoPopup.AddComponent<Image>().color = new Color(0, 0, 0, 0.8f);
+        var infoRt = _infoPopup.GetComponent<RectTransform>();
+        infoRt.anchorMin = new Vector2(0, 0.5f);
+        infoRt.anchorMax = new Vector2(0, 0.5f);
+        infoRt.pivot = new Vector2(0, 0.5f);
+        infoRt.anchoredPosition = new Vector2(20, 0);
+        infoRt.sizeDelta = new Vector2(300, 200);
+        
+        var nameGo = new GameObject("NameText");
+        nameGo.transform.SetParent(_infoPopup.transform, false);
+        _infoNameText = nameGo.AddComponent<TextMeshProUGUI>();
+        if (_koreanFont != null) _infoNameText.font = _koreanFont;
+        _infoNameText.alignment = TextAlignmentOptions.Top;
+        _infoNameText.fontSize = 28;
+        _infoNameText.color = Color.white;
+        var nameRt = nameGo.GetComponent<RectTransform>();
+        nameRt.anchorMin = new Vector2(0, 1);
+        nameRt.anchorMax = new Vector2(1, 1);
+        nameRt.pivot = new Vector2(0.5f, 1);
+        nameRt.sizeDelta = new Vector2(0, 50);
+        nameRt.anchoredPosition = new Vector2(0, -10);
+        
+        var descGo = new GameObject("DescText");
+        descGo.transform.SetParent(_infoPopup.transform, false);
+        _infoDescText = descGo.AddComponent<TextMeshProUGUI>();
+        if (_koreanFont != null) _infoDescText.font = _koreanFont;
+        _infoDescText.alignment = TextAlignmentOptions.TopLeft;
+        _infoDescText.fontSize = 18;
+        _infoDescText.color = Color.white;
+        _infoDescText.enableWordWrapping = true;
+        var descRt = descGo.GetComponent<RectTransform>();
+        descRt.anchorMin = new Vector2(0, 0);
+        descRt.anchorMax = new Vector2(1, 0);
+        descRt.pivot = new Vector2(0.5f, 0);
+        descRt.sizeDelta = new Vector2(-20, 130);
+        descRt.anchoredPosition = new Vector2(0, 10);
+        
+        _infoPopup.SetActive(false);
         
         if (isLobby)
         {
@@ -243,16 +294,38 @@ public class UIManager : MonoBehaviour
     private void UpdateSelectionUI()
     {
         var gridRenderer = Object.FindObjectOfType<GridRenderer>();
+        BuildingDataSO targetData = null;
+
+        if (BuildManager.Instance != null && BuildManager.Instance.IsPlacing)
+        {
+            targetData = BuildManager.Instance.BuildingToPlace;
+        }
+        else if (gridRenderer != null && gridRenderer.SelectedBuilding != null)
+        {
+            targetData = gridRenderer.SelectedBuilding.data;
+        }
+
+        if (targetData != null && _infoPopup != null)
+        {
+            _infoPopup.SetActive(true);
+            if (_infoNameText != null) _infoNameText.text = targetData.buildingName;
+            if (_infoDescText != null) _infoDescText.text = string.IsNullOrEmpty(targetData.description) ? "" : targetData.description;
+        }
+        else if (_infoPopup != null)
+        {
+            _infoPopup.SetActive(false);
+        }
+
         if (gridRenderer != null && gridRenderer.SelectedBuilding != null)
         {
             var selected = gridRenderer.SelectedBuilding;
             if (selected.data.buildingType != BuildingType.Mine && selected.data.buildingType != BuildingType.Entrance)
             {
-                _sellButton.gameObject.SetActive(true);
+                if (_sellButton != null) _sellButton.gameObject.SetActive(true);
             }
             else
             {
-                _sellButton.gameObject.SetActive(false);
+                if (_sellButton != null) _sellButton.gameObject.SetActive(false);
             }
         }
         else
@@ -318,9 +391,10 @@ public class UIManager : MonoBehaviour
             var textGo = new GameObject("Text");
             textGo.transform.SetParent(btnGo.transform, false);
             var textMesh = textGo.AddComponent<TextMeshProUGUI>();
-            textMesh.text = $"{data.buildingName}\n{data.cost}G";
+            if (_koreanFont != null) textMesh.font = _koreanFont;
+            textMesh.text = $"{data.buildingName}\n{data.cost}G / X0";
             textMesh.color = Color.black;
-            textMesh.fontSize = 32;
+            textMesh.fontSize = 18;
             textMesh.alignment = TextAlignmentOptions.Center;
             textMesh.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 80);
             

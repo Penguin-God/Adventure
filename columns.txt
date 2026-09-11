@@ -1,0 +1,18 @@
+Type,Name,Gold,소환 가능 구역,효과 범위,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,설명
+Road: 건물 간 재료들의 연결 범위를 늘려줌
+nan: nan
+StoneFactory: 돌을 동그란돌로 만드는 공장
+ArrowFactory: 쇠를 화살로 만드는 공장
+AmmoFactory: 화살, 동그란 돌을 총알로 만드는 공장
+nan: nan
+nan: nan
+FactoryBuff: nan
+nan: nan
+nan: nan
+TowerBuff: nan
+nan: nan
+nan: nan
+nan: nan
+Slingshot: 동그란 돌을 사용하는 타워
+Archer: 화살 사용하는 타워
+Gun: 총알 사용하는 타워

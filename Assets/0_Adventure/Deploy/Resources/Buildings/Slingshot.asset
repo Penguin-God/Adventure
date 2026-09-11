@@ -16,6 +16,7 @@ MonoBehaviour:
   buildingName: Slingshot
   sprite: {fileID: 21300000, guid: 3c0cfdea60be4d946af057c21cbc62bc, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
+  description: "\uB3D9\uADF8\uB780 \uB3CC\uC744 \uC0AC\uC6A9\uD558\uB294 \uD0C0\uC6CC"
   attackDamage: 50
   attackSpeed: 0.7
   attackRange: 6

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Stage_4
   m_EditorClassIdentifier: Deploy::StageDataSO
   stageNumber: 4
-  monsterHp: 330
-  monsterSpeed: 5
-  spawnDelay: 0.7
-  totalMonsters: 10
+  monsterHp: 500
+  monsterSpeed: 6
+  spawnDelay: 0.5
+  totalMonsters: 15
   clearRewardGold: 0
   buildingRewards:
   - buildingName: FactoryBuff

@@ -16,6 +16,7 @@ MonoBehaviour:
   buildingName: StoneFactory
   sprite: {fileID: 21300000, guid: 188fe65b495d04c4ca50ba3911ee02bb, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
+  description: "\uB3CC\uC744 \uB3D9\uADF8\uB780\uB3CC\uB85C \uB9CC\uB4DC\uB294 \uACF5\uC7A5"
   attackDamage: 0
   attackSpeed: 0
   attackRange: 0

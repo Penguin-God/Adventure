@@ -16,6 +16,7 @@ MonoBehaviour:
   buildingName: Gun
   sprite: {fileID: 21300000, guid: bc506f1ecec0e5840baf2a256b14fd22, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
+  description: "\uCD1D\uC54C \uC0AC\uC6A9\uD558\uB294 \uD0C0\uC6CC"
   attackDamage: 50
   attackSpeed: 2
   attackRange: 15
