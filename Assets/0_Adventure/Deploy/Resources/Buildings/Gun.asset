@@ -30,4 +30,4 @@ MonoBehaviour:
   connectionRange: 1
   buffAmount: 0
   buffRange: 0
-  cost: 300
+  cost: 600

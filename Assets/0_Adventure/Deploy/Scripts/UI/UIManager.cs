@@ -97,7 +97,7 @@ public class UIManager : MonoBehaviour
             layout.childControlWidth = false;
             layout.childControlHeight = false;
             
-            for (int i = 1; i <= 3; i++)
+            for (int i = 1; i <= 4; i++)
             {
                 int stageNum = i;
                 var sBtnGo = new GameObject($"Stage_{i}");

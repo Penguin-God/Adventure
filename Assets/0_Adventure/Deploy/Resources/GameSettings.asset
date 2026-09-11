@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0348deb126564864cb324ac9b4111006, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: Deploy::GameSettingsSO
-  initialWaitTime: 10
-  startingGold: 3000
+  startingGold: 1000
   monsterSpawnDelay: 1
   monsterBaseHp: 150
   monsterHpIncreaseStep: 10

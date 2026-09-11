@@ -17,11 +17,11 @@ MonoBehaviour:
   monsterSpeed: 4
   spawnDelay: 1
   totalMonsters: 7
-  clearRewardGold: 0
+  clearRewardGold: 5000
   buildingRewards:
   - buildingName: AmmoFactory
     count: 3
   - buildingName: Road
-    count: 5
+    count: 15
   - buildingName: Gun
-    count: 3
+    count: 1

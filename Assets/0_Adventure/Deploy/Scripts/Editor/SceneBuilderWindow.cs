@@ -236,7 +236,7 @@ public class SceneBuilderWindow : EditorWindow
         // Factories
         CreateBuildingData("StoneFactory", BuildingType.Factory, 100, 1, 1f, ResourceType.Stone, ResourceType.None, 5, ResourceType.RoundStone, 5);
         CreateBuildingData("ArrowFactory", BuildingType.Factory, 150, 1, 1f, ResourceType.Iron, ResourceType.None, 5, ResourceType.Arrow, 5);
-        CreateBuildingData("AmmoFactory", BuildingType.Factory, 200, 1, 1f, ResourceType.Arrow, ResourceType.RoundStone, 5, ResourceType.GunAmmo, 5);
+        CreateBuildingData("AmmoFactory", BuildingType.Factory, 400, 1, 1f, ResourceType.Arrow, ResourceType.RoundStone, 5, ResourceType.GunAmmo, 5);
         
         // Buffs
         CreateBuildingData("FactoryBuff", BuildingType.FactorySpeedBuff, 100, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 1f, buffRng: 1);
@@ -245,13 +245,19 @@ public class SceneBuilderWindow : EditorWindow
         // Towers
         CreateBuildingData("Slingshot", BuildingType.Tower, 150, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 0.7f, atkRange: 6, maxAmmo: 3, reqAmmo: ResourceType.RoundStone);
         CreateBuildingData("Archer", BuildingType.Tower, 200, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 35f, atkSpd: 1.2f, atkRange: 10, maxAmmo: 5, reqAmmo: ResourceType.Arrow);
-        CreateBuildingData("Gun", BuildingType.Tower, 300, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 2f, atkRange: 15, maxAmmo: 10, reqAmmo: ResourceType.GunAmmo);
+        CreateBuildingData("Gun", BuildingType.Tower, 600, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 2f, atkRange: 15, maxAmmo: 10, reqAmmo: ResourceType.GunAmmo);
         
-        var monsterData = ScriptableObject.CreateInstance<MonsterDataSO>();
+        var monsterPath = "Assets/0_Adventure/Deploy/Resources/Monsters/BasicMonster.asset";
+        var monsterData = AssetDatabase.LoadAssetAtPath<MonsterDataSO>(monsterPath);
+        if (monsterData == null)
+        {
+            monsterData = ScriptableObject.CreateInstance<MonsterDataSO>();
+            AssetDatabase.CreateAsset(monsterData, monsterPath);
+        }
         monsterData.maxHp = 150f;
         monsterData.speed = 1f;
         monsterData.rewardGold = 20;
-        AssetDatabase.CreateAsset(monsterData, "Assets/0_Adventure/Deploy/Resources/Monsters/BasicMonster.asset");
+        EditorUtility.SetDirty(monsterData);
         
         var settingsPath = "Assets/0_Adventure/Deploy/Resources/GameSettings.asset";
         var settings = AssetDatabase.LoadAssetAtPath<GameSettingsSO>(settingsPath);
@@ -268,22 +274,29 @@ public class SceneBuilderWindow : EditorWindow
         EditorUtility.SetDirty(settings);
         
         // Generate StageDataSO
-        CreateStageData(1, 150f, 1.0f, 7f, 10, 1000, new List<BuildingCount> {
-            new BuildingCount { buildingName = "StoneFactory", count = 3 },
-            new BuildingCount { buildingName = "Road", count = 3 },
-            new BuildingCount { buildingName = "Slingshot", count = 3 },
-            new BuildingCount { buildingName = "ArrowFactory", count = 3 }
+        CreateStageData(1, 120f, 2.0f, 1f, 3, 1200, new List<BuildingCount> {
+            new BuildingCount { buildingName = "StoneFactory", count = 2 },
+            new BuildingCount { buildingName = "Road", count = 4 },
+            new BuildingCount { buildingName = "Slingshot", count = 2 }
         });
         
-        CreateStageData(2, 200f, 0.7f, 10f, 10, 2000, new List<BuildingCount> {
-            new BuildingCount { buildingName = "Archer", count = 3 },
-            new BuildingCount { buildingName = "ArrowFactory", count = 5 },
-            new BuildingCount { buildingName = "Road", count = 3 },
+        CreateStageData(2, 150f, 1.0f, 2f, 5, 3000, new List<BuildingCount> {
+            new BuildingCount { buildingName = "Slingshot", count = 3 },
+            new BuildingCount { buildingName = "ArrowFactory", count = 3 },
+            new BuildingCount { buildingName = "Road", count = 4 }
+        });
+        
+        CreateStageData(3, 200f, 1.0f, 4f, 7, 5000, new List<BuildingCount> {
             new BuildingCount { buildingName = "AmmoFactory", count = 3 },
+            new BuildingCount { buildingName = "Road", count = 15 },
+            new BuildingCount { buildingName = "Gun", count = 1 }
+        });
+        
+        CreateStageData(4, 500f, 0.5f, 6f, 15, 0, new List<BuildingCount> {
+            new BuildingCount { buildingName = "FactoryBuff", count = 3 },
+            new BuildingCount { buildingName = "TowerBuff", count = 2 },
             new BuildingCount { buildingName = "Gun", count = 3 }
         });
-        
-        CreateStageData(3, 300f, 0.5f, 12f, 15, 0, new List<BuildingCount>());
         
         AssetDatabase.SaveAssets();
     }

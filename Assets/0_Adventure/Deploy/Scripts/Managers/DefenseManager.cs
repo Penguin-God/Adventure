@@ -120,7 +120,7 @@ public class DefenseManager : MonoBehaviour
         
         GameState.currentGold += _currentStageData.clearRewardGold;
         
-        if (GameState.unlockedStage == GameState.currentPlayingStage && GameState.unlockedStage < 3)
+        if (GameState.unlockedStage == GameState.currentPlayingStage && GameState.unlockedStage < 4)
         {
             GameState.unlockedStage++;
         }
