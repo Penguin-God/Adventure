@@ -264,10 +264,51 @@ public class UIManager : MonoBehaviour
     private void CreateBuildButtons()
     {
         if (buttonsContainer == null) return;
+        
+        var hLayout = buttonsContainer.GetComponent<HorizontalLayoutGroup>();
+        if (hLayout != null) DestroyImmediate(hLayout);
+        
+        var vLayout = buttonsContainer.gameObject.AddComponent<VerticalLayoutGroup>();
+        vLayout.childAlignment = TextAnchor.MiddleCenter;
+        vLayout.spacing = 10;
+        vLayout.childControlHeight = false;
+        vLayout.childControlWidth = false;
+        vLayout.childForceExpandHeight = false;
+        vLayout.childForceExpandWidth = false;
+        
+        var containerRt = buttonsContainer.GetComponent<RectTransform>();
+        containerRt.sizeDelta = new Vector2(containerRt.sizeDelta.x, 170);
+        
+        var villageRow = new GameObject("VillageRow");
+        villageRow.transform.SetParent(buttonsContainer, false);
+        var villageLayout = villageRow.AddComponent<HorizontalLayoutGroup>();
+        villageLayout.childAlignment = TextAnchor.MiddleCenter;
+        villageLayout.spacing = 10;
+        villageLayout.childControlHeight = false;
+        villageLayout.childControlWidth = false;
+        villageLayout.childForceExpandHeight = false;
+        villageLayout.childForceExpandWidth = false;
+        var vRt = villageRow.GetComponent<RectTransform>();
+        vRt.sizeDelta = new Vector2(800, 80);
+        
+        var towerRow = new GameObject("TowerRow");
+        towerRow.transform.SetParent(buttonsContainer, false);
+        var towerLayout = towerRow.AddComponent<HorizontalLayoutGroup>();
+        towerLayout.childAlignment = TextAnchor.MiddleCenter;
+        towerLayout.spacing = 10;
+        towerLayout.childControlHeight = false;
+        towerLayout.childControlWidth = false;
+        towerLayout.childForceExpandHeight = false;
+        towerLayout.childForceExpandWidth = false;
+        var tRt = towerRow.GetComponent<RectTransform>();
+        tRt.sizeDelta = new Vector2(800, 80);
+        
         foreach (var data in BuildManager.Instance.availableBuildings)
         {
             var btnGo = new GameObject($"Btn_{data.buildingName}");
-            btnGo.transform.SetParent(buttonsContainer, false);
+            bool isTower = data.buildingType == BuildingType.Tower || data.buildingType == BuildingType.TowerAttackBuff;
+            btnGo.transform.SetParent(isTower ? towerRow.transform : villageRow.transform, false);
+            
             btnGo.AddComponent<Image>().color = Color.white;
             var btn = btnGo.AddComponent<Button>();
             
@@ -293,12 +334,14 @@ public class UIManager : MonoBehaviour
     private void UpdateBuildButtons()
     {
         if (buttonsContainer == null) return;
-        for (int i = 0; i < buttonsContainer.childCount; i++)
+        var buttons = buttonsContainer.GetComponentsInChildren<Button>();
+        foreach (var btn in buttons)
         {
-            var child = buttonsContainer.GetChild(i);
+            var child = btn.transform;
+            if (!child.name.StartsWith("Btn_")) continue;
+            
             string bName = child.name.Replace("Btn_", "");
             int remain = BuildManager.Instance.GetRemainingCount(bName);
-            var btn = child.GetComponent<Button>();
             var txt = child.GetComponentInChildren<TextMeshProUGUI>();
             
             if (txt != null)
