@@ -281,7 +281,7 @@ public class SceneBuilderWindow : EditorWindow
         });
         
         CreateStageData(2, 150f, 1.0f, 2f, 5, 3000, new List<BuildingCount> {
-            new BuildingCount { buildingName = "Slingshot", count = 3 },
+            new BuildingCount { buildingName = "Archer", count = 3 },
             new BuildingCount { buildingName = "ArrowFactory", count = 3 },
             new BuildingCount { buildingName = "Road", count = 4 }
         });

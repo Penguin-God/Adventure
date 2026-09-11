@@ -19,7 +19,7 @@ MonoBehaviour:
   totalMonsters: 5
   clearRewardGold: 3000
   buildingRewards:
-  - buildingName: Slingshot
+  - buildingName: Archer
     count: 3
   - buildingName: ArrowFactory
     count: 3
