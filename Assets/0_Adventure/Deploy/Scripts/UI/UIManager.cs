@@ -277,7 +277,7 @@ public class UIManager : MonoBehaviour
         vLayout.childForceExpandWidth = false;
         
         var containerRt = buttonsContainer.GetComponent<RectTransform>();
-        containerRt.sizeDelta = new Vector2(containerRt.sizeDelta.x, 170);
+        containerRt.sizeDelta = new Vector2(1100, 170);
         
         var villageRow = new GameObject("VillageRow");
         villageRow.transform.SetParent(buttonsContainer, false);
@@ -289,7 +289,7 @@ public class UIManager : MonoBehaviour
         villageLayout.childForceExpandHeight = false;
         villageLayout.childForceExpandWidth = false;
         var vRt = villageRow.GetComponent<RectTransform>();
-        vRt.sizeDelta = new Vector2(800, 80);
+        vRt.sizeDelta = new Vector2(1100, 80);
         
         var towerRow = new GameObject("TowerRow");
         towerRow.transform.SetParent(buttonsContainer, false);
@@ -301,7 +301,7 @@ public class UIManager : MonoBehaviour
         towerLayout.childForceExpandHeight = false;
         towerLayout.childForceExpandWidth = false;
         var tRt = towerRow.GetComponent<RectTransform>();
-        tRt.sizeDelta = new Vector2(800, 80);
+        tRt.sizeDelta = new Vector2(1100, 80);
         
         foreach (var data in BuildManager.Instance.availableBuildings)
         {
@@ -313,15 +313,16 @@ public class UIManager : MonoBehaviour
             var btn = btnGo.AddComponent<Button>();
             
             var rt = btnGo.GetComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(150, 80);
+            rt.sizeDelta = new Vector2(200, 80);
             
             var textGo = new GameObject("Text");
             textGo.transform.SetParent(btnGo.transform, false);
             var textMesh = textGo.AddComponent<TextMeshProUGUI>();
-            textMesh.text = $"{data.buildingName}\n({data.cost}G)\nX0";
+            textMesh.text = $"{data.buildingName}\n{data.cost}G";
             textMesh.color = Color.black;
+            textMesh.fontSize = 32;
             textMesh.alignment = TextAlignmentOptions.Center;
-            textMesh.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 80);
+            textMesh.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 80);
             
             var capturedData = data; 
             btn.onClick.AddListener(() => {
@@ -349,7 +350,7 @@ public class UIManager : MonoBehaviour
                 var bData = BuildManager.Instance.availableBuildings.FirstOrDefault(b => b.buildingName == bName);
                 if (bData != null)
                 {
-                    txt.text = $"{bData.buildingName}\n({bData.cost}G)\nX{remain}";
+                    txt.text = $"{bData.buildingName}\n{bData.cost}G / X{remain}";
                 }
             }
             
