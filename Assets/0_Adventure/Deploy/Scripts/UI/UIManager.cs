@@ -319,7 +319,9 @@ public class UIManager : MonoBehaviour
         if (gridRenderer != null && gridRenderer.SelectedBuilding != null)
         {
             var selected = gridRenderer.SelectedBuilding;
-            if (selected.data.buildingType != BuildingType.Mine && selected.data.buildingType != BuildingType.Entrance)
+            bool isBuildMode = BuildManager.Instance != null && BuildManager.Instance.isBuildModeActive;
+            
+            if (!isBuildMode && selected.data.buildingType != BuildingType.Mine && selected.data.buildingType != BuildingType.Entrance)
             {
                 if (_sellButton != null) _sellButton.gameObject.SetActive(true);
             }
@@ -394,7 +396,7 @@ public class UIManager : MonoBehaviour
             if (_koreanFont != null) textMesh.font = _koreanFont;
             textMesh.text = $"{data.buildingName}\n{data.cost}G / X0";
             textMesh.color = Color.black;
-            textMesh.fontSize = 18;
+            textMesh.fontSize = 28;
             textMesh.alignment = TextAlignmentOptions.Center;
             textMesh.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 80);
             

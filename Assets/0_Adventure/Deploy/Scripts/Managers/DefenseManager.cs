@@ -7,8 +7,7 @@ public class DefenseManager : MonoBehaviour
     
     public float elapsedTime = 0f;
     private bool _isGameOver = false;
-    private GameSettingsSO _settings;
-    
+
     private StageDataSO _currentStageData;
     private int _monstersSpawned = 0;
     private int _monstersKilled = 0;
@@ -21,7 +20,6 @@ public class DefenseManager : MonoBehaviour
     
     void Start()
     {
-        _settings = Resources.Load<GameSettingsSO>("GameSettings");
         _currentStageData = Resources.Load<StageDataSO>($"Stages/Stage_{GameState.currentPlayingStage}");
         
         MonsterManager.Instance.OnMonsterReachedEnd += HandleGameOver;
