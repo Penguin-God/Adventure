@@ -301,6 +301,7 @@ public class GridRenderer : MonoBehaviour
         buildingGo.transform.position = new Vector3(model.x, model.y, 0);
         buildingGo.transform.SetParent(buildingsParent);
         
+        float targetScale = 1f;
         var sr = buildingGo.AddComponent<SpriteRenderer>();
         if (model.data.sprite != null) 
         {
@@ -309,7 +310,7 @@ public class GridRenderer : MonoBehaviour
             float maxDim = Mathf.Max(sr.sprite.bounds.size.x, sr.sprite.bounds.size.y);
             if (maxDim > 0)
             {
-                float targetScale = 1f / maxDim;
+                targetScale = 1f / maxDim;
                 // Leave a little margin (e.g. 0.9f) or fill it completely
                 buildingGo.transform.localScale = new Vector3(targetScale * 0.95f, targetScale * 0.95f, 1f);
             }
@@ -323,14 +324,15 @@ public class GridRenderer : MonoBehaviour
         {
             var textGo = new GameObject("AmmoText");
             textGo.transform.SetParent(buildingGo.transform);
-            textGo.transform.localPosition = new Vector3(0, 0.4f, -0.1f);
+            
+            float invScale = 1f / (targetScale * 0.95f);
+            textGo.transform.localScale = new Vector3(invScale, invScale, 1f);
+            textGo.transform.localPosition = new Vector3(0, 0.45f * invScale, -0.1f);
             
             var textMesh = textGo.AddComponent<TMPro.TextMeshPro>();
             textMesh.alignment = TMPro.TextAlignmentOptions.Center;
-            textMesh.fontSize = 2.5f;
+            textMesh.fontSize = 3.0f; // Increased by 20% (was 2.5)
             textMesh.text = "";
-            
-
             textMesh.color = Color.black;
             textMesh.rectTransform.sizeDelta = new Vector2(1, 1);
         }
