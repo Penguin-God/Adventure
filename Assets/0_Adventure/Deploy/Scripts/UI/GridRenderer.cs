@@ -142,12 +142,7 @@ public class GridRenderer : MonoBehaviour
                 
                 if (canEdit)
                 {
-                    SelectedBuilding = null;
-                    _draggingBuilding = null; // Also disable dragging in build mode
-                }
-                else
-                {
-                    SelectedBuilding = clickedBuilding;
+                    SelectedBuilding = null; // Still disable selling in build mode
                     if (clickedBuilding != null && clickedBuilding.data.buildingType != BuildingType.Mine && clickedBuilding.data.buildingType != BuildingType.Entrance) 
                     {
                         _draggingBuilding = clickedBuilding;
@@ -156,6 +151,11 @@ public class GridRenderer : MonoBehaviour
                     {
                         _draggingBuilding = null;
                     }
+                }
+                else
+                {
+                    SelectedBuilding = clickedBuilding;
+                    _draggingBuilding = null; // Disable dragging when not in build mode
                 }
             }
             else if (Input.GetMouseButtonUp(0) && _draggingBuilding != null)

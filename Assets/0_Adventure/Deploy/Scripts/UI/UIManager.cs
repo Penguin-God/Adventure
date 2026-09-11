@@ -41,10 +41,10 @@ public class UIManager : MonoBehaviour
         sellBtnGo.AddComponent<Image>().color = new Color(1f, 0.8f, 0.2f);
         _sellButton = sellBtnGo.AddComponent<Button>();
         var sellRt = sellBtnGo.GetComponent<RectTransform>();
-        sellRt.anchorMin = new Vector2(1, 0.5f);
-        sellRt.anchorMax = new Vector2(1, 0.5f);
-        sellRt.pivot = new Vector2(1f, 0.5f);
-        sellRt.anchoredPosition = new Vector2(-20, 0);
+        sellRt.anchorMin = new Vector2(0.5f, 0f);
+        sellRt.anchorMax = new Vector2(0.5f, 0f);
+        sellRt.pivot = new Vector2(0.5f, 0f);
+        sellRt.anchoredPosition = new Vector2(0, 20);
         sellRt.sizeDelta = new Vector2(120, 60);
         var sellTextGo = new GameObject("Text");
         sellTextGo.transform.SetParent(sellBtnGo.transform, false);

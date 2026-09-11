@@ -53,6 +53,11 @@ public class BuildManager : MonoBehaviour
     {
         isBuildModeActive = !isBuildModeActive;
         if (!isBuildModeActive) CancelPlacement();
+        else
+        {
+            var gridRenderer = Object.FindObjectOfType<GridRenderer>();
+            if (gridRenderer != null) gridRenderer.SelectedBuilding = null;
+        }
     }
     
     void Update()
