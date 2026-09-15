@@ -4,6 +4,8 @@ nan: nan
 StoneFactory: 돌을 동그란돌로 만드는 공장
 ArrowFactory: 쇠를 화살로 만드는 공장
 AmmoFactory: 화살, 동그란 돌을 총알로 만드는 공장
+SlowEffect: 투사체에 슬로우 효과 50%를 부여
+DamageEffect: 투사체에 공격력 50 증가
 nan: nan
 nan: nan
 FactoryBuff: nan

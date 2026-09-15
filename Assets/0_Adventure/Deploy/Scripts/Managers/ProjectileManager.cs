@@ -67,6 +67,16 @@ public class ProjectileManager : MonoBehaviour
             if (moveStep >= distanceToTarget)
             {
                 MonsterManager.Instance.TakeDamage(targetMonster.id, projectileModel.damage);
+                
+                if (GridManager.Instance != null)
+                {
+                    float slowRatio = GridDomainLogic.GetGlobalSlowEffect(GridManager.Instance.GetAllBuildings());
+                    if (slowRatio > 0)
+                    {
+                        MonsterManager.Instance.ApplySlow(targetMonster.id, slowRatio);
+                    }
+                }
+                
                 RemoveProjectile(projectileModel);
                 continue;
             }

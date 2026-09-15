@@ -92,6 +92,15 @@ public class MonsterManager : MonoBehaviour
         }
     }
     
+    public void ApplySlow(string monsterId, float slowRatio)
+    {
+        var monsterModel = _activeMonsters.Find(monster => monster.id == monsterId);
+        if (monsterModel == null) return;
+        
+        float clampedSlow = Mathf.Min(slowRatio, 0.9f);
+        monsterModel.speed = monsterModel.baseSpeed * (1f - clampedSlow);
+    }
+    
     private void RemoveMonster(MonsterModel monsterModel)
     {
         _activeMonsters.Remove(monsterModel);

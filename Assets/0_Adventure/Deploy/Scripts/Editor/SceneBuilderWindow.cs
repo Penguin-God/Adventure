@@ -237,6 +237,8 @@ public class SceneBuilderWindow : EditorWindow
         CreateBuildingData("StoneFactory", BuildingType.Factory, 100, 1, 1f, ResourceType.Stone, ResourceType.None, 5, ResourceType.RoundStone, 5, desc: "돌을 동그란돌로 만드는 공장");
         CreateBuildingData("ArrowFactory", BuildingType.Factory, 150, 1, 1f, ResourceType.Iron, ResourceType.None, 5, ResourceType.Arrow, 5, desc: "철을 화살로 만드는 공장");
         CreateBuildingData("AmmoFactory", BuildingType.Factory, 400, 1, 1f, ResourceType.Arrow, ResourceType.RoundStone, 5, ResourceType.GunAmmo, 5, desc: "화살, 동그란 돌을 총알로 만드는 공장");
+        CreateBuildingData("SlowEffect", BuildingType.Factory, 300, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 슬로우 효과 50%를 부여");
+        CreateBuildingData("DamageEffect", BuildingType.Factory, 300, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 공격력 50 증가");
         
         // Buffs
         CreateBuildingData("FactoryBuff", BuildingType.FactorySpeedBuff, 100, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 1f, buffRng: 1, desc: "주변 공장의 생산 속도를 올려줌");
@@ -277,7 +279,9 @@ public class SceneBuilderWindow : EditorWindow
         CreateStageData(1, 120f, 2.0f, 1f, 3, 1200, new List<BuildingCount> {
             new BuildingCount { buildingName = "StoneFactory", count = 2 },
             new BuildingCount { buildingName = "Road", count = 4 },
-            new BuildingCount { buildingName = "Slingshot", count = 2 }
+            new BuildingCount { buildingName = "Slingshot", count = 2 },
+            new BuildingCount { buildingName = "SlowEffect", count = 3 },
+            new BuildingCount { buildingName = "DamageEffect", count = 3 }
         });
         
         CreateStageData(2, 150f, 1.0f, 2f, 5, 3000, new List<BuildingCount> {

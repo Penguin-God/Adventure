@@ -48,6 +48,7 @@ public class MonsterModel
     public Vector3 currentPosition;
     public int currentPathIndex;
     public float speed;
+    public float baseSpeed;
     
     public MonsterModel(string id, MonsterDataSO data, Vector3 startPosition, float hpMultiplier = 1f, float speedOverride = -1f)
     {
@@ -55,7 +56,8 @@ public class MonsterModel
         this.data = data;
         this.maxHp = data.maxHp * hpMultiplier;
         this.currentHp = this.maxHp;
-        this.speed = speedOverride > 0 ? speedOverride : data.speed;
+        this.baseSpeed = speedOverride > 0 ? speedOverride : data.speed;
+        this.speed = this.baseSpeed;
         this.currentPosition = startPosition;
         this.currentPathIndex = 0;
     }

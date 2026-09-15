@@ -14,9 +14,19 @@ public static class GridDomainLogic
             .Where(building => IsInRange(tower.x, tower.y, building.x, building.y, building.data.buffRange))
             .Sum(building => building.data.buffAmount);
             
-        return tower.data.attackDamage + attackBuffs;
+        float globalDamageBuff = allBuildings
+            .Where(b => b.data.buildingName == "DamageEffect" && !b.isShutdown)
+            .Count() * 50f;
+            
+        return tower.data.attackDamage + attackBuffs + globalDamageBuff;
     }
     
+    public static float GetGlobalSlowEffect(IEnumerable<BuildingModel> allBuildings)
+    {
+        return allBuildings
+            .Where(b => b.data.buildingName == "SlowEffect" && !b.isShutdown)
+            .Count() * 0.5f;
+    }
 
     public static MonsterModel GetClosestMonster(BuildingModel tower, IEnumerable<MonsterModel> monsters)
     {

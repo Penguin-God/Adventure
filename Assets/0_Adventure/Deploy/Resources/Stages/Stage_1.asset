@@ -25,3 +25,7 @@ MonoBehaviour:
     count: 4
   - buildingName: Slingshot
     count: 2
+  - buildingName: SlowEffect
+    count: 3
+  - buildingName: DamageEffect
+    count: 3
