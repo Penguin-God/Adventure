@@ -33,8 +33,17 @@ public class BuildingModel
         this.currentInput2 = 0;
         this.currentOutput = 0;
         
-        // Start as shutdown since inputs/outputs are 0
-        this.isShutdown = true;
+        if (data.buildingType == BuildingType.TowerAttackBuff || 
+            data.buildingType == BuildingType.FactorySpeedBuff ||
+            (data.buildingType == BuildingType.Factory && data.inputType1 == ResourceType.None && data.inputType2 == ResourceType.None))
+        {
+            this.isShutdown = false;
+        }
+        else
+        {
+            this.isShutdown = true;
+        }
+        
         this.attackTimer = 999f; // Start ready to attack
     }
 }
