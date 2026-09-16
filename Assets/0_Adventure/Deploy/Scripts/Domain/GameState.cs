@@ -13,6 +13,7 @@ public class BuildingSaveData
     public int currentInput1;
     public int currentInput2;
     public int currentOutput;
+    public int level;
 }
 
 public static class GameState
@@ -36,7 +37,8 @@ public static class GameState
                 y = b.y,
                 currentInput1 = b.currentInput1,
                 currentInput2 = b.currentInput2,
-                currentOutput = b.currentOutput
+                currentOutput = b.currentOutput,
+                level = b.level
             });
         }
     }

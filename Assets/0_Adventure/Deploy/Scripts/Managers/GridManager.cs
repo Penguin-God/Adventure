@@ -60,6 +60,7 @@ public class GridManager : MonoBehaviour
                 buildingModel.currentInput1 = saveData.currentInput1;
                 buildingModel.currentInput2 = saveData.currentInput2;
                 buildingModel.currentOutput = saveData.currentOutput;
+                buildingModel.level = saveData.level > 0 ? saveData.level : 1;
             }
             
             _buildings[newId] = buildingModel;
