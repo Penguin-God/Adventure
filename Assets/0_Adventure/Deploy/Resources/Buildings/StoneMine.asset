@@ -32,5 +32,6 @@ MonoBehaviour:
   connectionRange: 1
   buffAmount: 0
   buffRange: 0
-  cost: 100
+  costType: 8
+  cost: 0
   upgrades: []

@@ -390,8 +390,9 @@ public class UIManager : MonoBehaviour
                         var nextUpg = targetData.upgrades?.FirstOrDefault(u => u.level == selected.level + 1);
                         if (nextUpg != null)
                         {
-                            _upgradeBtnText.text = $"Lv.{selected.level}({nextUpg.cost}G)";
-                            _upgradeBtn.interactable = GameState.currentGold >= nextUpg.cost;
+                            string resName = nextUpg.costType == ResourceType.Gold ? "G" : nextUpg.costType == ResourceType.Wood ? "나무" : nextUpg.costType == ResourceType.Iron ? "철" : "망치";
+                            _upgradeBtnText.text = $"Lv.{selected.level}({nextUpg.cost}{resName})";
+                            _upgradeBtn.interactable = GameState.HasResource(nextUpg.costType, nextUpg.cost);
                         }
                         else
                         {
@@ -510,7 +511,8 @@ public class UIManager : MonoBehaviour
             textGo.transform.SetParent(btnGo.transform, false);
             var textMesh = textGo.AddComponent<TextMeshProUGUI>();
             if (_koreanFont != null) textMesh.font = _koreanFont;
-            textMesh.text = $"{data.buildingName}\n{data.cost}G / X0";
+            string resName = data.costType == ResourceType.Gold ? "G" : data.costType == ResourceType.Wood ? "나무" : data.costType == ResourceType.Iron ? "철" : "망치";
+            textMesh.text = $"{data.buildingName}\n{data.cost}{resName} / X0";
             textMesh.color = Color.black;
             textMesh.fontSize = 28;
             textMesh.alignment = TextAlignmentOptions.Center;
@@ -542,7 +544,8 @@ public class UIManager : MonoBehaviour
                 var bData = BuildManager.Instance.availableBuildings.FirstOrDefault(b => b.buildingName == bName);
                 if (bData != null)
                 {
-                    txt.text = $"{bData.buildingName}\n{bData.cost}G / X{remain}";
+                    string resName = bData.costType == ResourceType.Gold ? "G" : bData.costType == ResourceType.Wood ? "나무" : bData.costType == ResourceType.Iron ? "철" : "망치";
+                    txt.text = $"{bData.buildingName}\n{bData.cost}{resName} / X{remain}";
                 }
             }
             
@@ -560,7 +563,7 @@ public class UIManager : MonoBehaviour
             if (selected.data.buildingType == BuildingType.Mine || selected.data.buildingType == BuildingType.Entrance) return;
             
             int refund = Mathf.FloorToInt(selected.data.cost * 0.9f);
-            GameState.currentGold += refund;
+            GameState.RefundResource(selected.data.costType, refund);
             GridManager.Instance.RemoveBuilding(selected.id);
             gridRenderer.SelectedBuilding = null;
         }
@@ -574,9 +577,9 @@ public class UIManager : MonoBehaviour
             var selected = gridRenderer.SelectedBuilding;
             var nextUpg = selected.data.upgrades?.FirstOrDefault(u => u.level == selected.level + 1);
             
-            if (nextUpg != null && GameState.currentGold >= nextUpg.cost)
+            if (nextUpg != null && GameState.HasResource(nextUpg.costType, nextUpg.cost))
             {
-                GameState.currentGold -= nextUpg.cost;
+                GameState.ConsumeResource(nextUpg.costType, nextUpg.cost);
                 selected.level++;
                 UpdateSelectionUI();
                 if (_buttonsCreated) UpdateBuildButtons();

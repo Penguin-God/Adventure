@@ -26,5 +26,6 @@ public enum ResourceType
     Arrow,
     GunAmmo,
     Wood,
-    Hammer
+    Hammer,
+    Gold
 }

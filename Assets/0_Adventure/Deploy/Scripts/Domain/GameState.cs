@@ -20,10 +20,44 @@ public static class GameState
 {
     public static int unlockedStage = 1;
     public static int currentPlayingStage = 1;
-    public static int currentGold = 1000;
+    public static int currentGold = 2000;
     public static int currentWood = 0;
     public static int currentIron = 0;
     public static int currentHammer = 0;
+    
+    public static bool HasResource(ResourceType type, int amount)
+    {
+        switch (type)
+        {
+            case ResourceType.Gold: return currentGold >= amount;
+            case ResourceType.Wood: return currentWood >= amount;
+            case ResourceType.Iron: return currentIron >= amount;
+            case ResourceType.Hammer: return currentHammer >= amount;
+        }
+        return false;
+    }
+    
+    public static void ConsumeResource(ResourceType type, int amount)
+    {
+        switch (type)
+        {
+            case ResourceType.Gold: currentGold -= amount; break;
+            case ResourceType.Wood: currentWood -= amount; break;
+            case ResourceType.Iron: currentIron -= amount; break;
+            case ResourceType.Hammer: currentHammer -= amount; break;
+        }
+    }
+    
+    public static void RefundResource(ResourceType type, int amount)
+    {
+        switch (type)
+        {
+            case ResourceType.Gold: currentGold += amount; break;
+            case ResourceType.Wood: currentWood += amount; break;
+            case ResourceType.Iron: currentIron += amount; break;
+            case ResourceType.Hammer: currentHammer += amount; break;
+        }
+    }
     
     public static List<BuildingSaveData> savedBuildings = new List<BuildingSaveData>();
     

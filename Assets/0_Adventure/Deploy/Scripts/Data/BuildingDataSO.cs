@@ -28,6 +28,7 @@ public class BuildingDataSO : ScriptableObject
     public int connectionRange; 
     public float buffAmount;
     public int buffRange;
+    public ResourceType costType = ResourceType.Gold;
     public int cost = 100;
     
     public System.Collections.Generic.List<UpgradeInfo> upgrades = new System.Collections.Generic.List<UpgradeInfo>();
@@ -37,6 +38,7 @@ public class BuildingDataSO : ScriptableObject
 public class UpgradeInfo
 {
     public int level;
+    public ResourceType costType = ResourceType.Gold;
     public int cost;
     public float effectAmount;
 }

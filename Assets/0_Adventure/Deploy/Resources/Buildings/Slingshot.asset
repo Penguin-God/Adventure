@@ -32,11 +32,14 @@ MonoBehaviour:
   connectionRange: 1
   buffAmount: 0
   buffRange: 0
-  cost: 150
+  costType: 6
+  cost: 100
   upgrades:
   - level: 2
-    cost: 100
+    costType: 6
+    cost: 150
     effectAmount: 20
   - level: 3
+    costType: 6
     cost: 250
     effectAmount: 30

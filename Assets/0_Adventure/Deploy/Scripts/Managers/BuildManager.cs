@@ -36,7 +36,7 @@ public class BuildManager : MonoBehaviour
         
         // Lv 1 base limits
         if (buildingName == "StoneFactory") allowed += 2;
-        if (buildingName == "Road") allowed += 4;
+        if (buildingName == "Road") allowed += 10;
         if (buildingName == "Slingshot") allowed += 2;
         if (buildingName == "HammerFactory") allowed += 5; // Give them 5 to build in village
         
@@ -110,13 +110,13 @@ public class BuildManager : MonoBehaviour
             {
                 int cost = _buildingToPlace.cost;
                 
-                if (GameState.currentGold >= cost && GetRemainingCount(_buildingToPlace.buildingName) > 0)
+                if (GameState.HasResource(_buildingToPlace.costType, cost) && GetRemainingCount(_buildingToPlace.buildingName) > 0)
                 {
-                    GameState.currentGold -= cost;
+                    GameState.ConsumeResource(_buildingToPlace.costType, cost);
                     bool placed = GridManager.Instance.PlaceBuilding(_buildingToPlace, posX, posY);
                     if (!placed)
                     {
-                        GameState.currentGold += cost;
+                        GameState.RefundResource(_buildingToPlace.costType, cost);
                         CancelPlacement();
                     }
                 }
