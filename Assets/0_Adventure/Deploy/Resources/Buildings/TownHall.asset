@@ -38,9 +38,13 @@ MonoBehaviour:
   upgrades:
   - level: 2
     costType: 8
-    cost: 3000
+    cost: 1000
     effectAmount: 0
   - level: 3
+    costType: 8
+    cost: 3000
+    effectAmount: 0
+  - level: 4
     costType: 8
     cost: 5000
     effectAmount: 0

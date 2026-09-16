@@ -269,7 +269,7 @@ public class SceneBuilderWindow : EditorWindow
         AddUpgrades("Archer", new[] { new UpgradeInfo { level = 2, cost = 300, costType = ResourceType.Iron, effectAmount = 20f }, new UpgradeInfo { level = 3, cost = 500, costType = ResourceType.Iron, effectAmount = 30f } });
         AddUpgrades("Gun", new[] { new UpgradeInfo { level = 2, cost = 900, costType = ResourceType.Hammer, effectAmount = 20f }, new UpgradeInfo { level = 3, cost = 1500, costType = ResourceType.Hammer, effectAmount = 30f } });
         
-        AddUpgrades("TownHall", new[] { new UpgradeInfo { level = 2, cost = 3000, costType = ResourceType.Gold, effectAmount = 0f }, new UpgradeInfo { level = 3, cost = 5000, costType = ResourceType.Gold, effectAmount = 0f } });
+        AddUpgrades("TownHall", new[] { new UpgradeInfo { level = 2, cost = 1000, costType = ResourceType.Gold, effectAmount = 0f }, new UpgradeInfo { level = 3, cost = 3000, costType = ResourceType.Gold, effectAmount = 0f }, new UpgradeInfo { level = 4, cost = 5000, costType = ResourceType.Gold, effectAmount = 0f } });
         
         var monsterPath = "Assets/0_Adventure/Deploy/Resources/Monsters/BasicMonster.asset";
         var monsterData = AssetDatabase.LoadAssetAtPath<MonsterDataSO>(monsterPath);
