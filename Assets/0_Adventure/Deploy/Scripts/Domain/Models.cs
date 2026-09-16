@@ -21,6 +21,7 @@ public class BuildingModel
     
     // Shutdown state
     public bool isShutdown;
+    public int level = 1;
     
     public BuildingModel(string id, int x, int y, BuildingDataSO data)
     {

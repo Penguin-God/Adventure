@@ -27,4 +27,14 @@ public class BuildingDataSO : ScriptableObject
     public float buffAmount;
     public int buffRange;
     public int cost = 100;
+    
+    public System.Collections.Generic.List<UpgradeInfo> upgrades = new System.Collections.Generic.List<UpgradeInfo>();
+}
+
+[System.Serializable]
+public class UpgradeInfo
+{
+    public int level;
+    public int cost;
+    public float effectAmount;
 }

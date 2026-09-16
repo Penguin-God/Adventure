@@ -20,6 +20,8 @@ public class UIManager : MonoBehaviour
     private GameObject _infoPopup;
     private TextMeshProUGUI _infoNameText;
     private TextMeshProUGUI _infoDescText;
+    private Button _upgradeBtn;
+    private TextMeshProUGUI _upgradeBtnText;
     
     void Start()
     {
@@ -75,7 +77,7 @@ public class UIManager : MonoBehaviour
         infoRt.anchorMax = new Vector2(0, 0.5f);
         infoRt.pivot = new Vector2(0, 0.5f);
         infoRt.anchoredPosition = new Vector2(20, 0);
-        infoRt.sizeDelta = new Vector2(300, 200);
+        infoRt.sizeDelta = new Vector2(300, 260);
         
         var nameGo = new GameObject("NameText");
         nameGo.transform.SetParent(_infoPopup.transform, false);
@@ -104,7 +106,32 @@ public class UIManager : MonoBehaviour
         descRt.anchorMax = new Vector2(1, 0);
         descRt.pivot = new Vector2(0.5f, 0);
         descRt.sizeDelta = new Vector2(-20, 130);
-        descRt.anchoredPosition = new Vector2(0, 10);
+        descRt.anchoredPosition = new Vector2(0, 50); // Moved up to make room for Upgrade button
+        
+        var upgBtnGo = new GameObject("UpgradeButton");
+        upgBtnGo.transform.SetParent(_infoPopup.transform, false);
+        upgBtnGo.AddComponent<Image>().color = new Color(0.1f, 0.5f, 0.1f);
+        _upgradeBtn = upgBtnGo.AddComponent<Button>();
+        var upgRt = upgBtnGo.GetComponent<RectTransform>();
+        upgRt.anchorMin = new Vector2(0.5f, 0);
+        upgRt.anchorMax = new Vector2(0.5f, 0);
+        upgRt.pivot = new Vector2(0.5f, 0);
+        upgRt.anchoredPosition = new Vector2(0, 10);
+        upgRt.sizeDelta = new Vector2(200, 40);
+        
+        var upgTextGo = new GameObject("Text");
+        upgTextGo.transform.SetParent(upgBtnGo.transform, false);
+        _upgradeBtnText = upgTextGo.AddComponent<TextMeshProUGUI>();
+        if (_koreanFont != null) _upgradeBtnText.font = _koreanFont;
+        _upgradeBtnText.alignment = TextAlignmentOptions.Center;
+        _upgradeBtnText.color = Color.white;
+        _upgradeBtnText.fontSize = 20;
+        var upgTextRt = upgTextGo.GetComponent<RectTransform>();
+        upgTextRt.anchorMin = new Vector2(0, 0);
+        upgTextRt.anchorMax = new Vector2(1, 1);
+        upgTextRt.sizeDelta = Vector2.zero;
+        
+        _upgradeBtn.onClick.AddListener(OnUpgradeClicked);
         
         _infoPopup.SetActive(false);
         
@@ -310,6 +337,38 @@ public class UIManager : MonoBehaviour
             _infoPopup.SetActive(true);
             if (_infoNameText != null) _infoNameText.text = targetData.buildingName;
             if (_infoDescText != null) _infoDescText.text = string.IsNullOrEmpty(targetData.description) ? "" : targetData.description;
+            
+            if (_upgradeBtn != null)
+            {
+                // Can only upgrade built things, not when placing
+                if (gridRenderer != null && gridRenderer.SelectedBuilding != null && !BuildManager.Instance.IsPlacing)
+                {
+                    var selected = gridRenderer.SelectedBuilding;
+                    if (selected.data.buildingType == BuildingType.Road || selected.data.buildingType == BuildingType.Entrance || selected.data.buildingType == BuildingType.Mine)
+                    {
+                        _upgradeBtn.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        _upgradeBtn.gameObject.SetActive(true);
+                        var nextUpg = targetData.upgrades?.FirstOrDefault(u => u.level == selected.level + 1);
+                        if (nextUpg != null)
+                        {
+                            _upgradeBtnText.text = $"Lv.{selected.level}({nextUpg.cost}G)";
+                            _upgradeBtn.interactable = GameState.currentGold >= nextUpg.cost;
+                        }
+                        else
+                        {
+                            _upgradeBtnText.text = $"Lv.{selected.level}(MAX)";
+                            _upgradeBtn.interactable = false;
+                        }
+                    }
+                }
+                else
+                {
+                    _upgradeBtn.gameObject.SetActive(false);
+                }
+            }
         }
         else if (_infoPopup != null)
         {
@@ -447,6 +506,23 @@ public class UIManager : MonoBehaviour
             GameState.currentGold += refund;
             GridManager.Instance.RemoveBuilding(selected.id);
             gridRenderer.SelectedBuilding = null;
+        }
+    }
+
+    private void OnUpgradeClicked()
+    {
+        var gridRenderer = Object.FindObjectOfType<GridRenderer>();
+        if (gridRenderer != null && gridRenderer.SelectedBuilding != null)
+        {
+            var selected = gridRenderer.SelectedBuilding;
+            var nextUpg = selected.data.upgrades?.FirstOrDefault(u => u.level == selected.level + 1);
+            
+            if (nextUpg != null && GameState.currentGold >= nextUpg.cost)
+            {
+                GameState.currentGold -= nextUpg.cost;
+                selected.level++;
+                UpdateSelectionUI();
+            }
         }
     }
 }

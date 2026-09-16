@@ -12,20 +12,22 @@ public static class GridDomainLogic
         var attackBuffs = allBuildings
             .Where(building => building.data.buildingType == BuildingType.TowerAttackBuff)
             .Where(building => IsInRange(tower.x, tower.y, building.x, building.y, building.data.buffRange))
-            .Sum(building => building.data.buffAmount);
+            .Sum(building => building.data.buffAmount + GetUpgradedValue(building));
             
         float globalDamageBuff = allBuildings
             .Where(b => b.data.buildingName == "DamageEffect" && !b.isShutdown)
-            .Count() * 50f;
+            .Sum(b => 50f + GetUpgradedValue(b)); // upgraded DamageEffect gives more!
             
-        return tower.data.attackDamage + attackBuffs + globalDamageBuff;
+        float myUpgradeBuff = GetUpgradedValue(tower);
+            
+        return tower.data.attackDamage + myUpgradeBuff + attackBuffs + globalDamageBuff;
     }
     
     public static float GetGlobalSlowEffect(IEnumerable<BuildingModel> allBuildings)
     {
         return allBuildings
             .Where(b => b.data.buildingName == "SlowEffect" && !b.isShutdown)
-            .Count() * 0.5f;
+            .Sum(b => 0.5f + GetUpgradedValue(b));
     }
 
     public static MonsterModel GetClosestMonster(BuildingModel tower, IEnumerable<MonsterModel> monsters)
@@ -55,5 +57,21 @@ public static class GridDomainLogic
         }
         
         return closestMonster;
+    }
+    
+    public static float GetUpgradedValue(BuildingModel building)
+    {
+        float totalIncrease = 0f;
+        if (building.data.upgrades != null)
+        {
+            foreach (var upg in building.data.upgrades)
+            {
+                if (building.level >= upg.level)
+                {
+                    totalIncrease += upg.effectAmount;
+                }
+            }
+        }
+        return totalIncrease;
     }
 }

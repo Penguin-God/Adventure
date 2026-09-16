@@ -32,3 +32,10 @@ MonoBehaviour:
   buffAmount: 0.5
   buffRange: 1
   cost: 200
+  upgrades:
+  - level: 2
+    cost: 300
+    effectAmount: 0.1
+  - level: 3
+    cost: 700
+    effectAmount: 0.1

@@ -249,6 +249,20 @@ public class SceneBuilderWindow : EditorWindow
         CreateBuildingData("Archer", BuildingType.Tower, 200, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 35f, atkSpd: 1.2f, atkRange: 10, maxAmmo: 5, reqAmmo: ResourceType.Arrow, desc: "화살 사용하는 타워");
         CreateBuildingData("Gun", BuildingType.Tower, 600, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 2f, atkRange: 15, maxAmmo: 10, reqAmmo: ResourceType.GunAmmo, desc: "총알 사용하는 타워");
         
+        // Upgrades
+        AddUpgrades("StoneFactory", new[] { new UpgradeInfo { level = 2, cost = 200, effectAmount = 0.1f }, new UpgradeInfo { level = 3, cost = 500, effectAmount = 0.1f } });
+        AddUpgrades("ArrowFactory", new[] { new UpgradeInfo { level = 2, cost = 300, effectAmount = 0.1f }, new UpgradeInfo { level = 3, cost = 700, effectAmount = 0.1f } });
+        AddUpgrades("AmmoFactory", new[] { new UpgradeInfo { level = 2, cost = 400, effectAmount = 0.1f }, new UpgradeInfo { level = 3, cost = 1000, effectAmount = 0.1f } });
+        AddUpgrades("SlowEffect", new[] { new UpgradeInfo { level = 2, cost = 300, effectAmount = 0.1f }, new UpgradeInfo { level = 3, cost = 700, effectAmount = 0.1f } });
+        AddUpgrades("DamageEffect", new[] { new UpgradeInfo { level = 2, cost = 400, effectAmount = 10f }, new UpgradeInfo { level = 3, cost = 1000, effectAmount = 10f } });
+        
+        AddUpgrades("FactoryBuff", new[] { new UpgradeInfo { level = 2, cost = 100, effectAmount = 0.1f }, new UpgradeInfo { level = 3, cost = 100, effectAmount = 0.1f } });
+        AddUpgrades("TowerBuff", new[] { new UpgradeInfo { level = 2, cost = 300, effectAmount = 0.1f }, new UpgradeInfo { level = 3, cost = 700, effectAmount = 0.1f } });
+        
+        AddUpgrades("Slingshot", new[] { new UpgradeInfo { level = 2, cost = 100, effectAmount = 20f }, new UpgradeInfo { level = 3, cost = 250, effectAmount = 30f } });
+        AddUpgrades("Archer", new[] { new UpgradeInfo { level = 2, cost = 200, effectAmount = 20f }, new UpgradeInfo { level = 3, cost = 500, effectAmount = 30f } });
+        AddUpgrades("Gun", new[] { new UpgradeInfo { level = 2, cost = 500, effectAmount = 20f }, new UpgradeInfo { level = 3, cost = 1200, effectAmount = 30f } });
+        
         var monsterPath = "Assets/0_Adventure/Deploy/Resources/Monsters/BasicMonster.asset";
         var monsterData = AssetDatabase.LoadAssetAtPath<MonsterDataSO>(monsterPath);
         if (monsterData == null)
@@ -365,6 +379,17 @@ public class SceneBuilderWindow : EditorWindow
         b.description = desc;
         
         EditorUtility.SetDirty(b);
+    }
+    
+    private static void AddUpgrades(string name, UpgradeInfo[] upgrades)
+    {
+        var path = $"Assets/0_Adventure/Deploy/Resources/Buildings/{name}.asset";
+        var b = AssetDatabase.LoadAssetAtPath<BuildingDataSO>(path);
+        if (b != null)
+        {
+            b.upgrades = new List<UpgradeInfo>(upgrades);
+            EditorUtility.SetDirty(b);
+        }
     }
 }
 #endif

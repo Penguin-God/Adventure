@@ -54,7 +54,7 @@ public class SupplyChainManager : MonoBehaviour
                 factory.productionTimer += Time.deltaTime;
                 float prodTime = factory.data.productionTime > 0 ? factory.data.productionTime : 1f;
                 float buff = GetSpeedBuff(factory, allBuildings);
-                prodTime = Mathf.Max(0.1f, prodTime - buff);
+                prodTime = Mathf.Max(0.1f, prodTime - buff - GridDomainLogic.GetUpgradedValue(factory));
                 
                 if (factory.productionTimer >= prodTime)
                 {
@@ -201,6 +201,6 @@ public class SupplyChainManager : MonoBehaviour
         return allBuildings
             .Where(b => b.data.buildingType == BuildingType.FactorySpeedBuff)
             .Where(b => GridDomainLogic.IsInRange(factory.x, factory.y, b.x, b.y, b.data.buffRange))
-            .Sum(b => b.data.buffAmount);
+            .Sum(b => b.data.buffAmount + GridDomainLogic.GetUpgradedValue(b));
     }
 }
