@@ -19,21 +19,51 @@ public class BuildManager : MonoBehaviour
     void Start()
     {
         availableBuildings = Resources.LoadAll<BuildingDataSO>("Buildings")
-            .Where(b => b.buildingType != BuildingType.Mine && b.buildingType != BuildingType.Entrance)
+            .Where(b => b.buildingType != BuildingType.Mine && b.buildingType != BuildingType.Entrance && b.buildingType != BuildingType.Hall)
             .ToList();
     }
     
     public int GetRemainingCount(string buildingName)
     {
-        int allowed = 0;
-        for (int i = 1; i <= GameState.unlockedStage; i++)
+        int hallLevel = 1;
+        if (GridManager.Instance != null)
         {
-            var stageData = Resources.Load<StageDataSO>($"Stages/Stage_{i}");
-            if (stageData != null)
-            {
-                var reward = stageData.buildingRewards.FirstOrDefault(r => r.buildingName == buildingName);
-                if (reward != null) allowed += reward.count;
-            }
+            var hall = GridManager.Instance.GetAllBuildings().FirstOrDefault(b => b.data.buildingType == BuildingType.Hall);
+            if (hall != null) hallLevel = hall.level;
+        }
+        
+        int allowed = 0;
+        
+        // Lv 1 base limits
+        if (buildingName == "StoneFactory") allowed += 2;
+        if (buildingName == "Road") allowed += 4;
+        if (buildingName == "Slingshot") allowed += 2;
+        if (buildingName == "HammerFactory") allowed += 5; // Give them 5 to build in village
+        
+        // Lv 2 limits (궁수 X3, 화살공장 X 3, 도로 X 4)
+        if (hallLevel >= 2)
+        {
+            if (buildingName == "Archer") allowed += 3;
+            if (buildingName == "ArrowFactory") allowed += 3;
+            if (buildingName == "Road") allowed += 4;
+            if (buildingName == "SlowEffect") allowed += 3; 
+            if (buildingName == "DamageEffect") allowed += 3;
+        }
+        
+        // Lv 3 limits (총알 공장 X 3, 도로 X 15, 총 X1)
+        if (hallLevel >= 3)
+        {
+            if (buildingName == "AmmoFactory") allowed += 3;
+            if (buildingName == "Road") allowed += 15;
+            if (buildingName == "Gun") allowed += 1;
+        }
+        
+        // Lv 4 limits (공장 버프 X3, 타워버프 X2, 총 X3)
+        if (hallLevel >= 4)
+        {
+            if (buildingName == "FactoryBuff") allowed += 3;
+            if (buildingName == "TowerBuff") allowed += 2;
+            if (buildingName == "Gun") allowed += 3;
         }
         
         int built = 0;
@@ -122,6 +152,6 @@ public class BuildManager : MonoBehaviour
         if (GridManager.Instance.GetBuildingAt(posX, posY) != null) return false;
         if (_buildingToPlace == null) return false;
         
-        return GridManager.Instance.IsValidCoordinateForType(_buildingToPlace.buildingType, posX, posY);
+        return GridManager.Instance.IsValidCoordinate(posX, posY, _buildingToPlace);
     }
 }

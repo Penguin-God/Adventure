@@ -1,3 +1,10 @@
+public enum ZoneType
+{
+    Village,
+    Defense,
+    Tower
+}
+
 public enum BuildingType 
 { 
     Factory, 
@@ -6,7 +13,8 @@ public enum BuildingType
     FactorySpeedBuff, 
     TowerAttackBuff,
     Mine,
-    Entrance
+    Entrance,
+    Hall
 }
 
 public enum ResourceType
@@ -16,5 +24,7 @@ public enum ResourceType
     Iron,
     RoundStone,
     Arrow,
-    GunAmmo
+    GunAmmo,
+    Wood,
+    Hammer
 }

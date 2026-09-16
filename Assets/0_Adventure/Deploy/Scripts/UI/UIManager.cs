@@ -22,6 +22,7 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI _infoDescText;
     private Button _upgradeBtn;
     private TextMeshProUGUI _upgradeBtnText;
+    private bool _isVillageView = false;
     
     void Start()
     {
@@ -202,6 +203,41 @@ public class UIManager : MonoBehaviour
                     SceneManager.LoadScene("Defense");
                 });
             }
+            
+            // Camera Toggle Button
+            var camToggleBtnGo = new GameObject("CameraToggleBtn");
+            camToggleBtnGo.transform.SetParent(canvas, false);
+            camToggleBtnGo.AddComponent<Image>().color = new Color(0.2f, 0.6f, 1f);
+            var camToggleBtn = camToggleBtnGo.AddComponent<Button>();
+            var camToggleRt = camToggleBtnGo.GetComponent<RectTransform>();
+            camToggleRt.anchorMin = new Vector2(1, 0);
+            camToggleRt.anchorMax = new Vector2(1, 0);
+            camToggleRt.pivot = new Vector2(1f, 0f);
+            camToggleRt.anchoredPosition = new Vector2(-180, 20); // To the left of Build Mode button
+            camToggleRt.sizeDelta = new Vector2(150, 80);
+            
+            var camToggleTextGo = new GameObject("Text");
+            camToggleTextGo.transform.SetParent(camToggleBtnGo.transform, false);
+            var camToggleText = camToggleTextGo.AddComponent<TextMeshProUGUI>();
+            if (_koreanFont != null) camToggleText.font = _koreanFont;
+            camToggleText.text = "Go to Village";
+            camToggleText.color = Color.white;
+            camToggleText.alignment = TextAlignmentOptions.Center;
+            camToggleText.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 80);
+            
+            camToggleBtn.onClick.AddListener(() => {
+                _isVillageView = !_isVillageView;
+                camToggleText.text = _isVillageView ? "Go to Defense" : "Go to Village";
+                if (Camera.main != null)
+                {
+                    Camera.main.transform.position = _isVillageView ? new Vector3(54f, 54f, -10f) : new Vector3(7f, 0f, -10f);
+                }
+                if (_buttonsCreated)
+                {
+                    CreateBuildButtons();
+                    UpdateBuildButtons();
+                }
+            });
         }
     }
     
@@ -283,7 +319,7 @@ public class UIManager : MonoBehaviour
         if (topBarText != null)
         {
             if (isLobby)
-                topBarText.text = $"Gold: {GameState.currentGold}";
+                topBarText.text = $"Gold: {GameState.currentGold}  Wood: {GameState.currentWood}  Iron: {GameState.currentIron}  Hammer: {GameState.currentHammer}";
             else
                 topBarText.text = "";
         }
@@ -402,7 +438,8 @@ public class UIManager : MonoBehaviour
         var hLayout = buttonsContainer.GetComponent<HorizontalLayoutGroup>();
         if (hLayout != null) DestroyImmediate(hLayout);
         
-        var vLayout = buttonsContainer.gameObject.AddComponent<VerticalLayoutGroup>();
+        var vLayout = buttonsContainer.GetComponent<VerticalLayoutGroup>();
+        if (vLayout == null) vLayout = buttonsContainer.gameObject.AddComponent<VerticalLayoutGroup>();
         vLayout.childAlignment = TextAnchor.MiddleCenter;
         vLayout.spacing = 10;
         vLayout.childControlHeight = false;
@@ -413,35 +450,55 @@ public class UIManager : MonoBehaviour
         var containerRt = buttonsContainer.GetComponent<RectTransform>();
         containerRt.sizeDelta = new Vector2(1100, 170);
         
-        var villageRow = new GameObject("VillageRow");
-        villageRow.transform.SetParent(buttonsContainer, false);
-        var villageLayout = villageRow.AddComponent<HorizontalLayoutGroup>();
-        villageLayout.childAlignment = TextAnchor.MiddleCenter;
-        villageLayout.spacing = 10;
-        villageLayout.childControlHeight = false;
-        villageLayout.childControlWidth = false;
-        villageLayout.childForceExpandHeight = false;
-        villageLayout.childForceExpandWidth = false;
-        var vRt = villageRow.GetComponent<RectTransform>();
-        vRt.sizeDelta = new Vector2(1100, 80);
+        // Destroy existing rows if any
+        for (int i = buttonsContainer.childCount - 1; i >= 0; i--)
+        {
+            var child = buttonsContainer.GetChild(i);
+            child.SetParent(null);
+            Destroy(child.gameObject);
+        }
         
-        var towerRow = new GameObject("TowerRow");
-        towerRow.transform.SetParent(buttonsContainer, false);
-        var towerLayout = towerRow.AddComponent<HorizontalLayoutGroup>();
-        towerLayout.childAlignment = TextAnchor.MiddleCenter;
-        towerLayout.spacing = 10;
-        towerLayout.childControlHeight = false;
-        towerLayout.childControlWidth = false;
-        towerLayout.childForceExpandHeight = false;
-        towerLayout.childForceExpandWidth = false;
-        var tRt = towerRow.GetComponent<RectTransform>();
-        tRt.sizeDelta = new Vector2(1100, 80);
+        var row1 = new GameObject("Row1");
+        row1.transform.SetParent(buttonsContainer, false);
+        var layout1 = row1.AddComponent<HorizontalLayoutGroup>();
+        layout1.childAlignment = TextAnchor.MiddleCenter;
+        layout1.spacing = 10;
+        layout1.childControlHeight = false;
+        layout1.childControlWidth = false;
+        layout1.childForceExpandHeight = false;
+        layout1.childForceExpandWidth = false;
+        var r1Rt = row1.GetComponent<RectTransform>();
+        r1Rt.sizeDelta = new Vector2(1100, 80);
+        
+        var row2 = new GameObject("Row2");
+        row2.transform.SetParent(buttonsContainer, false);
+        var layout2 = row2.AddComponent<HorizontalLayoutGroup>();
+        layout2.childAlignment = TextAnchor.MiddleCenter;
+        layout2.spacing = 10;
+        layout2.childControlHeight = false;
+        layout2.childControlWidth = false;
+        layout2.childForceExpandHeight = false;
+        layout2.childForceExpandWidth = false;
+        var r2Rt = row2.GetComponent<RectTransform>();
+        r2Rt.sizeDelta = new Vector2(1100, 80);
         
         foreach (var data in BuildManager.Instance.availableBuildings)
         {
+            bool allowedInVillage = false;
+            bool allowedInDefenseOrTower = true;
+            
+            if (data.allowedZones != null && data.allowedZones.Count > 0)
+            {
+                allowedInVillage = data.allowedZones.Contains(ZoneType.Village);
+                allowedInDefenseOrTower = data.allowedZones.Contains(ZoneType.Defense) || data.allowedZones.Contains(ZoneType.Tower);
+            }
+            
+            if (_isVillageView && !allowedInVillage) continue;
+            if (!_isVillageView && !allowedInDefenseOrTower) continue;
+            
             var btnGo = new GameObject($"Btn_{data.buildingName}");
             bool isTower = data.buildingType == BuildingType.Tower || data.buildingType == BuildingType.TowerAttackBuff;
-            btnGo.transform.SetParent(isTower ? towerRow.transform : villageRow.transform, false);
+            btnGo.transform.SetParent(isTower ? row2.transform : row1.transform, false);
             
             btnGo.AddComponent<Image>().color = Color.white;
             var btn = btnGo.AddComponent<Button>();
@@ -522,6 +579,7 @@ public class UIManager : MonoBehaviour
                 GameState.currentGold -= nextUpg.cost;
                 selected.level++;
                 UpdateSelectionUI();
+                if (_buttonsCreated) UpdateBuildButtons();
             }
         }
     }

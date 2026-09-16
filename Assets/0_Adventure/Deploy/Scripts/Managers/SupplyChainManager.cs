@@ -124,6 +124,13 @@ public class SupplyChainManager : MonoBehaviour
                 return true;
             }
         }
+
+        else if (target.data.buildingType == BuildingType.Hall)
+        {
+            if (type == ResourceType.Wood) { GameState.currentWood++; return true; }
+            if (type == ResourceType.Iron) { GameState.currentIron++; return true; }
+            if (type == ResourceType.Hammer) { GameState.currentHammer++; return true; }
+        }
         return false;
     }
     
@@ -173,11 +180,11 @@ public class SupplyChainManager : MonoBehaviour
             {
                 int zoneXStart = node.x;
                 int zoneXEnd = node.x;
-                if (node.x == 0) { zoneXStart = 0; zoneXEnd = 3; }
-                else if (node.x == 7) { zoneXStart = 5; zoneXEnd = 8; }
-                else if (node.x == 14) { zoneXStart = 11; zoneXEnd = 14; }
+                if (node.x == 0) { zoneXStart = 0; zoneXEnd = 1; }
+                else if (node.x == 7) { zoneXStart = 7; zoneXEnd = 8; }
+                else if (node.x == 14) { zoneXStart = 13; zoneXEnd = 14; }
                 
-                int zoneYStart = -3;
+                int zoneYStart = -4;
                 int zoneYEnd = -2;
                 
                 foreach (var tower in allBuildings.Where(b => b.data.buildingType == BuildingType.Tower))
@@ -188,6 +195,18 @@ public class SupplyChainManager : MonoBehaviour
                         {
                             validConsumers.Add(tower);
                         }
+                    }
+                }
+            }
+            
+            // Add Town Hall logic for Village resources
+            if (type == ResourceType.Wood || type == ResourceType.Iron || type == ResourceType.Hammer)
+            {
+                foreach (var hall in allBuildings.Where(b => b.data.buildingType == BuildingType.Hall))
+                {
+                    if (GridDomainLogic.IsInRange(node.x, node.y, hall.x, hall.y, nodeRange))
+                    {
+                        validConsumers.Add(hall);
                     }
                 }
             }

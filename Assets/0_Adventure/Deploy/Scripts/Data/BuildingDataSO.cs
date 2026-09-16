@@ -9,6 +9,8 @@ public class BuildingDataSO : ScriptableObject
     public Color color = Color.white;
     public string description;
     
+    public System.Collections.Generic.List<ZoneType> allowedZones = new System.Collections.Generic.List<ZoneType>();
+    
     public float attackDamage;
     public float attackSpeed;
     public float attackRange;

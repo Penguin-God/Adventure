@@ -228,28 +228,34 @@ public class SceneBuilderWindow : EditorWindow
         // Mines
         CreateBuildingData("StoneMine", BuildingType.Mine, 100, 1, 0.1f, ResourceType.None, ResourceType.None, 0, ResourceType.Stone, 50, desc: "돌을 캐는 광산");
         CreateBuildingData("IronMine", BuildingType.Mine, 100, 1, 0.1f, ResourceType.None, ResourceType.None, 0, ResourceType.Iron, 50, desc: "철을 캐는 광산");
+        CreateBuildingData("WoodMine", BuildingType.Mine, 100, 1, 0.1f, ResourceType.None, ResourceType.None, 0, ResourceType.Wood, 50, desc: "나무를 캐는 광산");
+        
+        // TownHall
+        CreateBuildingData("TownHall", BuildingType.Hall, 0, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, desc: "마을 회관. 채굴 자원이 여기로 모입니다.", allowedZones: new[] { ZoneType.Village });
         
         // Entrance & Road
         CreateBuildingData("Entrance", BuildingType.Entrance, 0, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, desc: "타워 구역 입구");
-        CreateBuildingData("Road", BuildingType.Road, 100, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, desc: "건물 간 재료들의 연결 범위를 늘려줌");
+        CreateBuildingData("Road", BuildingType.Road, 100, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, desc: "건물 간 재료들의 연결 범위를 늘려줌", allowedZones: new[] { ZoneType.Village, ZoneType.Defense });
         
         // Factories
-        CreateBuildingData("StoneFactory", BuildingType.Factory, 100, 1, 1f, ResourceType.Stone, ResourceType.None, 5, ResourceType.RoundStone, 5, desc: "돌을 동그란돌로 만드는 공장");
-        CreateBuildingData("ArrowFactory", BuildingType.Factory, 150, 1, 1f, ResourceType.Iron, ResourceType.None, 5, ResourceType.Arrow, 5, desc: "철을 화살로 만드는 공장");
-        CreateBuildingData("AmmoFactory", BuildingType.Factory, 400, 1, 1f, ResourceType.Arrow, ResourceType.RoundStone, 5, ResourceType.GunAmmo, 5, desc: "화살, 동그란 돌을 총알로 만드는 공장");
-        CreateBuildingData("SlowEffect", BuildingType.Factory, 300, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 슬로우 효과 50%를 부여");
-        CreateBuildingData("DamageEffect", BuildingType.Factory, 300, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 공격력 50 증가");
+        CreateBuildingData("HammerFactory", BuildingType.Factory, 150, 1, 1f, ResourceType.Wood, ResourceType.Iron, 5, ResourceType.Hammer, 5, desc: "나무와 쇠로 망치를 만드는 공장", allowedZones: new[] { ZoneType.Village });
+        CreateBuildingData("StoneFactory", BuildingType.Factory, 100, 1, 1f, ResourceType.Stone, ResourceType.None, 5, ResourceType.RoundStone, 5, desc: "돌을 동그란돌로 만드는 공장", allowedZones: new[] { ZoneType.Defense });
+        CreateBuildingData("ArrowFactory", BuildingType.Factory, 150, 1, 1f, ResourceType.Iron, ResourceType.None, 5, ResourceType.Arrow, 5, desc: "철을 화살로 만드는 공장", allowedZones: new[] { ZoneType.Defense });
+        CreateBuildingData("AmmoFactory", BuildingType.Factory, 400, 1, 1f, ResourceType.Arrow, ResourceType.RoundStone, 5, ResourceType.GunAmmo, 5, desc: "화살, 동그란 돌을 총알로 만드는 공장", allowedZones: new[] { ZoneType.Defense });
+        CreateBuildingData("SlowEffect", BuildingType.Factory, 300, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 슬로우 효과 50%를 부여", allowedZones: new[] { ZoneType.Defense });
+        CreateBuildingData("DamageEffect", BuildingType.Factory, 300, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 공격력 50 증가", allowedZones: new[] { ZoneType.Defense });
         
         // Buffs
-        CreateBuildingData("FactoryBuff", BuildingType.FactorySpeedBuff, 100, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 1f, buffRng: 1, desc: "주변 공장의 생산 속도를 올려줌");
-        CreateBuildingData("TowerBuff", BuildingType.TowerAttackBuff, 200, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 0.5f, buffRng: 1, desc: "주변 타워의 공격력을 올려줌");
+        CreateBuildingData("FactoryBuff", BuildingType.FactorySpeedBuff, 100, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 1f, buffRng: 1, desc: "주변 공장의 생산 속도를 올려줌", allowedZones: new[] { ZoneType.Defense });
+        CreateBuildingData("TowerBuff", BuildingType.TowerAttackBuff, 200, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 0.5f, buffRng: 1, desc: "주변 타워의 공격력을 올려줌", allowedZones: new[] { ZoneType.Tower });
 
         // Towers
-        CreateBuildingData("Slingshot", BuildingType.Tower, 150, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 0.7f, atkRange: 6, maxAmmo: 3, reqAmmo: ResourceType.RoundStone, desc: "동그란 돌을 사용하는 타워");
-        CreateBuildingData("Archer", BuildingType.Tower, 200, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 35f, atkSpd: 1.2f, atkRange: 10, maxAmmo: 5, reqAmmo: ResourceType.Arrow, desc: "화살 사용하는 타워");
-        CreateBuildingData("Gun", BuildingType.Tower, 600, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 2f, atkRange: 15, maxAmmo: 10, reqAmmo: ResourceType.GunAmmo, desc: "총알 사용하는 타워");
+        CreateBuildingData("Slingshot", BuildingType.Tower, 150, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 0.7f, atkRange: 6, maxAmmo: 3, reqAmmo: ResourceType.RoundStone, desc: "동그란 돌을 사용하는 타워", allowedZones: new[] { ZoneType.Tower });
+        CreateBuildingData("Archer", BuildingType.Tower, 200, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 35f, atkSpd: 1.2f, atkRange: 10, maxAmmo: 5, reqAmmo: ResourceType.Arrow, desc: "화살 사용하는 타워", allowedZones: new[] { ZoneType.Tower });
+        CreateBuildingData("Gun", BuildingType.Tower, 600, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 2f, atkRange: 15, maxAmmo: 10, reqAmmo: ResourceType.GunAmmo, desc: "총알 사용하는 타워", allowedZones: new[] { ZoneType.Tower });
         
         // Upgrades
+        AddUpgrades("HammerFactory", new[] { new UpgradeInfo { level = 2, cost = 250, effectAmount = 0.1f }, new UpgradeInfo { level = 3, cost = 600, effectAmount = 0.1f } });
         AddUpgrades("StoneFactory", new[] { new UpgradeInfo { level = 2, cost = 200, effectAmount = 0.1f }, new UpgradeInfo { level = 3, cost = 500, effectAmount = 0.1f } });
         AddUpgrades("ArrowFactory", new[] { new UpgradeInfo { level = 2, cost = 300, effectAmount = 0.1f }, new UpgradeInfo { level = 3, cost = 700, effectAmount = 0.1f } });
         AddUpgrades("AmmoFactory", new[] { new UpgradeInfo { level = 2, cost = 400, effectAmount = 0.1f }, new UpgradeInfo { level = 3, cost = 1000, effectAmount = 0.1f } });
@@ -262,6 +268,8 @@ public class SceneBuilderWindow : EditorWindow
         AddUpgrades("Slingshot", new[] { new UpgradeInfo { level = 2, cost = 100, effectAmount = 20f }, new UpgradeInfo { level = 3, cost = 250, effectAmount = 30f } });
         AddUpgrades("Archer", new[] { new UpgradeInfo { level = 2, cost = 200, effectAmount = 20f }, new UpgradeInfo { level = 3, cost = 500, effectAmount = 30f } });
         AddUpgrades("Gun", new[] { new UpgradeInfo { level = 2, cost = 500, effectAmount = 20f }, new UpgradeInfo { level = 3, cost = 1200, effectAmount = 30f } });
+        
+        AddUpgrades("TownHall", new[] { new UpgradeInfo { level = 2, cost = 1000, effectAmount = 0f }, new UpgradeInfo { level = 3, cost = 3000, effectAmount = 0f }, new UpgradeInfo { level = 4, cost = 5000, effectAmount = 0f } });
         
         var monsterPath = "Assets/0_Adventure/Deploy/Resources/Monsters/BasicMonster.asset";
         var monsterData = AssetDatabase.LoadAssetAtPath<MonsterDataSO>(monsterPath);
@@ -343,7 +351,8 @@ public class SceneBuilderWindow : EditorWindow
         float prodTime, ResourceType in1, ResourceType in2, int maxIn, 
         ResourceType outType, int maxOut, 
         float buffAmt = 0, int buffRng = 0, 
-        float atk = 0, float atkSpd = 0, float atkRange = 0, int maxAmmo = 0, ResourceType reqAmmo = ResourceType.None, string desc = "")
+        float atk = 0, float atkSpd = 0, float atkRange = 0, int maxAmmo = 0, ResourceType reqAmmo = ResourceType.None, string desc = "",
+        ZoneType[] allowedZones = null)
     {
         string path = $"Assets/0_Adventure/Deploy/Resources/Buildings/{name}.asset";
         var b = AssetDatabase.LoadAssetAtPath<BuildingDataSO>(path);
@@ -372,6 +381,15 @@ public class SceneBuilderWindow : EditorWindow
         b.attackRange = atkRange;
         b.maxAmmo = maxAmmo;
         b.requiredAmmoType = reqAmmo;
+        
+        if (allowedZones != null)
+        {
+            b.allowedZones = new System.Collections.Generic.List<ZoneType>(allowedZones);
+        }
+        else
+        {
+            b.allowedZones.Clear();
+        }
         
         var sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"Assets/0_Adventure/Deploy/Resources/Sprites/{name}.png");
         if (sprite != null) b.sprite = sprite;

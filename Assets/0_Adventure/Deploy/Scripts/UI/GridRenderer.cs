@@ -39,7 +39,7 @@ public class GridRenderer : MonoBehaviour
     {
         if (tilesParent.childCount == 0)
         {
-            // Village
+            // Defense Zone (15x8)
             for (int posX = 0; posX < 15; posX++)
             {
                 for (int posY = 0; posY < 8; posY++)
@@ -47,15 +47,32 @@ public class GridRenderer : MonoBehaviour
                     CreateGridTile(posX, posY, new Color(0.8f, 0.8f, 0.8f));
                 }
             }
-            // Tower Zones (3 width x 2 height)
-            for (int posY = -3; posY <= -2; posY++)
+            
+            // Village Zone (9x9 at 50,50)
+            for (int posX = 50; posX < 59; posX++)
             {
-                for (int posX = 0; posX <= 2; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
-                for (int posX = 6; posX <= 8; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
-                for (int posX = 12; posX <= 14; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posY = 50; posY < 59; posY++)
+                {
+                    CreateGridTile(posX, posY, new Color(0.8f, 0.9f, 0.8f));
+                }
+            }
+            // Tower Zones (2 width x 3 height underneath) Wait!
+            // The user said: "타워구역 크기 : 2(가로) X 3(세로)"
+            // So X is 2 width, Y is 3 height!
+            // I used X=0,1,2 (3 width) and Y=-2,-3 (2 height)!
+            // I need to change it!
+            // Entrances are at (0,0), (7,0), (14,0).
+            // Width 2 means X=0,1 (for 0), X=7,8 (for 7), X=13,14 (for 14)
+            // Height 3 means Y=-1,-2,-3. But wait, Y=-1 is the visual road.
+            
+            for (int posY = -4; posY <= -2; posY++)
+            {
+                for (int posX = 0; posX <= 1; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 7; posX <= 8; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 13; posX <= 14; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
             }
             
-            // Separator Roads
+            // Separator Roads (Visual)
             CreateGridTile(0, -1, new Color(0.85f, 0.8f, 0.7f));
             CreateGridTile(7, -1, new Color(0.85f, 0.8f, 0.7f));
             CreateGridTile(14, -1, new Color(0.85f, 0.8f, 0.7f));
@@ -233,7 +250,7 @@ public class GridRenderer : MonoBehaviour
             
             _rangeOverlay.transform.localScale = new Vector3(size, size, 1f);
             
-            bool valid = GridManager.Instance.GetBuildingAt(gridX, gridY) == null && GridManager.Instance.IsValidCoordinateForType(data.buildingType, gridX, gridY);
+            bool valid = GridManager.Instance.GetBuildingAt(gridX, gridY) == null && GridManager.Instance.IsValidCoordinate(gridX, gridY, data);
             _rangeOverlay.GetComponent<SpriteRenderer>().color = valid ? new Color(0f, 1f, 0f, 0.3f) : new Color(1f, 0f, 0f, 0.3f);
         }
         else if (SelectedBuilding != null)

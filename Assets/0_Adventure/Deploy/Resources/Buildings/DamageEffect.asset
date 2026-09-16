@@ -17,6 +17,7 @@ MonoBehaviour:
   sprite: {fileID: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
   description: "\uD22C\uC0AC\uCCB4\uC5D0 \uACF5\uACA9\uB825 50 \uC99D\uAC00"
+  allowedZones: 01000000
   attackDamage: 0
   attackSpeed: 0
   attackRange: 0

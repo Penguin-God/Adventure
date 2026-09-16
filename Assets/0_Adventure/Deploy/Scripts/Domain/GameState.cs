@@ -21,6 +21,9 @@ public static class GameState
     public static int unlockedStage = 1;
     public static int currentPlayingStage = 1;
     public static int currentGold = 1000;
+    public static int currentWood = 0;
+    public static int currentIron = 0;
+    public static int currentHammer = 0;
     
     public static List<BuildingSaveData> savedBuildings = new List<BuildingSaveData>();
     
