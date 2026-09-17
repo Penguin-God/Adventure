@@ -1,7 +1,0 @@
-Stage: 1.0, HP: 120.0, SpawnDelay: 2.0, Speed: 1.0, Count: 3.0
-Stage: 2.0, HP: 150.0, SpawnDelay: 1.0, Speed: 2.0, Count: 5.0
-Stage: 3.0, HP: 200.0, SpawnDelay: 1.0, Speed: 4.0, Count: 7.0
-Stage: 4.0, HP: 330.0, SpawnDelay: 0.7, Speed: 5.0, Count: 7.0
-Stage: 5.0, HP: 500.0, SpawnDelay: 0.7, Speed: 5.0, Count: 8.0
-Stage: 6.0, HP: 800.0, SpawnDelay: 0.7, Speed: 5.0, Count: 9.0
-Stage: 7.0, HP: 1000.0, SpawnDelay: 0.7, Speed: 5.0, Count: 10.0
