@@ -14,20 +14,9 @@ public static class GridDomainLogic
             .Where(building => IsInRange(tower.x, tower.y, building.x, building.y, building.data.buffRange))
             .Sum(building => building.data.buffAmount + GetUpgradedValue(building));
             
-        float globalDamageBuff = allBuildings
-            .Where(b => b.data.buildingName == "DamageEffect" && !b.isShutdown)
-            .Sum(b => 50f + GetUpgradedValue(b)); // upgraded DamageEffect gives more!
-            
         float myUpgradeBuff = GetUpgradedValue(tower);
             
-        return tower.data.attackDamage + myUpgradeBuff + attackBuffs + globalDamageBuff;
-    }
-    
-    public static float GetGlobalSlowEffect(IEnumerable<BuildingModel> allBuildings)
-    {
-        return allBuildings
-            .Where(b => b.data.buildingName == "SlowEffect" && !b.isShutdown)
-            .Sum(b => 0.5f + GetUpgradedValue(b));
+        return tower.data.attackDamage + myUpgradeBuff + attackBuffs;
     }
 
     public static MonsterModel GetClosestMonster(BuildingModel tower, IEnumerable<MonsterModel> monsters)
@@ -73,5 +62,14 @@ public static class GridDomainLogic
             }
         }
         return totalIncrease;
+    }
+    
+    public static bool IsMatchingAmmo(ResourceType required, ResourceType provided)
+    {
+        if (required == provided) return true;
+        if (required == ResourceType.Arrow && (provided == ResourceType.IceArrow || provided == ResourceType.FireArrow)) return true;
+        if (required == ResourceType.RoundStone && (provided == ResourceType.IceStone || provided == ResourceType.FireStone)) return true;
+        if (required == ResourceType.GunAmmo && (provided == ResourceType.IceGunAmmo || provided == ResourceType.FireGunAmmo)) return true;
+        return false;
     }
 }

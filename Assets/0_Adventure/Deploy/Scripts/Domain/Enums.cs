@@ -14,7 +14,8 @@ public enum BuildingType
     TowerAttackBuff,
     Mine,
     Entrance,
-    Hall
+    Hall,
+    Smeltery
 }
 
 public enum ResourceType
@@ -27,5 +28,11 @@ public enum ResourceType
     GunAmmo,
     Wood,
     Hammer,
-    Gold
+    Gold,
+    IceStone,
+    IceArrow,
+    IceGunAmmo,
+    FireStone,
+    FireArrow,
+    FireGunAmmo
 }

@@ -36,7 +36,7 @@ public class BuildManager : MonoBehaviour
         
         // Lv 1 base limits
         if (buildingName == "StoneFactory") allowed += 2;
-        if (buildingName == "Road") allowed += 4;
+        if (buildingName == "Road") allowed += 10;
         if (buildingName == "Slingshot") allowed += 2;
         if (buildingName == "HammerFactory") allowed += 5; // Give them 5 to build in village
         

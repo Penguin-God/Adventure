@@ -13,6 +13,7 @@ public class ProjectileManager : MonoBehaviour
     
     private AudioClip _shotClip;
     private AudioSource _audioSource;
+    private Sprite _projectileSprite;
     
     void Awake()
     {
@@ -21,42 +22,53 @@ public class ProjectileManager : MonoBehaviour
         
         _audioSource = gameObject.GetComponent<AudioSource>();
         _shotClip = Resources.Load<AudioClip>("Sounds/Shot");
+        _projectileSprite = CreateCircleSprite();
     }
     
-    public void FireProjectile(Vector3 startPosition, string targetMonsterId, float damage, float speed)
+    public void FireProjectile(Vector3 startPosition, string targetMonsterId, float damage, float speed, bool isIce = false, float slowAmount = 0f)
     {
         if (_shotClip != null && _audioSource != null)
         {
             _audioSource.PlayOneShot(_shotClip);
         }
-        string newId = Guid.NewGuid().ToString();
-        var projectileModel = new ProjectileModel(newId, startPosition, targetMonsterId, damage, speed);
-        _activeProjectiles.Add(projectileModel);
         
-        var projectileObject = new GameObject($"Projectile_{newId}");
-        if (projectilesParent != null) projectileObject.transform.SetParent(projectilesParent);
-        projectileObject.transform.position = startPosition;
+        var model = new ProjectileModel
+        {
+            id = System.Guid.NewGuid().ToString(),
+            currentPosition = startPosition,
+            targetMonsterId = targetMonsterId,
+            damage = damage,
+            speed = speed,
+            isIce = isIce,
+            slowAmount = slowAmount
+        };
         
-        var spriteRenderer = projectileObject.AddComponent<SpriteRenderer>();
-        spriteRenderer.sprite = CreateCircleSprite();
-        spriteRenderer.color = Color.yellow;
-        projectileObject.transform.localScale = new Vector3(0.05f, 0.05f, 1f);
-        spriteRenderer.sortingOrder = 15;
+        _activeProjectiles.Add(model);
         
-        _projectileObjects[newId] = projectileObject;
+        var go = new GameObject($"Projectile_{model.id}");
+        if (projectilesParent != null) go.transform.SetParent(projectilesParent);
+        go.transform.position = startPosition;
+        
+        var renderer = go.AddComponent<SpriteRenderer>();
+        if (_projectileSprite == null) _projectileSprite = CreateCircleSprite();
+        renderer.sprite = _projectileSprite;
+        renderer.sortingOrder = 15;
+        renderer.color = isIce ? Color.cyan : Color.white; // Visual cue!
+        go.transform.localScale = new Vector3(0.05f, 0.05f, 1f);
+        
+        _projectileObjects[model.id] = go;
     }
     
     void Update()
     {
-        for (int index = _activeProjectiles.Count - 1; index >= 0; index--)
+        // Must iterate backwards since we might remove
+        for (int i = _activeProjectiles.Count - 1; i >= 0; i--)
         {
-            var projectileModel = _activeProjectiles[index];
-            var activeMonsters = MonsterManager.Instance.GetActiveMonsters();
-            var targetMonster = System.Linq.Enumerable.FirstOrDefault(activeMonsters, monster => monster.id == projectileModel.targetMonsterId);
+            var projectileModel = _activeProjectiles[i];
+            var targetMonster = MonsterManager.Instance.GetMonster(projectileModel.targetMonsterId);
             
             if (targetMonster == null)
             {
-                // Target is dead or gone, destroy projectile
                 RemoveProjectile(projectileModel);
                 continue;
             }
@@ -68,13 +80,9 @@ public class ProjectileManager : MonoBehaviour
             {
                 MonsterManager.Instance.TakeDamage(targetMonster.id, projectileModel.damage);
                 
-                if (GridManager.Instance != null)
+                if (projectileModel.isIce)
                 {
-                    float slowRatio = GridDomainLogic.GetGlobalSlowEffect(GridManager.Instance.GetAllBuildings());
-                    if (slowRatio > 0)
-                    {
-                        MonsterManager.Instance.ApplySlow(targetMonster.id, slowRatio);
-                    }
+                    MonsterManager.Instance.ApplySlow(targetMonster.id, projectileModel.slowAmount);
                 }
                 
                 RemoveProjectile(projectileModel);

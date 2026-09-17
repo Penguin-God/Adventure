@@ -242,8 +242,8 @@ public class SceneBuilderWindow : EditorWindow
         CreateBuildingData("StoneFactory", BuildingType.Factory, 100, ResourceType.Wood, 1, 1f, ResourceType.Stone, ResourceType.None, 5, ResourceType.RoundStone, 5, desc: "돌을 동그란돌로 만드는 공장", allowedZones: new[] { ZoneType.Defense }, dName: "돌 공장");
         CreateBuildingData("ArrowFactory", BuildingType.Factory, 150, ResourceType.Iron, 1, 1f, ResourceType.Iron, ResourceType.None, 5, ResourceType.Arrow, 5, desc: "철을 화살로 만드는 공장", allowedZones: new[] { ZoneType.Defense }, dName: "화살 공장");
         CreateBuildingData("AmmoFactory", BuildingType.Factory, 400, ResourceType.Hammer, 1, 1f, ResourceType.Arrow, ResourceType.RoundStone, 5, ResourceType.GunAmmo, 5, desc: "화살, 동그란 돌을 총알로 만드는 공장", allowedZones: new[] { ZoneType.Defense }, dName: "총알 공장");
-        CreateBuildingData("SlowEffect", BuildingType.Factory, 300, ResourceType.Gold, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 슬로우 효과 50%를 부여", allowedZones: new[] { ZoneType.Defense }, dName: "냉기 제련소");
-        CreateBuildingData("DamageEffect", BuildingType.Factory, 400, ResourceType.Gold, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 공격력 50 증가", allowedZones: new[] { ZoneType.Defense }, dName: "화력 제련소");
+        CreateBuildingData("SlowEffect", BuildingType.Smeltery, 300, ResourceType.Gold, 1, 1f, ResourceType.None, ResourceType.None, 5, ResourceType.None, 5, desc: "투사체에 슬로우 효과 50%를 부여", allowedZones: new[] { ZoneType.Defense }, dName: "냉기 제련소");
+        CreateBuildingData("DamageEffect", BuildingType.Smeltery, 400, ResourceType.Gold, 1, 1f, ResourceType.None, ResourceType.None, 5, ResourceType.None, 5, desc: "투사체에 공격력 50 증가", allowedZones: new[] { ZoneType.Defense }, dName: "화력 제련소");
         
         // Buffs
         CreateBuildingData("FactoryBuff", BuildingType.FactorySpeedBuff, 300, ResourceType.Hammer, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 1f, buffRng: 1, desc: "주변 공장의 생산 속도를 올려줌", allowedZones: new[] { ZoneType.Defense }, dName: "공장 가속기");
@@ -291,7 +291,7 @@ public class SceneBuilderWindow : EditorWindow
             settings = ScriptableObject.CreateInstance<GameSettingsSO>();
             AssetDatabase.CreateAsset(settings, settingsPath);
         }
-        settings.startingGold = 2000;
+        settings.startingGold = 10000;
         settings.monsterSpawnDelay = 1f;
         settings.monsterBaseHp = 150f;
         settings.monsterHpIncreaseStep = 10;

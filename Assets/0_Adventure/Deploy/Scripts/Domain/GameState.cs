@@ -14,16 +14,20 @@ public class BuildingSaveData
     public int currentInput2;
     public int currentOutput;
     public int level;
+    public ResourceType selectedAmmoType = ResourceType.None;
+    
+    public List<AmmoItem> savedInputQueue = new List<AmmoItem>();
+    public List<AmmoItem> savedOutputQueue = new List<AmmoItem>();
 }
 
 public static class GameState
 {
     public static int unlockedStage = 1;
     public static int currentPlayingStage = 1;
-    public static int currentGold = 2000;
-    public static int currentWood = 0;
-    public static int currentIron = 0;
-    public static int currentHammer = 0;
+    public static int currentGold = 10000;
+    public static int currentWood = 10000;
+    public static int currentIron = 10000;
+    public static int currentHammer = 10000;
     
     public static bool HasResource(ResourceType type, int amount)
     {
@@ -66,7 +70,7 @@ public static class GameState
         savedBuildings.Clear();
         foreach (var b in buildings)
         {
-            savedBuildings.Add(new BuildingSaveData
+            var data = new BuildingSaveData
             {
                 id = b.id,
                 buildingName = b.data.buildingName,
@@ -75,8 +79,13 @@ public static class GameState
                 currentInput1 = b.currentInput1,
                 currentInput2 = b.currentInput2,
                 currentOutput = b.currentOutput,
-                level = b.level
-            });
+                level = b.level,
+                selectedAmmoType = b.selectedAmmoType
+            };
+            if (b.inputQueue != null) data.savedInputQueue = new List<AmmoItem>(b.inputQueue);
+            if (b.outputQueue != null) data.savedOutputQueue = new List<AmmoItem>(b.outputQueue);
+            
+            savedBuildings.Add(data);
         }
     }
 }

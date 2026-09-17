@@ -101,6 +101,11 @@ public class MonsterManager : MonoBehaviour
         monsterModel.speed = monsterModel.baseSpeed * (1f - clampedSlow);
     }
     
+    public MonsterModel GetMonster(string monsterId)
+    {
+        return _activeMonsters.Find(m => m.id == monsterId);
+    }
+    
     private void RemoveMonster(MonsterModel monsterModel)
     {
         _activeMonsters.Remove(monsterModel);

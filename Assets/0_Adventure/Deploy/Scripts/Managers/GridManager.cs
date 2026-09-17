@@ -61,6 +61,35 @@ public class GridManager : MonoBehaviour
                 buildingModel.currentInput2 = saveData.currentInput2;
                 buildingModel.currentOutput = saveData.currentOutput;
                 buildingModel.level = saveData.level > 0 ? saveData.level : 1;
+                buildingModel.selectedAmmoType = saveData.selectedAmmoType;
+                
+                if (saveData.savedInputQueue != null && saveData.savedInputQueue.Count > 0)
+                {
+                    foreach (var item in saveData.savedInputQueue) buildingModel.inputQueue.Enqueue(item);
+                }
+                else if (buildingModel.data.buildingType == BuildingType.Tower)
+                {
+                    for (int i=0; i<buildingModel.currentInput1; i++) buildingModel.inputQueue.Enqueue(new AmmoItem(buildingModel.data.requiredAmmoType));
+                }
+                else if (buildingModel.data.buildingType == BuildingType.Smeltery)
+                {
+                    for (int i=0; i<buildingModel.currentInput1; i++) buildingModel.inputQueue.Enqueue(new AmmoItem(buildingModel.selectedAmmoType));
+                }
+                
+                if (saveData.savedOutputQueue != null && saveData.savedOutputQueue.Count > 0)
+                {
+                    foreach (var item in saveData.savedOutputQueue) buildingModel.outputQueue.Enqueue(item);
+                }
+                else if (buildingModel.data.buildingType == BuildingType.Smeltery)
+                {
+                    for (int i=0; i<buildingModel.currentOutput; i++) 
+                    {
+                        var item = new AmmoItem(buildingModel.selectedAmmoType);
+                        if (buildingModel.data.buildingName == "SlowEffect") item.slowAmount = 0.5f + GridDomainLogic.GetUpgradedValue(buildingModel);
+                        if (buildingModel.data.buildingName == "DamageEffect") item.bonusDamage = 50f + GridDomainLogic.GetUpgradedValue(buildingModel);
+                        buildingModel.outputQueue.Enqueue(item);
+                    }
+                }
             }
             
             _buildings[newId] = buildingModel;

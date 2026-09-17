@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7afb96271eafc2c4dbae40fdffc285c8, type: 3}
   m_Name: DamageEffect
   m_EditorClassIdentifier: Deploy::BuildingDataSO
-  buildingType: 0
+  buildingType: 8
   buildingName: DamageEffect
   displayName: "\uD654\uB825 \uC81C\uB828\uC18C"
   sprite: {fileID: 0}
@@ -27,7 +27,7 @@ MonoBehaviour:
   productionTime: 1
   inputType1: 0
   inputType2: 0
-  maxInputCapacity: 0
+  maxInputCapacity: 5
   outputType: 0
   maxOutputCapacity: 5
   connectionRange: 1

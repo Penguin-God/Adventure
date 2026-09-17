@@ -2,6 +2,15 @@ using UnityEngine;
 
 // Enums are moved to Enums.cs
 
+public class AmmoItem
+{
+    public ResourceType type;
+    public float slowAmount;
+    public float bonusDamage;
+    
+    public AmmoItem(ResourceType t) { type = t; slowAmount = 0f; bonusDamage = 0f; }
+}
+
 public class BuildingModel
 {
     public string id;
@@ -14,6 +23,9 @@ public class BuildingModel
     public int currentInput2;
     public int currentOutput;
     
+    public System.Collections.Generic.Queue<AmmoItem> inputQueue = new System.Collections.Generic.Queue<AmmoItem>();
+    public System.Collections.Generic.Queue<AmmoItem> outputQueue = new System.Collections.Generic.Queue<AmmoItem>();
+    
     // Logic Timers
     public float attackTimer;
     public float productionTimer;
@@ -22,6 +34,7 @@ public class BuildingModel
     // Shutdown state
     public bool isShutdown;
     public int level = 1;
+    public ResourceType selectedAmmoType = ResourceType.None;
     
     public BuildingModel(string id, int x, int y, BuildingDataSO data)
     {
@@ -80,13 +93,6 @@ public class ProjectileModel
     public string targetMonsterId;
     public float damage;
     public float speed;
-    
-    public ProjectileModel(string id, Vector3 startPosition, string targetMonsterId, float damage, float speed)
-    {
-        this.id = id;
-        this.currentPosition = startPosition;
-        this.targetMonsterId = targetMonsterId;
-        this.damage = damage;
-        this.speed = speed;
-    }
+    public bool isIce;
+    public float slowAmount;
 }

@@ -22,6 +22,7 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI _infoDescText;
     private Button _upgradeBtn;
     private TextMeshProUGUI _upgradeBtnText;
+    private GameObject _smelterySelectionContainer;
     private bool _isVillageView = false;
     
     void Start()
@@ -133,6 +134,53 @@ public class UIManager : MonoBehaviour
         upgTextRt.sizeDelta = Vector2.zero;
         
         _upgradeBtn.onClick.AddListener(OnUpgradeClicked);
+        
+        _smelterySelectionContainer = new GameObject("SmelterySelection");
+        _smelterySelectionContainer.transform.SetParent(_infoPopup.transform, false);
+        var sscRt = _smelterySelectionContainer.AddComponent<RectTransform>();
+        sscRt.anchorMin = new Vector2(0.5f, 0);
+        sscRt.anchorMax = new Vector2(0.5f, 0);
+        sscRt.pivot = new Vector2(0.5f, 0);
+        sscRt.anchoredPosition = new Vector2(0, 50); // Just above upgrade button
+        sscRt.sizeDelta = new Vector2(250, 40);
+        var sscLayout = _smelterySelectionContainer.AddComponent<HorizontalLayoutGroup>();
+        sscLayout.spacing = 10;
+        sscLayout.childAlignment = TextAnchor.MiddleCenter;
+        
+        string[] ammoNames = { "RoundStone", "Arrow", "GunAmmo" };
+        string[] ammoKorNames = { "동그란 돌", "화살", "총알" };
+        ResourceType[] ammoTypes = { ResourceType.RoundStone, ResourceType.Arrow, ResourceType.GunAmmo };
+        
+        for (int i = 0; i < 3; i++)
+        {
+            var rType = ammoTypes[i];
+            var abBtnGo = new GameObject(ammoNames[i]);
+            abBtnGo.transform.SetParent(_smelterySelectionContainer.transform, false);
+            var abImg = abBtnGo.AddComponent<Image>();
+            abImg.color = Color.gray;
+            var abBtn = abBtnGo.AddComponent<Button>();
+            var abRt = abBtnGo.GetComponent<RectTransform>();
+            abRt.sizeDelta = new Vector2(70, 35);
+            
+            var abTextGo = new GameObject("Text");
+            abTextGo.transform.SetParent(abBtnGo.transform, false);
+            var abText = abTextGo.AddComponent<TextMeshProUGUI>();
+            if (_koreanFont != null) abText.font = _koreanFont;
+            abText.text = ammoKorNames[i];
+            abText.fontSize = 14;
+            abText.alignment = TextAlignmentOptions.Center;
+            abText.color = Color.black;
+            abText.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 35);
+            
+            abBtn.onClick.AddListener(() => {
+                var gridRenderer = Object.FindObjectOfType<GridRenderer>();
+                if (gridRenderer != null && gridRenderer.SelectedBuilding != null)
+                {
+                    gridRenderer.SelectedBuilding.selectedAmmoType = rType;
+                    UpdateSelectionUI();
+                }
+            });
+        }
         
         _infoPopup.SetActive(false);
         
@@ -411,6 +459,33 @@ public class UIManager : MonoBehaviour
                 else
                 {
                     _upgradeBtn.gameObject.SetActive(false);
+                }
+            }
+            
+            if (_smelterySelectionContainer != null)
+            {
+                if (gridRenderer != null && gridRenderer.SelectedBuilding != null && !BuildManager.Instance.IsPlacing && targetData.buildingType == BuildingType.Smeltery)
+                {
+                    _smelterySelectionContainer.SetActive(true);
+                    ResourceType currentSelection = gridRenderer.SelectedBuilding.selectedAmmoType;
+                    for (int i = 0; i < _smelterySelectionContainer.transform.childCount; i++)
+                    {
+                        var child = _smelterySelectionContainer.transform.GetChild(i);
+                        var img = child.GetComponent<Image>();
+                        if (img != null)
+                        {
+                            ResourceType rt = ResourceType.None;
+                            if (child.name == "RoundStone") rt = ResourceType.RoundStone;
+                            else if (child.name == "Arrow") rt = ResourceType.Arrow;
+                            else if (child.name == "GunAmmo") rt = ResourceType.GunAmmo;
+                            
+                            img.color = rt == currentSelection ? Color.green : Color.gray;
+                        }
+                    }
+                }
+                else
+                {
+                    _smelterySelectionContainer.SetActive(false);
                 }
             }
         }

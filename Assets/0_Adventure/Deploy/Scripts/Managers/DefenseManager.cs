@@ -92,9 +92,24 @@ public class DefenseManager : MonoBehaviour
                 {
                     tower.attackTimer = 0f;
                     tower.currentInput1--;
+                    AmmoItem ammoUsed = null;
+                    if (tower.inputQueue != null && tower.inputQueue.Count > 0)
+                    {
+                        ammoUsed = tower.inputQueue.Dequeue();
+                    }
                     
                     float damage = GridDomainLogic.GetTowerAttackDamage(tower, allBuildings);
-                    ProjectileManager.Instance.FireProjectile(new Vector3(tower.x, tower.y, 0), targetMonster.id, damage, 10f);
+                    float slowAmt = 0f;
+                    
+                    if (ammoUsed != null)
+                    {
+                        damage += ammoUsed.bonusDamage;
+                        slowAmt = ammoUsed.slowAmount;
+                    }
+                    
+                    bool isIce = slowAmt > 0f;
+                    
+                    ProjectileManager.Instance.FireProjectile(new Vector3(tower.x, tower.y, 0), targetMonster.id, damage, 10f, isIce, slowAmt);
                 }
             }
         }
