@@ -169,14 +169,21 @@ public class UIManager : MonoBehaviour
             scRt.anchorMax = new Vector2(1, 0);
             scRt.pivot = new Vector2(1f, 0f);
             scRt.anchoredPosition = new Vector2(-20, 120);
-            scRt.sizeDelta = new Vector2(150, 500); // Enough for 5 vertical buttons
+            var loadedStages = Resources.LoadAll<StageDataSO>("Stages");
+            int maxStage = 1;
+            if (loadedStages != null && loadedStages.Length > 0)
+            {
+                maxStage = loadedStages.Max(s => s.stageNumber);
+            }
+            
+            scRt.sizeDelta = new Vector2(150, maxStage * 70 + 50); // Dynamic height
             var layout = _stageContainer.AddComponent<VerticalLayoutGroup>();
             layout.spacing = 15;
             layout.childAlignment = TextAnchor.LowerCenter;
             layout.childControlWidth = false;
             layout.childControlHeight = false;
             
-            for (int i = 1; i <= 4; i++)
+            for (int i = 1; i <= maxStage; i++)
             {
                 int stageNum = i;
                 var sBtnGo = new GameObject($"Stage_{i}");
