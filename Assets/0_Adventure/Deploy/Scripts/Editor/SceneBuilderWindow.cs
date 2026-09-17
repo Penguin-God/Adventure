@@ -230,29 +230,30 @@ public class SceneBuilderWindow : EditorWindow
         CreateBuildingData("IronMine", BuildingType.Mine, 0, ResourceType.Gold, 1, 0.1f, ResourceType.None, ResourceType.None, 0, ResourceType.Iron, 50, desc: "철을 캐는 광산");
         CreateBuildingData("WoodMine", BuildingType.Mine, 0, ResourceType.Gold, 1, 0.1f, ResourceType.None, ResourceType.None, 0, ResourceType.Wood, 50, desc: "나무를 캐는 광산");
         
-        // TownHall
-        CreateBuildingData("TownHall", BuildingType.Hall, 0, ResourceType.Gold, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, desc: "마을 회관. 채굴 자원이 여기로 모입니다.", allowedZones: new[] { ZoneType.Village });
+        // Village Core
+        CreateBuildingData("TownHall", BuildingType.Hall, 0, ResourceType.Gold, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, desc: "마을 회관. 채굴 자원이 여기로 모입니다.", allowedZones: new[] { ZoneType.Village }, dName: "마을 회관");
         
         // Entrance & Road
-        CreateBuildingData("Entrance", BuildingType.Entrance, 0, ResourceType.Gold, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, desc: "타워 구역 입구");
-        CreateBuildingData("Road", BuildingType.Road, 200, ResourceType.Gold, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, desc: "건물 간 재료들의 연결 범위를 늘려줌", allowedZones: new[] { ZoneType.Village, ZoneType.Defense });
+        CreateBuildingData("Entrance", BuildingType.Entrance, 0, ResourceType.Gold, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, desc: "타워 구역 입구", dName: "입구");
+        CreateBuildingData("Road", BuildingType.Road, 200, ResourceType.Gold, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, desc: "건물 간 재료들의 연결 범위를 늘려줌", allowedZones: new[] { ZoneType.Village, ZoneType.Defense }, dName: "도로");
         
         // Factories
-        CreateBuildingData("HammerFactory", BuildingType.Factory, 150, ResourceType.Gold, 1, 1f, ResourceType.Wood, ResourceType.Iron, 5, ResourceType.Hammer, 5, desc: "나무와 쇠로 망치를 만드는 공장", allowedZones: new[] { ZoneType.Village });
-        CreateBuildingData("StoneFactory", BuildingType.Factory, 100, ResourceType.Wood, 1, 1f, ResourceType.Stone, ResourceType.None, 5, ResourceType.RoundStone, 5, desc: "돌을 동그란돌로 만드는 공장", allowedZones: new[] { ZoneType.Defense });
-        CreateBuildingData("ArrowFactory", BuildingType.Factory, 150, ResourceType.Iron, 1, 1f, ResourceType.Iron, ResourceType.None, 5, ResourceType.Arrow, 5, desc: "철을 화살로 만드는 공장", allowedZones: new[] { ZoneType.Defense });
-        CreateBuildingData("AmmoFactory", BuildingType.Factory, 400, ResourceType.Hammer, 1, 1f, ResourceType.Arrow, ResourceType.RoundStone, 5, ResourceType.GunAmmo, 5, desc: "화살, 동그란 돌을 총알로 만드는 공장", allowedZones: new[] { ZoneType.Defense });
+        CreateBuildingData("HammerFactory", BuildingType.Factory, 150, ResourceType.Gold, 1, 1f, ResourceType.Wood, ResourceType.Iron, 5, ResourceType.Hammer, 5, desc: "나무와 쇠로 망치를 만드는 공장", allowedZones: new[] { ZoneType.Village }, dName: "망치 공장");
+        CreateBuildingData("StoneFactory", BuildingType.Factory, 100, ResourceType.Wood, 1, 1f, ResourceType.Stone, ResourceType.None, 5, ResourceType.RoundStone, 5, desc: "돌을 동그란돌로 만드는 공장", allowedZones: new[] { ZoneType.Defense }, dName: "돌 공장");
+        CreateBuildingData("ArrowFactory", BuildingType.Factory, 150, ResourceType.Iron, 1, 1f, ResourceType.Iron, ResourceType.None, 5, ResourceType.Arrow, 5, desc: "철을 화살로 만드는 공장", allowedZones: new[] { ZoneType.Defense }, dName: "화살 공장");
+        CreateBuildingData("AmmoFactory", BuildingType.Factory, 400, ResourceType.Hammer, 1, 1f, ResourceType.Arrow, ResourceType.RoundStone, 5, ResourceType.GunAmmo, 5, desc: "화살, 동그란 돌을 총알로 만드는 공장", allowedZones: new[] { ZoneType.Defense }, dName: "총알 공장");
         CreateBuildingData("SlowEffect", BuildingType.Factory, 300, ResourceType.Gold, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 슬로우 효과 50%를 부여", allowedZones: new[] { ZoneType.Defense }, dName: "냉기 제련소");
         CreateBuildingData("DamageEffect", BuildingType.Factory, 400, ResourceType.Gold, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 공격력 50 증가", allowedZones: new[] { ZoneType.Defense }, dName: "화력 제련소");
         
         // Buffs
-        CreateBuildingData("FactoryBuff", BuildingType.FactorySpeedBuff, 300, ResourceType.Hammer, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 1f, buffRng: 1, desc: "주변 공장의 생산 속도를 올려줌", allowedZones: new[] { ZoneType.Defense });
-        CreateBuildingData("TowerBuff", BuildingType.TowerAttackBuff, 400, ResourceType.Gold, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 0.5f, buffRng: 1, desc: "주변 타워의 공격력을 올려줌", allowedZones: new[] { ZoneType.Tower });
+        CreateBuildingData("FactoryBuff", BuildingType.FactorySpeedBuff, 300, ResourceType.Hammer, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 1f, buffRng: 1, desc: "주변 공장의 생산 속도를 올려줌", allowedZones: new[] { ZoneType.Defense }, dName: "공장 가속기");
+        CreateBuildingData("TowerBuff", BuildingType.TowerAttackBuff, 400, ResourceType.Gold, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 0.5f, buffRng: 1, desc: "주변 타워의 공격력을 올려줌", allowedZones: new[] { ZoneType.Tower }, dName: "타워 강화소");
 
         // Towers
-        CreateBuildingData("Slingshot", BuildingType.Tower, 100, ResourceType.Wood, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 0.7f, atkRange: 6, maxAmmo: 3, reqAmmo: ResourceType.RoundStone, desc: "동그란 돌을 사용하는 타워", allowedZones: new[] { ZoneType.Tower });
-        CreateBuildingData("Archer", BuildingType.Tower, 200, ResourceType.Iron, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 35f, atkSpd: 1.2f, atkRange: 10, maxAmmo: 5, reqAmmo: ResourceType.Arrow, desc: "화살 사용하는 타워", allowedZones: new[] { ZoneType.Tower });
-        CreateBuildingData("Gun", BuildingType.Tower, 600, ResourceType.Hammer, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 2f, atkRange: 15, maxAmmo: 10, reqAmmo: ResourceType.GunAmmo, desc: "총알 사용하는 타워", allowedZones: new[] { ZoneType.Tower });
+        CreateBuildingData("Slingshot", BuildingType.Tower, 100, ResourceType.Wood, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 0.7f, atkRange: 6, maxAmmo: 3, reqAmmo: ResourceType.RoundStone, desc: "동그란 돌을 사용하는 타워", allowedZones: new[] { ZoneType.Tower }, dName: "새총");
+        CreateBuildingData("Archer", BuildingType.Tower, 200, ResourceType.Iron, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 35f, atkSpd: 1.2f, atkRange: 10, maxAmmo: 5, reqAmmo: ResourceType.Arrow, desc: "화살 사용하는 타워", allowedZones: new[] { ZoneType.Tower }, dName: "궁수");
+        CreateBuildingData("Gun", BuildingType.Tower, 600, ResourceType.Hammer, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, atk: 50f, atkSpd: 2f, atkRange: 15, maxAmmo: 10, reqAmmo: ResourceType.GunAmmo, desc: "총알 사용하는 타워", allowedZones: new[] { ZoneType.Tower }, dName: "총");
+
         
         // Upgrades
         AddUpgrades("HammerFactory", new[] { new UpgradeInfo { level = 2, cost = 250, costType = ResourceType.Wood, effectAmount = 0.1f }, new UpgradeInfo { level = 3, cost = 600, costType = ResourceType.Wood, effectAmount = 0.1f } });

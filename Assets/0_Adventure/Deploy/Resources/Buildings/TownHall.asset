@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Deploy::BuildingDataSO
   buildingType: 7
   buildingName: TownHall
-  displayName: TownHall
+  displayName: "\uB9C8\uC744 \uD68C\uAD00"
   sprite: {fileID: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
   description: "\uB9C8\uC744 \uD68C\uAD00. \uCC44\uAD74 \uC790\uC6D0\uC774 \uC5EC\uAE30\uB85C
