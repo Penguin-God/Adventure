@@ -1,0 +1,5 @@
+Level: 1.0, Cost: 골드 2000, Effect: 돌 공장 X 2, 도로 X 4, 새총 X 2
+Level: 2.0, Cost: 골드 3000, Effect: 냉기 제련소 X 3, 화력 제련소 X 3
+Level: 3.0, Cost: 골드 5000, Effect: 궁수 X2, 화살공장 X 2, 도로 X 10
+Level: 4.0, Cost: 골드 10000, Effect: 총알 공장 X 3, 도로 X 15, 총 X1
+Level: 5.0, Cost: nan, Effect: 공장 버프 X3, 타워버프 X2, 총 X3

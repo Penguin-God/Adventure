@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Deploy::BuildingDataSO
   buildingType: 5
   buildingName: WoodMine
+  displayName: WoodMine
   sprite: {fileID: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
   description: "\uB098\uBB34\uB97C \uCE90\uB294 \uAD11\uC0B0"

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Deploy::BuildingDataSO
   buildingType: 0
   buildingName: DamageEffect
+  displayName: "\uD654\uB825 \uC81C\uB828\uC18C"
   sprite: {fileID: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
   description: "\uD22C\uC0AC\uCCB4\uC5D0 \uACF5\uACA9\uB825 50 \uC99D\uAC00"

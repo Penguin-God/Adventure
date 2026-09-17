@@ -36,30 +36,35 @@ public class BuildManager : MonoBehaviour
         
         // Lv 1 base limits
         if (buildingName == "StoneFactory") allowed += 2;
-        if (buildingName == "Road") allowed += 10;
+        if (buildingName == "Road") allowed += 4;
         if (buildingName == "Slingshot") allowed += 2;
         if (buildingName == "HammerFactory") allowed += 5; // Give them 5 to build in village
         
-        // Lv 2 limits (궁수 X3, 화살공장 X 3, 도로 X 4)
+        // Lv 2: 냉기 제련소 X 3, 화력 제련소 X 3
         if (hallLevel >= 2)
         {
-            if (buildingName == "Archer") allowed += 3;
-            if (buildingName == "ArrowFactory") allowed += 3;
-            if (buildingName == "Road") allowed += 4;
             if (buildingName == "SlowEffect") allowed += 3; 
             if (buildingName == "DamageEffect") allowed += 3;
         }
         
-        // Lv 3 limits (총알 공장 X 3, 도로 X 15, 총 X1)
+        // Lv 3: 궁수 X2, 화살공장 X 2, 도로 X 10
         if (hallLevel >= 3)
+        {
+            if (buildingName == "Archer") allowed += 2;
+            if (buildingName == "ArrowFactory") allowed += 2;
+            if (buildingName == "Road") allowed += 10;
+        }
+        
+        // Lv 4: 총알 공장 X 3, 도로 X 15, 총 X1
+        if (hallLevel >= 4)
         {
             if (buildingName == "AmmoFactory") allowed += 3;
             if (buildingName == "Road") allowed += 15;
             if (buildingName == "Gun") allowed += 1;
         }
         
-        // Lv 4 limits (공장 버프 X3, 타워버프 X2, 총 X3)
-        if (hallLevel >= 4)
+        // Lv 5: 공장 버프 X3, 타워버프 X2, 총 X3
+        if (hallLevel >= 5)
         {
             if (buildingName == "FactoryBuff") allowed += 3;
             if (buildingName == "TowerBuff") allowed += 2;

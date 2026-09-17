@@ -371,7 +371,7 @@ public class UIManager : MonoBehaviour
         if (targetData != null && _infoPopup != null)
         {
             _infoPopup.SetActive(true);
-            if (_infoNameText != null) _infoNameText.text = targetData.buildingName;
+            if (_infoNameText != null) _infoNameText.text = string.IsNullOrEmpty(targetData.displayName) ? targetData.buildingName : targetData.displayName;
             if (_infoDescText != null) _infoDescText.text = string.IsNullOrEmpty(targetData.description) ? "" : targetData.description;
             
             if (_upgradeBtn != null)
@@ -512,7 +512,8 @@ public class UIManager : MonoBehaviour
             var textMesh = textGo.AddComponent<TextMeshProUGUI>();
             if (_koreanFont != null) textMesh.font = _koreanFont;
             string resName = data.costType == ResourceType.Gold ? "G" : data.costType == ResourceType.Wood ? "나무" : data.costType == ResourceType.Iron ? "철" : "망치";
-            textMesh.text = $"{data.buildingName}\n{data.cost}{resName} / X0";
+            string dName = string.IsNullOrEmpty(data.displayName) ? data.buildingName : data.displayName;
+            textMesh.text = $"{dName}\n{data.cost}{resName} / X0";
             textMesh.color = Color.black;
             textMesh.fontSize = 28;
             textMesh.alignment = TextAlignmentOptions.Center;
@@ -545,7 +546,8 @@ public class UIManager : MonoBehaviour
                 if (bData != null)
                 {
                     string resName = bData.costType == ResourceType.Gold ? "G" : bData.costType == ResourceType.Wood ? "나무" : bData.costType == ResourceType.Iron ? "철" : "망치";
-                    txt.text = $"{bData.buildingName}\n{bData.cost}{resName} / X{remain}";
+                    string bdName = string.IsNullOrEmpty(bData.displayName) ? bData.buildingName : bData.displayName;
+                    txt.text = $"{bdName}\n{bData.cost}{resName} / X{remain}";
                 }
             }
             

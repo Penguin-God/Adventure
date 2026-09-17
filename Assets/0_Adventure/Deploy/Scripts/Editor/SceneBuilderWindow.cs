@@ -242,8 +242,8 @@ public class SceneBuilderWindow : EditorWindow
         CreateBuildingData("StoneFactory", BuildingType.Factory, 100, ResourceType.Wood, 1, 1f, ResourceType.Stone, ResourceType.None, 5, ResourceType.RoundStone, 5, desc: "돌을 동그란돌로 만드는 공장", allowedZones: new[] { ZoneType.Defense });
         CreateBuildingData("ArrowFactory", BuildingType.Factory, 150, ResourceType.Iron, 1, 1f, ResourceType.Iron, ResourceType.None, 5, ResourceType.Arrow, 5, desc: "철을 화살로 만드는 공장", allowedZones: new[] { ZoneType.Defense });
         CreateBuildingData("AmmoFactory", BuildingType.Factory, 400, ResourceType.Hammer, 1, 1f, ResourceType.Arrow, ResourceType.RoundStone, 5, ResourceType.GunAmmo, 5, desc: "화살, 동그란 돌을 총알로 만드는 공장", allowedZones: new[] { ZoneType.Defense });
-        CreateBuildingData("SlowEffect", BuildingType.Factory, 300, ResourceType.Gold, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 슬로우 효과 50%를 부여", allowedZones: new[] { ZoneType.Defense });
-        CreateBuildingData("DamageEffect", BuildingType.Factory, 400, ResourceType.Gold, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 공격력 50 증가", allowedZones: new[] { ZoneType.Defense });
+        CreateBuildingData("SlowEffect", BuildingType.Factory, 300, ResourceType.Gold, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 슬로우 효과 50%를 부여", allowedZones: new[] { ZoneType.Defense }, dName: "냉기 제련소");
+        CreateBuildingData("DamageEffect", BuildingType.Factory, 400, ResourceType.Gold, 1, 1f, ResourceType.None, ResourceType.None, 0, ResourceType.None, 5, desc: "투사체에 공격력 50 증가", allowedZones: new[] { ZoneType.Defense }, dName: "화력 제련소");
         
         // Buffs
         CreateBuildingData("FactoryBuff", BuildingType.FactorySpeedBuff, 300, ResourceType.Hammer, 1, 0, ResourceType.None, ResourceType.None, 0, ResourceType.None, 0, buffAmt: 1f, buffRng: 1, desc: "주변 공장의 생산 속도를 올려줌", allowedZones: new[] { ZoneType.Defense });
@@ -298,31 +298,13 @@ public class SceneBuilderWindow : EditorWindow
         EditorUtility.SetDirty(settings);
         
         // Generate StageDataSO
-        CreateStageData(1, 120f, 2.0f, 1f, 3, 1200, new List<BuildingCount> {
-            new BuildingCount { buildingName = "StoneFactory", count = 2 },
-            new BuildingCount { buildingName = "Road", count = 4 },
-            new BuildingCount { buildingName = "Slingshot", count = 2 },
-            new BuildingCount { buildingName = "SlowEffect", count = 3 },
-            new BuildingCount { buildingName = "DamageEffect", count = 3 }
-        });
-        
-        CreateStageData(2, 150f, 1.0f, 2f, 5, 3000, new List<BuildingCount> {
-            new BuildingCount { buildingName = "Archer", count = 3 },
-            new BuildingCount { buildingName = "ArrowFactory", count = 3 },
-            new BuildingCount { buildingName = "Road", count = 4 }
-        });
-        
-        CreateStageData(3, 200f, 1.0f, 4f, 7, 5000, new List<BuildingCount> {
-            new BuildingCount { buildingName = "AmmoFactory", count = 3 },
-            new BuildingCount { buildingName = "Road", count = 15 },
-            new BuildingCount { buildingName = "Gun", count = 1 }
-        });
-        
-        CreateStageData(4, 500f, 0.5f, 6f, 15, 0, new List<BuildingCount> {
-            new BuildingCount { buildingName = "FactoryBuff", count = 3 },
-            new BuildingCount { buildingName = "TowerBuff", count = 2 },
-            new BuildingCount { buildingName = "Gun", count = 3 }
-        });
+        CreateStageData(1, 120f, 2.0f, 1f, 3, 1000, new List<BuildingCount>());
+        CreateStageData(2, 150f, 1.0f, 2f, 5, 1000, new List<BuildingCount>());
+        CreateStageData(3, 200f, 1.0f, 4f, 7, 1000, new List<BuildingCount>());
+        CreateStageData(4, 330f, 0.7f, 5f, 7, 1000, new List<BuildingCount>());
+        CreateStageData(5, 500f, 0.7f, 5f, 8, 1000, new List<BuildingCount>());
+        CreateStageData(6, 800f, 0.7f, 5f, 9, 1000, new List<BuildingCount>());
+        CreateStageData(7, 1000f, 0.7f, 5f, 10, 1000, new List<BuildingCount>());
         
         AssetDatabase.SaveAssets();
     }
@@ -352,7 +334,7 @@ public class SceneBuilderWindow : EditorWindow
         ResourceType outType, int maxOut, 
         float buffAmt = 0, int buffRng = 0, 
         float atk = 0, float atkSpd = 0, float atkRange = 0, int maxAmmo = 0, ResourceType reqAmmo = ResourceType.None, string desc = "",
-        ZoneType[] allowedZones = null)
+        ZoneType[] allowedZones = null, string dName = null)
     {
         string path = $"Assets/0_Adventure/Deploy/Resources/Buildings/{name}.asset";
         var b = AssetDatabase.LoadAssetAtPath<BuildingDataSO>(path);
@@ -362,6 +344,7 @@ public class SceneBuilderWindow : EditorWindow
             AssetDatabase.CreateAsset(b, path);
         }
         b.buildingName = name;
+        b.displayName = string.IsNullOrEmpty(dName) ? name : dName;
         b.buildingType = type;
         b.cost = cost;
         b.costType = costType;

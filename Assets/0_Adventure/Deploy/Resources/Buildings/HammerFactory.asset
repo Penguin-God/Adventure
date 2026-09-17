@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Deploy::BuildingDataSO
   buildingType: 0
   buildingName: HammerFactory
+  displayName: HammerFactory
   sprite: {fileID: 0}
   color: {r: 1, g: 1, b: 1, a: 1}
   description: "\uB098\uBB34\uC640 \uC1E0\uB85C \uB9DD\uCE58\uB97C \uB9CC\uB4DC\uB294

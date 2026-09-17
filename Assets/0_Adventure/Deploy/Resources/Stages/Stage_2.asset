@@ -17,11 +17,5 @@ MonoBehaviour:
   monsterSpeed: 2
   spawnDelay: 1
   totalMonsters: 5
-  clearRewardGold: 3000
-  buildingRewards:
-  - buildingName: Archer
-    count: 3
-  - buildingName: ArrowFactory
-    count: 3
-  - buildingName: Road
-    count: 4
+  clearRewardGold: 1000
+  buildingRewards: []

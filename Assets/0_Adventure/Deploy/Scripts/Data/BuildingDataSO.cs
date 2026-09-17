@@ -5,6 +5,7 @@ public class BuildingDataSO : ScriptableObject
 {
     public BuildingType buildingType;
     public string buildingName;
+    public string displayName;
     public Sprite sprite;
     public Color color = Color.white;
     public string description;
