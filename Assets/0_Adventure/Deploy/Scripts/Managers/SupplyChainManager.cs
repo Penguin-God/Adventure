@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -15,6 +15,19 @@ public class SupplyChainManager : MonoBehaviour
     void Update()
     {
         var allBuildings = GridManager.Instance.GetAllBuildings().ToList();
+        
+        // 0. Process Roads
+        foreach (var road in allBuildings.Where(b => b.data.buildingType == BuildingType.Road || b.data.buildingType == BuildingType.Entrance))
+        {
+            if (road.inputQueue.Count > 0)
+            {
+                var item = road.inputQueue.Peek();
+                if (DistributeOutput(road, item.type, item, allBuildings))
+                {
+                    road.inputQueue.Dequeue();
+                }
+            }
+        }
         
         // 1. Process Mines
         foreach (var mine in allBuildings.Where(b => b.data.buildingType == BuildingType.Mine))
@@ -36,7 +49,16 @@ public class SupplyChainManager : MonoBehaviour
             
             if (!mine.isShutdown && mine.currentOutput > 0)
             {
-                if (DistributeOutput(mine, mine.data.outputType, null, allBuildings)) mine.currentOutput--;
+                var item = new AmmoItem(mine.data.outputType);
+                if (DistributeOutput(mine, mine.data.outputType, item, allBuildings)) 
+                {
+                    mine.currentOutput--;
+                }
+                else
+                {
+                    // Blocked!
+                    mine.isShutdown = true;
+                }
             }
         }
         
@@ -65,9 +87,17 @@ public class SupplyChainManager : MonoBehaviour
                 }
             }
             
-            if (!factory.isShutdown && factory.currentOutput > 0)
+            if (factory.currentOutput > 0)
             {
-                if (DistributeOutput(factory, factory.data.outputType, null, allBuildings)) factory.currentOutput--;
+                var item = new AmmoItem(factory.data.outputType);
+                if (DistributeOutput(factory, factory.data.outputType, item, allBuildings)) 
+                {
+                    factory.currentOutput--;
+                }
+                else
+                {
+                    // If full, we should probably stop producing too, which is natural because currentOutput won't be < maxOutputCapacity
+                }
             }
         }
         
@@ -120,47 +150,32 @@ public class SupplyChainManager : MonoBehaviour
         }
     }
     
-    
-    
     private bool DistributeOutput(BuildingModel source, ResourceType baseType, AmmoItem itemToDistribute, List<BuildingModel> allBuildings)
     {
-        var validTargets = GetConnectedConsumers(source, baseType, allBuildings);
+        int targetX = source.x;
+        int targetY = source.y;
         
-        if (validTargets.Count > 0)
+        switch (source.direction)
         {
-            var target = validTargets
-                .OrderBy(b => GetCurrentNeedLevel(b, baseType))
-                .ThenBy(b => Vector2.Distance(new Vector2(source.x, source.y), new Vector2(b.x, b.y)))
-                .FirstOrDefault();
-                
-            if (target != null && GiveResource(target, baseType, itemToDistribute))
-            {
-                return true;
-            }
+            case Direction.Up: targetY += 1; break;
+            case Direction.Down: targetY -= 1; break;
+            case Direction.Left: targetX -= 1; break;
+            case Direction.Right: targetX += 1; break;
+        }
+        
+        var target = GridManager.Instance.GetBuildingAt(targetX, targetY);
+        if (target != null && GiveResource(target, baseType, itemToDistribute))
+        {
+            return true;
         }
         return false;
-    }
-    
-    private int GetCurrentNeedLevel(BuildingModel b, ResourceType type)
-    {
-        if (b.data.buildingType == BuildingType.Tower) return b.currentInput1;
-        if (b.data.buildingType == BuildingType.Smeltery)
-        {
-            if (b.selectedAmmoType == type) return b.currentInput1;
-        }
-        if (b.data.buildingType == BuildingType.Factory)
-        {
-            if (b.data.inputType1 == type) return b.currentInput1;
-            if (b.data.inputType2 == type) return b.currentInput2;
-        }
-        return int.MaxValue;
     }
     
     private bool GiveResource(BuildingModel target, ResourceType type, AmmoItem itemToDistribute)
     {
         if (target.data.buildingType == BuildingType.Tower)
         {
-            if (target.currentInput1 < target.data.maxAmmo)
+            if (target.data.requiredAmmoType == type && target.currentInput1 < target.data.maxAmmo)
             {
                 target.currentInput1++;
                 target.inputQueue.Enqueue(itemToDistribute ?? new AmmoItem(type));
@@ -189,124 +204,34 @@ public class SupplyChainManager : MonoBehaviour
                 return true;
             }
         }
-
         else if (target.data.buildingType == BuildingType.Hall)
         {
             if (type == ResourceType.Wood) { GameState.currentWood++; return true; }
             if (type == ResourceType.Iron) { GameState.currentIron++; return true; }
             if (type == ResourceType.Hammer) { GameState.currentHammer++; return true; }
         }
+        else if (target.data.buildingType == BuildingType.Road || target.data.buildingType == BuildingType.Entrance)
+        {
+            // Pipeline queue capacity: 1 per tile
+            if (target.inputQueue.Count < 1)
+            {
+                target.inputQueue.Enqueue(itemToDistribute ?? new AmmoItem(type));
+                return true;
+            }
+        }
         return false;
-    }
-    
-    private List<BuildingModel> GetConnectedConsumers(BuildingModel source, ResourceType type, List<BuildingModel> allBuildings)
-    {
-        var conduits = allBuildings.Where(b => b.data.buildingType == BuildingType.Road || b.data.buildingType == BuildingType.Entrance).ToList();
-        var networkNodes = new HashSet<BuildingModel>();
-        var queue = new Queue<BuildingModel>();
-        
-        queue.Enqueue(source);
-        networkNodes.Add(source);
-        
-        while (queue.Count > 0)
-        {
-            var currentBuilding = queue.Dequeue();
-            int currentRange = currentBuilding.data.buildingType == BuildingType.Factory ? currentBuilding.data.connectionRange : 1;
-            
-            foreach (var node in conduits)
-            {
-                if (!networkNodes.Contains(node) && GridDomainLogic.IsInRange(currentBuilding.x, currentBuilding.y, node.x, node.y, currentRange))
-                {
-                    networkNodes.Add(node);
-                    queue.Enqueue(node);
-                }
-            }
-        }
-        
-        var validConsumers = new HashSet<BuildingModel>();
-        
-        foreach (var node in networkNodes)
-        {
-            int nodeRange = node.data.buildingType == BuildingType.Factory ? node.data.connectionRange : 1;
-            
-            foreach (var factory in allBuildings.Where(b => b.data.buildingType == BuildingType.Factory && b != source))
-            {
-                if (GridDomainLogic.IsInRange(node.x, node.y, factory.x, factory.y, nodeRange))
-                {
-                    if ((factory.data.inputType1 == type && factory.currentInput1 < factory.data.maxInputCapacity) ||
-                        (factory.data.inputType2 == type && factory.currentInput2 < factory.data.maxInputCapacity))
-                    {
-                        validConsumers.Add(factory);
-                    }
-                }
-            }
-            
-            foreach (var smeltery in allBuildings.Where(b => b.data.buildingType == BuildingType.Smeltery && b != source))
-            {
-                if (GridDomainLogic.IsInRange(node.x, node.y, smeltery.x, smeltery.y, nodeRange))
-                {
-                    if (smeltery.selectedAmmoType == type && smeltery.currentInput1 < smeltery.data.maxInputCapacity)
-                    {
-                        validConsumers.Add(smeltery);
-                    }
-                }
-            }
-            
-            foreach (var tower in allBuildings.Where(b => b.data.buildingType == BuildingType.Tower))
-            {
-                if (GridDomainLogic.IsInRange(node.x, node.y, tower.x, tower.y, nodeRange))
-                {
-                    if (GridDomainLogic.IsMatchingAmmo(tower.data.requiredAmmoType, type) && tower.currentInput1 < tower.data.maxAmmo)
-                    {
-                        validConsumers.Add(tower);
-                    }
-                }
-            }
-            
-            if (node.data.buildingType == BuildingType.Entrance)
-            {
-                int zoneXStart = node.x;
-                int zoneXEnd = node.x;
-                if (node.x == 0) { zoneXStart = 0; zoneXEnd = 1; }
-                else if (node.x == 7) { zoneXStart = 7; zoneXEnd = 8; }
-                else if (node.x == 14) { zoneXStart = 13; zoneXEnd = 14; }
-                
-                int zoneYStart = -4;
-                int zoneYEnd = -2;
-                
-                foreach (var tower in allBuildings.Where(b => b.data.buildingType == BuildingType.Tower))
-                {
-                    if (tower.x >= zoneXStart && tower.x <= zoneXEnd && tower.y >= zoneYStart && tower.y <= zoneYEnd)
-                    {
-                        if (GridDomainLogic.IsMatchingAmmo(tower.data.requiredAmmoType, type) && tower.currentInput1 < tower.data.maxAmmo)
-                        {
-                            validConsumers.Add(tower);
-                        }
-                    }
-                }
-            }
-            
-            // Add Town Hall logic for Village resources
-            if (type == ResourceType.Wood || type == ResourceType.Iron || type == ResourceType.Hammer)
-            {
-                foreach (var hall in allBuildings.Where(b => b.data.buildingType == BuildingType.Hall))
-                {
-                    if (GridDomainLogic.IsInRange(node.x, node.y, hall.x, hall.y, nodeRange))
-                    {
-                        validConsumers.Add(hall);
-                    }
-                }
-            }
-        }
-        
-        return validConsumers.Distinct().ToList();
     }
     
     private float GetSpeedBuff(BuildingModel factory, List<BuildingModel> allBuildings)
     {
-        return allBuildings
-            .Where(b => b.data.buildingType == BuildingType.FactorySpeedBuff)
-            .Where(b => GridDomainLogic.IsInRange(factory.x, factory.y, b.x, b.y, b.data.buffRange))
-            .Sum(b => b.data.buffAmount + GridDomainLogic.GetUpgradedValue(b));
+        float buff = 0f;
+        foreach (var b in allBuildings.Where(x => x.data.buildingType == BuildingType.FactorySpeedBuff))
+        {
+            if (GridDomainLogic.IsInRange(factory.x, factory.y, b.x, b.y, b.data.buffRange))
+            {
+                buff += 0.2f + GridDomainLogic.GetUpgradedValue(b);
+            }
+        }
+        return buff;
     }
 }

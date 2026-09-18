@@ -9,6 +9,10 @@ public class BuildManager : MonoBehaviour
     public List<BuildingDataSO> availableBuildings;
     
     public bool isBuildModeActive = false;
+    public Direction currentDirection = Direction.Right;
+    
+    private BuildingDataSO _buildingToPlace;
+    private bool _isPlacing;
     
     void Awake()
     {
@@ -40,14 +44,14 @@ public class BuildManager : MonoBehaviour
         if (buildingName == "Slingshot") allowed += 2;
         if (buildingName == "HammerFactory") allowed += 5; // Give them 5 to build in village
         
-        // Lv 2: 냉기 제련소 X 3, 화력 제련소 X 3
+        // Lv 2: ?�기 ?�련??X 3, ?�력 ?�련??X 3
         if (hallLevel >= 2)
         {
             if (buildingName == "SlowEffect") allowed += 3; 
             if (buildingName == "DamageEffect") allowed += 3;
         }
         
-        // Lv 3: 궁수 X2, 화살공장 X 2, 도로 X 10
+        // Lv 3: 궁수 X2, ?�살공장 X 2, ?�로 X 10
         if (hallLevel >= 3)
         {
             if (buildingName == "Archer") allowed += 2;
@@ -55,7 +59,7 @@ public class BuildManager : MonoBehaviour
             if (buildingName == "Road") allowed += 10;
         }
         
-        // Lv 4: 총알 공장 X 3, 도로 X 15, 총 X1
+        // Lv 4: 총알 공장 X 3, ?�로 X 15, �?X1
         if (hallLevel >= 4)
         {
             if (buildingName == "AmmoFactory") allowed += 3;
@@ -63,7 +67,7 @@ public class BuildManager : MonoBehaviour
             if (buildingName == "Gun") allowed += 1;
         }
         
-        // Lv 5: 공장 버프 X3, 타워버프 X2, 총 X3
+        // Lv 5: 공장 버프 X3, ?�?�버??X2, �?X3
         if (hallLevel >= 5)
         {
             if (buildingName == "FactoryBuff") allowed += 3;
@@ -81,8 +85,6 @@ public class BuildManager : MonoBehaviour
     public bool IsPlacing => _isPlacing;
     public BuildingDataSO BuildingToPlace => _buildingToPlace;
     
-    private bool _isPlacing = false;
-    private BuildingDataSO _buildingToPlace = null;
     
     public void ToggleBuildMode()
     {
@@ -99,35 +101,43 @@ public class BuildManager : MonoBehaviour
     {
         if (!isBuildModeActive) return;
         
-        if (_isPlacing && _buildingToPlace != null && Input.GetMouseButtonDown(0))
+        if (_isPlacing && _buildingToPlace != null)
         {
-            if (UnityEngine.EventSystems.EventSystem.current != null && 
-                UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) 
-                return;
-                
-            var cam = Camera.main ?? Object.FindObjectOfType<Camera>();
-            if (cam == null) return;
-            Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-            int posX = Mathf.RoundToInt(mousePos.x);
-            int posY = Mathf.RoundToInt(mousePos.y);
-            
-            if (IsValidPlacement(posX, posY))
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                int cost = _buildingToPlace.cost;
+                currentDirection = (Direction)(((int)currentDirection + 1) % 4);
+            }
+            
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (UnityEngine.EventSystems.EventSystem.current != null && 
+                    UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) 
+                    return;
+                    
+                var cam = Camera.main ?? Object.FindObjectOfType<Camera>();
+                if (cam == null) return;
+                Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+                int posX = Mathf.RoundToInt(mousePos.x);
+                int posY = Mathf.RoundToInt(mousePos.y);
                 
-                if (GameState.HasResource(_buildingToPlace.costType, cost) && GetRemainingCount(_buildingToPlace.buildingName) > 0)
+                if (IsValidPlacement(posX, posY))
                 {
-                    GameState.ConsumeResource(_buildingToPlace.costType, cost);
-                    bool placed = GridManager.Instance.PlaceBuilding(_buildingToPlace, posX, posY);
-                    if (!placed)
+                    int cost = _buildingToPlace.cost;
+                    
+                    if (GameState.HasResource(_buildingToPlace.costType, cost) && GetRemainingCount(_buildingToPlace.buildingName) > 0)
                     {
-                        GameState.RefundResource(_buildingToPlace.costType, cost);
+                        GameState.ConsumeResource(_buildingToPlace.costType, cost);
+                        bool placed = GridManager.Instance.PlaceBuilding(_buildingToPlace, posX, posY, currentDirection);
+                        if (!placed)
+                        {
+                            GameState.RefundResource(_buildingToPlace.costType, cost);
+                            CancelPlacement();
+                        }
+                    }
+                    else
+                    {
                         CancelPlacement();
                     }
-                }
-                else
-                {
-                    CancelPlacement();
                 }
             }
         }
@@ -160,3 +170,4 @@ public class BuildManager : MonoBehaviour
         return GridManager.Instance.IsValidCoordinate(posX, posY, _buildingToPlace);
     }
 }
+

@@ -35,13 +35,15 @@ public class BuildingModel
     public bool isShutdown;
     public int level = 1;
     public ResourceType selectedAmmoType = ResourceType.None;
+    public Direction direction = Direction.Right;
     
-    public BuildingModel(string id, int x, int y, BuildingDataSO data)
+    public BuildingModel(string id, int x, int y, BuildingDataSO data, Direction dir = Direction.Right)
     {
         this.id = id;
         this.x = x;
         this.y = y;
         this.data = data;
+        this.direction = dir;
         
         this.currentInput1 = 0;
         this.currentInput2 = 0;

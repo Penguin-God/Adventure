@@ -53,7 +53,7 @@ public class GridManager : MonoBehaviour
         if (data != null)
         {
             string newId = string.IsNullOrEmpty(existingId) ? System.Guid.NewGuid().ToString() : existingId;
-            var buildingModel = new BuildingModel(newId, x, y, data);
+            var buildingModel = new BuildingModel(newId, x, y, data, saveData != null ? saveData.direction : Direction.Right);
             
             if (saveData != null)
             {
@@ -138,13 +138,13 @@ public class GridManager : MonoBehaviour
         return valid;
     }
     
-    public bool PlaceBuilding(BuildingDataSO buildingData, int gridX, int gridY)
+    public bool PlaceBuilding(BuildingDataSO buildingData, int gridX, int gridY, Direction dir = Direction.Right)
     {
         if (GetBuildingAt(gridX, gridY) != null) return false; 
         if (!IsValidCoordinate(gridX, gridY, buildingData)) return false; 
         
         string newId = System.Guid.NewGuid().ToString();
-        var buildingModel = new BuildingModel(newId, gridX, gridY, buildingData);
+        var buildingModel = new BuildingModel(newId, gridX, gridY, buildingData, dir);
         _buildings[newId] = buildingModel;
         
         OnBuildingPlaced?.Invoke(buildingModel);

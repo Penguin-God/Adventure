@@ -5,6 +5,14 @@ public enum ZoneType
     Tower
 }
 
+public enum Direction
+{
+    Right,
+    Up,
+    Left,
+    Down
+}
+
 public enum BuildingType 
 { 
     Factory, 

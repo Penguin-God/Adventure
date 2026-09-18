@@ -15,6 +15,7 @@ public class BuildingSaveData
     public int currentOutput;
     public int level;
     public ResourceType selectedAmmoType = ResourceType.None;
+    public Direction direction = Direction.Right;
     
     public List<AmmoItem> savedInputQueue = new List<AmmoItem>();
     public List<AmmoItem> savedOutputQueue = new List<AmmoItem>();
@@ -80,7 +81,8 @@ public static class GameState
                 currentInput2 = b.currentInput2,
                 currentOutput = b.currentOutput,
                 level = b.level,
-                selectedAmmoType = b.selectedAmmoType
+                selectedAmmoType = b.selectedAmmoType,
+                direction = b.direction
             };
             if (b.inputQueue != null) data.savedInputQueue = new List<AmmoItem>(b.inputQueue);
             if (b.outputQueue != null) data.savedOutputQueue = new List<AmmoItem>(b.outputQueue);

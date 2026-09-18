@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 
 public class GridRenderer : MonoBehaviour
@@ -57,7 +57,7 @@ public class GridRenderer : MonoBehaviour
                 }
             }
             // Tower Zones (2 width x 3 height underneath) Wait!
-            // The user said: "타워구역 크기 : 2(가로) X 3(세로)"
+            // The user said: "??뚭뎄???ш린 : 2(媛濡? X 3(?몃줈)"
             // So X is 2 width, Y is 3 height!
             // I used X=0,1,2 (3 width) and Y=-2,-3 (2 height)!
             // I need to change it!
@@ -128,8 +128,9 @@ public class GridRenderer : MonoBehaviour
         }
     }
     
-    public BuildingModel SelectedBuilding { get; set; }
+        public BuildingModel SelectedBuilding { get; set; }
     private GameObject _rangeOverlay = null;
+    private GameObject _ghostBuilding = null;
     
     private BuildingModel _draggingBuilding = null;
     
@@ -197,7 +198,7 @@ public class GridRenderer : MonoBehaviour
             else sr.color = new Color(0.8f, 0.8f, 0.8f);
         }
         
-        // Handle Range Overlay
+                // Handle Range Overlay and Ghost
         if (_rangeOverlay == null)
         {
             _rangeOverlay = new GameObject("RangeOverlay");
@@ -207,9 +208,17 @@ public class GridRenderer : MonoBehaviour
             sr.sortingOrder = 5;
         }
         
+        if (_ghostBuilding == null)
+        {
+            _ghostBuilding = new GameObject("GhostBuilding");
+            var sr = _ghostBuilding.AddComponent<SpriteRenderer>();
+            sr.color = new Color(1f, 1f, 1f, 0.5f);
+            sr.sortingOrder = 6;
+        }
+        
         var currentCam = Camera.main ?? Object.FindObjectOfType<Camera>();
         
-        if (isPlacing && currentCam != null)
+                if (isPlacing && currentCam != null)
         {
             Vector3 mousePos = currentCam.ScreenToWorldPoint(Input.mousePosition);
             int posX = Mathf.RoundToInt(mousePos.x);
@@ -218,6 +227,9 @@ public class GridRenderer : MonoBehaviour
             _rangeOverlay.SetActive(true);
             _rangeOverlay.transform.position = new Vector3(posX, posY, -0.1f);
             
+            _ghostBuilding.SetActive(true);
+            _ghostBuilding.transform.position = new Vector3(posX, posY, -0.2f);
+            
             float size = 1f;
             var data = BuildManager.Instance.BuildingToPlace;
             if (data != null)
@@ -225,13 +237,41 @@ public class GridRenderer : MonoBehaviour
                 if (data.buildingType == BuildingType.Tower) size = data.attackRange;
                 else if (data.buildingType == BuildingType.Factory) size = 1f + 2f * data.connectionRange;
                 else if (data.buildingType == BuildingType.Road || data.buildingType == BuildingType.FactorySpeedBuff || data.buildingType == BuildingType.TowerAttackBuff) size = 1f + 2f * data.buffRange;
+                
+                var ghostSr = _ghostBuilding.GetComponent<SpriteRenderer>();
+                ghostSr.sprite = data.sprite != null ? data.sprite : CreateBoxSprite();
+                
+                float rotZ = 0f;
+                switch (BuildManager.Instance.currentDirection)
+                {
+                    case Direction.Right: rotZ = 0f; break;
+                    case Direction.Up: rotZ = 90f; break;
+                    case Direction.Left: rotZ = 180f; break;
+                    case Direction.Down: rotZ = 270f; break;
+                }
+                _ghostBuilding.transform.rotation = Quaternion.Euler(0, 0, rotZ);
+                
+                float maxDim = Mathf.Max(ghostSr.sprite.bounds.size.x, ghostSr.sprite.bounds.size.y);
+                if (maxDim > 0)
+                {
+                    float targetScale = 1f / maxDim;
+                    _ghostBuilding.transform.localScale = new Vector3(targetScale * 0.95f, targetScale * 0.95f, 1f);
+                }
             }
             
             _rangeOverlay.transform.localScale = new Vector3(size, size, 1f);
             
             var sr = _rangeOverlay.GetComponent<SpriteRenderer>();
-            if (BuildManager.Instance.IsValidPlacement(posX, posY)) sr.color = new Color(0f, 1f, 0f, 0.3f);
-            else sr.color = new Color(1f, 0f, 0f, 0.3f);
+            if (BuildManager.Instance.IsValidPlacement(posX, posY)) 
+            {
+                sr.color = new Color(0f, 1f, 0f, 0.3f);
+                _ghostBuilding.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.6f);
+            }
+            else 
+            {
+                sr.color = new Color(1f, 0f, 0f, 0.3f);
+                _ghostBuilding.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f, 0.6f);
+            }
         }
         else if (_draggingBuilding != null)
         {
@@ -267,9 +307,10 @@ public class GridRenderer : MonoBehaviour
             _rangeOverlay.transform.localScale = new Vector3(size, size, 1f);
             _rangeOverlay.GetComponent<SpriteRenderer>().color = new Color(0f, 1f, 0f, 0.3f);
         }
-        else
+                else
         {
             _rangeOverlay.SetActive(false);
+            _ghostBuilding.SetActive(false);
         }
         
         foreach (var building in GridManager.Instance.GetAllBuildings())
@@ -317,6 +358,17 @@ public class GridRenderer : MonoBehaviour
         var buildingGo = new GameObject($"Building_{model.data.buildingName}");
         buildingGo.transform.position = new Vector3(model.x, model.y, 0);
         buildingGo.transform.SetParent(buildingsParent);
+        
+        // Apply Direction Rotation
+        float rotZ = 0f;
+        switch (model.direction)
+        {
+            case Direction.Right: rotZ = 0f; break;
+            case Direction.Up: rotZ = 90f; break;
+            case Direction.Left: rotZ = 180f; break;
+            case Direction.Down: rotZ = 270f; break;
+        }
+        buildingGo.transform.rotation = Quaternion.Euler(0, 0, rotZ);
         
         float targetScale = 1f;
         var sr = buildingGo.AddComponent<SpriteRenderer>();
@@ -391,3 +443,4 @@ public class TileBaseColor : MonoBehaviour
 {
     public Color baseColor;
 }
+
