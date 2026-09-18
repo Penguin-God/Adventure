@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System;
@@ -34,17 +34,13 @@ public class GridManager : MonoBehaviour
             PlaceFixedBuilding(b.buildingName, b.x, b.y, b.id, b);
         }
         
-        // Ensure Defense fixed buildings exist
-        if (GetBuildingAt(0, 7) == null) PlaceFixedBuilding("StoneMine", 0, 7);
-        if (GetBuildingAt(14, 7) == null) PlaceFixedBuilding("IronMine", 14, 7);
+                // Ensure Defense fixed buildings exist
         if (GetBuildingAt(0, 0) == null) PlaceFixedBuilding("Entrance", 0, 0);
         if (GetBuildingAt(7, 0) == null) PlaceFixedBuilding("Entrance", 7, 0);
         if (GetBuildingAt(14, 0) == null) PlaceFixedBuilding("Entrance", 14, 0);
         
         // Ensure Village fixed buildings exist
         if (GetBuildingAt(54, 54) == null) PlaceFixedBuilding("TownHall", 54, 54);
-        if (GetBuildingAt(50, 58) == null) PlaceFixedBuilding("WoodMine", 50, 58);
-        if (GetBuildingAt(58, 58) == null) PlaceFixedBuilding("IronMine", 58, 58);
     }
     
     private void PlaceFixedBuilding(string buildingName, int x, int y, string existingId = null, BuildingSaveData saveData = null)
@@ -114,11 +110,11 @@ public class GridManager : MonoBehaviour
         // Entrance is at (0,0), (7,0), (14,0).
         // Y=-1 is the visual road. So tower zone is Y=-4..-2?
         // Let's make it Y=-4 to -2, X=0,1 | 7,8 | 13,14
-        if (gridY >= -4 && gridY <= -2)
+                if (gridY >= -3 && gridY <= -2)
         {
-            if (gridX == 0 || gridX == 1) inTower = true;
-            else if (gridX == 7 || gridX == 8) inTower = true;
-            else if (gridX == 13 || gridX == 14) inTower = true;
+            if (gridX >= 0 && gridX <= 2) inTower = true;
+            else if (gridX >= 6 && gridX <= 8) inTower = true;
+            else if (gridX >= 12 && gridX <= 14) inTower = true;
         }
 
         bool valid = false;
@@ -170,7 +166,7 @@ public class GridManager : MonoBehaviour
         
         var building = _buildings[buildingId];
         // Fixed buildings cannot be moved
-        if (building.data.buildingType == BuildingType.Mine || building.data.buildingType == BuildingType.Entrance) return false;
+        if (building.data.buildingType == BuildingType.Entrance) return false;
         
         if (GetBuildingAt(targetX, targetY) != null) return false;
         if (!IsValidCoordinate(targetX, targetY, building.data)) return false;
@@ -182,3 +178,6 @@ public class GridManager : MonoBehaviour
         return true;
     }
 }
+
+
+

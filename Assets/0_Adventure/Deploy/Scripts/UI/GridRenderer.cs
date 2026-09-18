@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GridRenderer : MonoBehaviour
 {
@@ -23,6 +24,17 @@ public class GridRenderer : MonoBehaviour
         }
         
         DrawGrid();
+    }
+    
+        public void RefreshBuilding(string id)
+    {
+        if (_buildingObjects.ContainsKey(id))
+        {
+            Destroy(_buildingObjects[id]);
+            _buildingObjects.Remove(id);
+            var b = GridManager.Instance.GetAllBuildings().FirstOrDefault(x => x.id == id);
+            if (b != null) OnBuildingPlaced(b);
+        }
     }
     
     private void OnBuildingRemoved(string id)
@@ -65,11 +77,11 @@ public class GridRenderer : MonoBehaviour
             // Width 2 means X=0,1 (for 0), X=7,8 (for 7), X=13,14 (for 14)
             // Height 3 means Y=-1,-2,-3. But wait, Y=-1 is the visual road.
             
-            for (int posY = -4; posY <= -2; posY++)
+                        for (int posY = -3; posY <= -2; posY++)
             {
-                for (int posX = 0; posX <= 1; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
-                for (int posX = 7; posX <= 8; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
-                for (int posX = 13; posX <= 14; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 0; posX <= 2; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 6; posX <= 8; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
+                for (int posX = 12; posX <= 14; posX++) CreateGridTile(posX, posY, new Color(0.7f, 0.7f, 0.85f));
             }
             
             // Separator Roads (Visual)
@@ -100,33 +112,66 @@ public class GridRenderer : MonoBehaviour
             textMesh.GetComponent<RectTransform>().sizeDelta = new Vector2(1, 1);
         }
         
-        foreach (var building in GridManager.Instance.GetAllBuildings())
-        {
-            if (_buildingObjects.ContainsKey(building.id))
+                    foreach (var building in GridManager.Instance.GetAllBuildings())
             {
-                _buildingObjects[building.id].transform.position = new Vector3(building.x, building.y, 0);
-                
-                var textMesh = _buildingObjects[building.id].GetComponentInChildren<TMPro.TextMeshPro>();
-                if (textMesh != null)
+                if (_buildingObjects.ContainsKey(building.id))
                 {
-                    if (building.data.buildingType == BuildingType.Tower)
+                    _buildingObjects[building.id].transform.position = new Vector3(building.x, building.y, 0);
+                    
+                    var textMesh = _buildingObjects[building.id].GetComponentInChildren<TMPro.TextMeshPro>();
+                    if (textMesh != null)
                     {
-                        textMesh.text = $"{building.currentInput1}/{building.data.maxAmmo}";
-                        textMesh.color = building.isShutdown ? Color.red : Color.black;
+                        if (building.data.buildingType == BuildingType.Tower)
+                        {
+                            textMesh.text = $"{building.currentInput1}/{building.data.maxAmmo}";
+                            textMesh.color = building.isShutdown ? Color.red : Color.black;
+                        }
+                        else if (building.data.buildingType == BuildingType.Factory || building.data.buildingType == BuildingType.Mine)
+                        {
+                            textMesh.text = $"{building.currentOutput}/{building.data.maxOutputCapacity}";
+                            textMesh.color = building.isShutdown ? Color.red : Color.black;
+                        }
+                        else
+                        {
+                            textMesh.text = "";
+                        }
                     }
-                    else if (building.data.buildingType == BuildingType.Factory || building.data.buildingType == BuildingType.Mine)
+                    
+                    // Render Item on Road
+                    if (building.data.buildingType == BuildingType.Road || building.data.buildingType == BuildingType.Entrance)
                     {
-                        textMesh.text = $"{building.currentOutput}/{building.data.maxOutputCapacity}";
-                        textMesh.color = building.isShutdown ? Color.red : Color.black;
-                    }
-                    else
-                    {
-                        textMesh.text = "";
+                        var itemTransform = _buildingObjects[building.id].transform.Find("ItemVisual");
+                        if (building.inputQueue.Count > 0)
+                        {
+                            if (itemTransform == null)
+                            {
+                                var itemGo = new GameObject("ItemVisual");
+                                itemGo.transform.SetParent(_buildingObjects[building.id].transform, false);
+                                itemGo.transform.localPosition = new Vector3(0, 0, -0.2f);
+                                itemGo.transform.localScale = new Vector3(0.4f, 0.4f, 1f);
+                                var srItem = itemGo.AddComponent<SpriteRenderer>();
+                                srItem.sprite = CreateBoxSprite();
+                                srItem.sortingOrder = 8;
+                                itemTransform = itemGo.transform;
+                            }
+                            itemTransform.gameObject.SetActive(true);
+                            var srItemExist = itemTransform.GetComponent<SpriteRenderer>();
+                            var type = building.inputQueue.Peek().type;
+                            if (type == ResourceType.Wood) srItemExist.color = new Color(0.6f, 0.3f, 0f);
+                            else if (type == ResourceType.Iron) srItemExist.color = Color.gray;
+                            else if (type == ResourceType.Hammer) srItemExist.color = Color.red;
+                            else srItemExist.color = Color.blue;
+                        }
+                        else
+                        {
+                            if (itemTransform != null) itemTransform.gameObject.SetActive(false);
+                        }
                     }
                 }
             }
+            
         }
-    }
+    
     
         public BuildingModel SelectedBuilding { get; set; }
     private GameObject _rangeOverlay = null;
@@ -146,6 +191,22 @@ public class GridRenderer : MonoBehaviour
             Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
             int gridX = Mathf.RoundToInt(mousePos.x);
             int gridY = Mathf.RoundToInt(mousePos.y);
+            
+                                    if (Input.GetKeyDown(KeyCode.R))
+            {
+                var hoverBuilding = GridManager.Instance.GetBuildingAt(gridX, gridY);
+                if (hoverBuilding != null)
+                {
+                    if (hoverBuilding.data.buildingType == BuildingType.Road ||
+                        hoverBuilding.data.buildingType == BuildingType.Factory ||
+                        hoverBuilding.data.buildingType == BuildingType.Smeltery ||
+                        hoverBuilding.data.buildingType == BuildingType.Mine)
+                    {
+                        hoverBuilding.direction = (Direction)(((int)hoverBuilding.direction + 1) % 4);
+                        RefreshBuilding(hoverBuilding.id);
+                    }
+                }
+            }
             
             if (Input.GetMouseButtonDown(0))
             {
@@ -208,12 +269,20 @@ public class GridRenderer : MonoBehaviour
             sr.sortingOrder = 5;
         }
         
-        if (_ghostBuilding == null)
+                if (_ghostBuilding == null)
         {
             _ghostBuilding = new GameObject("GhostBuilding");
             var sr = _ghostBuilding.AddComponent<SpriteRenderer>();
             sr.color = new Color(1f, 1f, 1f, 0.5f);
             sr.sortingOrder = 6;
+            
+            var ghostArrow = new GameObject("GhostArrow");
+            ghostArrow.transform.SetParent(_ghostBuilding.transform, false);
+            ghostArrow.transform.localPosition = new Vector3(0, 0, -0.1f);
+            var arrSr = ghostArrow.AddComponent<SpriteRenderer>();
+            arrSr.sprite = GetArrowSprite();
+            arrSr.color = new Color(1f, 1f, 1f, 0.8f);
+            arrSr.sortingOrder = 7;
         }
         
         var currentCam = Camera.main ?? Object.FindObjectOfType<Camera>();
@@ -238,16 +307,25 @@ public class GridRenderer : MonoBehaviour
                 else if (data.buildingType == BuildingType.Factory) size = 1f + 2f * data.connectionRange;
                 else if (data.buildingType == BuildingType.Road || data.buildingType == BuildingType.FactorySpeedBuff || data.buildingType == BuildingType.TowerAttackBuff) size = 1f + 2f * data.buffRange;
                 
-                var ghostSr = _ghostBuilding.GetComponent<SpriteRenderer>();
+                                var ghostSr = _ghostBuilding.GetComponent<SpriteRenderer>();
                 ghostSr.sprite = data.sprite != null ? data.sprite : CreateBoxSprite();
                 
-                float rotZ = 0f;
-                switch (BuildManager.Instance.currentDirection)
+                var ghostArrow = _ghostBuilding.transform.Find("GhostArrow");
+                if (ghostArrow != null)
                 {
-                    case Direction.Right: rotZ = 0f; break;
-                    case Direction.Up: rotZ = 90f; break;
-                    case Direction.Left: rotZ = 180f; break;
-                    case Direction.Down: rotZ = 270f; break;
+                    ghostArrow.gameObject.SetActive(data.buildingType == BuildingType.Factory || data.buildingType == BuildingType.Smeltery || data.buildingType == BuildingType.Mine);
+                }
+                
+                                float rotZ = 0f;
+                if (data.buildingType == BuildingType.Road || data.buildingType == BuildingType.Factory || data.buildingType == BuildingType.Smeltery || data.buildingType == BuildingType.Mine)
+                {
+                    switch (BuildManager.Instance.currentDirection)
+                    {
+                        case Direction.Right: rotZ = 0f; break;
+                        case Direction.Up: rotZ = 90f; break;
+                        case Direction.Left: rotZ = 180f; break;
+                        case Direction.Down: rotZ = 270f; break;
+                    }
                 }
                 _ghostBuilding.transform.rotation = Quaternion.Euler(0, 0, rotZ);
                 
@@ -353,20 +431,42 @@ public class GridRenderer : MonoBehaviour
         }
     }
     
+        private Sprite _arrowSprite;
+    private Sprite GetArrowSprite()
+    {
+        if (_arrowSprite != null) return _arrowSprite;
+        Texture2D tex = new Texture2D(32, 32);
+        for(int i=0; i<32; i++) for(int j=0; j<32; j++) tex.SetPixel(i, j, Color.clear);
+        
+        // Draw a simple red chevron pointing Right
+        for (int i=10; i<=22; i++) {
+            tex.SetPixel(i, 16 + (i-10), Color.red);
+            tex.SetPixel(i, 16 - (i-10), Color.red);
+            tex.SetPixel(i-1, 16 + (i-10), Color.red);
+            tex.SetPixel(i-1, 16 - (i-10), Color.red);
+        }
+        tex.Apply();
+        _arrowSprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f), 32);
+        return _arrowSprite;
+    }
+
     private void OnBuildingPlaced(BuildingModel model)
     {
         var buildingGo = new GameObject($"Building_{model.data.buildingName}");
         buildingGo.transform.position = new Vector3(model.x, model.y, 0);
         buildingGo.transform.SetParent(buildingsParent);
         
-        // Apply Direction Rotation
+                // Apply Direction Rotation
         float rotZ = 0f;
-        switch (model.direction)
+        if (model.data.buildingType == BuildingType.Road || model.data.buildingType == BuildingType.Factory || model.data.buildingType == BuildingType.Smeltery || model.data.buildingType == BuildingType.Mine)
         {
-            case Direction.Right: rotZ = 0f; break;
-            case Direction.Up: rotZ = 90f; break;
-            case Direction.Left: rotZ = 180f; break;
-            case Direction.Down: rotZ = 270f; break;
+            switch (model.direction)
+            {
+                case Direction.Right: rotZ = 0f; break;
+                case Direction.Up: rotZ = 90f; break;
+                case Direction.Left: rotZ = 180f; break;
+                case Direction.Down: rotZ = 270f; break;
+            }
         }
         buildingGo.transform.rotation = Quaternion.Euler(0, 0, rotZ);
         
@@ -412,6 +512,23 @@ public class GridRenderer : MonoBehaviour
             sr.color = Color.gray;
         }
             
+                        // Arrow Indicator
+        if (model.data.buildingType == BuildingType.Factory || 
+            model.data.buildingType == BuildingType.Smeltery || 
+            model.data.buildingType == BuildingType.Mine)
+        {
+            var arrowGo = new GameObject("ArrowIndicator");
+            arrowGo.transform.SetParent(buildingGo.transform);
+            arrowGo.transform.localPosition = new Vector3(0, 0, -0.1f);
+            var arrowSr = arrowGo.AddComponent<SpriteRenderer>();
+            arrowSr.sprite = GetArrowSprite();
+            arrowSr.sortingOrder = 10;
+            // The parent buildingGo is already rotated. So the arrow will rotate with it!
+            // Wait, if the parent buildingGo is rotated, its local rotation rotates the child.
+            // If the arrow points right, and the building rotates 90 (Up), the arrow points Up.
+            // Perfect!
+        }
+        
         _buildingObjects[model.id] = buildingGo;
     }
     
@@ -443,4 +560,12 @@ public class TileBaseColor : MonoBehaviour
 {
     public Color baseColor;
 }
+
+
+
+
+
+
+
+
 

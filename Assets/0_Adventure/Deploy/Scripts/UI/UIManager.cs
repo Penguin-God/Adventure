@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
@@ -148,7 +148,7 @@ public class UIManager : MonoBehaviour
         sscLayout.childAlignment = TextAnchor.MiddleCenter;
         
         string[] ammoNames = { "RoundStone", "Arrow", "GunAmmo" };
-        string[] ammoKorNames = { "동그란 돌", "화살", "총알" };
+        string[] ammoKorNames = { "둥근 돌", "화살", "총알" };
         ResourceType[] ammoTypes = { ResourceType.RoundStone, ResourceType.Arrow, ResourceType.GunAmmo };
         
         for (int i = 0; i < 3; i++)
@@ -521,49 +521,26 @@ public class UIManager : MonoBehaviour
         var hLayout = buttonsContainer.GetComponent<HorizontalLayoutGroup>();
         if (hLayout != null) DestroyImmediate(hLayout);
         
-        var vLayout = buttonsContainer.GetComponent<VerticalLayoutGroup>();
-        if (vLayout == null) vLayout = buttonsContainer.gameObject.AddComponent<VerticalLayoutGroup>();
-        vLayout.childAlignment = TextAnchor.MiddleCenter;
-        vLayout.spacing = 10;
-        vLayout.childControlHeight = false;
-        vLayout.childControlWidth = false;
-        vLayout.childForceExpandHeight = false;
-        vLayout.childForceExpandWidth = false;
+                var vLayout = buttonsContainer.GetComponent<VerticalLayoutGroup>();
+        if (vLayout != null) DestroyImmediate(vLayout);
+        if (hLayout != null) DestroyImmediate(hLayout);
+        
+        var grid = buttonsContainer.GetComponent<GridLayoutGroup>();
+        if (grid == null) grid = buttonsContainer.gameObject.AddComponent<GridLayoutGroup>();
+        grid.cellSize = new Vector2(160, 60);
+        grid.spacing = new Vector2(10, 10);
+        grid.childAlignment = TextAnchor.MiddleCenter;
         
         var containerRt = buttonsContainer.GetComponent<RectTransform>();
-        containerRt.sizeDelta = new Vector2(1100, 170);
+        containerRt.sizeDelta = new Vector2(1100, 240); // taller to fit rows
         
-        // Destroy existing rows if any
+        // Destroy existing buttons if any
         for (int i = buttonsContainer.childCount - 1; i >= 0; i--)
         {
             var child = buttonsContainer.GetChild(i);
             child.SetParent(null);
             Destroy(child.gameObject);
         }
-        
-        var row1 = new GameObject("Row1");
-        row1.transform.SetParent(buttonsContainer, false);
-        var layout1 = row1.AddComponent<HorizontalLayoutGroup>();
-        layout1.childAlignment = TextAnchor.MiddleCenter;
-        layout1.spacing = 10;
-        layout1.childControlHeight = false;
-        layout1.childControlWidth = false;
-        layout1.childForceExpandHeight = false;
-        layout1.childForceExpandWidth = false;
-        var r1Rt = row1.GetComponent<RectTransform>();
-        r1Rt.sizeDelta = new Vector2(1100, 80);
-        
-        var row2 = new GameObject("Row2");
-        row2.transform.SetParent(buttonsContainer, false);
-        var layout2 = row2.AddComponent<HorizontalLayoutGroup>();
-        layout2.childAlignment = TextAnchor.MiddleCenter;
-        layout2.spacing = 10;
-        layout2.childControlHeight = false;
-        layout2.childControlWidth = false;
-        layout2.childForceExpandHeight = false;
-        layout2.childForceExpandWidth = false;
-        var r2Rt = row2.GetComponent<RectTransform>();
-        r2Rt.sizeDelta = new Vector2(1100, 80);
         
         foreach (var data in BuildManager.Instance.availableBuildings)
         {
@@ -580,14 +557,10 @@ public class UIManager : MonoBehaviour
             if (!_isVillageView && !allowedInDefenseOrTower) continue;
             
             var btnGo = new GameObject($"Btn_{data.buildingName}");
-            bool isTower = data.buildingType == BuildingType.Tower || data.buildingType == BuildingType.TowerAttackBuff;
-            btnGo.transform.SetParent(isTower ? row2.transform : row1.transform, false);
+            btnGo.transform.SetParent(buttonsContainer, false);
             
             btnGo.AddComponent<Image>().color = Color.white;
             var btn = btnGo.AddComponent<Button>();
-            
-            var rt = btnGo.GetComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(200, 80);
             
             var textGo = new GameObject("Text");
             textGo.transform.SetParent(btnGo.transform, false);
@@ -597,12 +570,11 @@ public class UIManager : MonoBehaviour
             string dName = string.IsNullOrEmpty(data.displayName) ? data.buildingName : data.displayName;
             textMesh.text = $"{dName}\n{data.cost}{resName} / X0";
             textMesh.color = Color.black;
-            textMesh.fontSize = 28;
+            textMesh.fontSize = 20; // slightly smaller text
             textMesh.alignment = TextAlignmentOptions.Center;
-            textMesh.GetComponent<RectTransform>().sizeDelta = new Vector2(200, 80);
+            textMesh.GetComponent<RectTransform>().sizeDelta = new Vector2(160, 60);
             
-            var capturedData = data; 
-            btn.onClick.AddListener(() => {
+            var capturedData = data; btn.onClick.AddListener(() => {
                 if (BuildManager.Instance.GetRemainingCount(capturedData.buildingName) > 0)
                     BuildManager.Instance.StartPlacement(capturedData);
             });
@@ -671,3 +643,9 @@ public class UIManager : MonoBehaviour
         }
     }
 }
+
+
+
+
+
+

@@ -16,18 +16,26 @@ public class SupplyChainManager : MonoBehaviour
     {
         var allBuildings = GridManager.Instance.GetAllBuildings().ToList();
         
-        // 0. Process Roads
+                // 0. Process Roads
         foreach (var road in allBuildings.Where(b => b.data.buildingType == BuildingType.Road || b.data.buildingType == BuildingType.Entrance))
         {
-            if (road.inputQueue.Count > 0)
+            road.productionTimer += Time.deltaTime;
+            if (road.productionTimer >= 0.2f)
             {
-                var item = road.inputQueue.Peek();
-                if (DistributeOutput(road, item.type, item, allBuildings))
+                if (road.inputQueue.Count > 0)
                 {
-                    road.inputQueue.Dequeue();
+                    var item = road.inputQueue.Peek();
+                    if (DistributeOutput(road, item.type, item, allBuildings))
+                    {
+                        road.inputQueue.Dequeue();
+                    }
                 }
+                // Only reset timer when an item actually moves, so the next item moves immediately if queued?
+                // No, a belt moves continuously. If we dequeue, we must wait 0.2f.
+                road.productionTimer = 0f;
             }
         }
+        
         
         // 1. Process Mines
         foreach (var mine in allBuildings.Where(b => b.data.buildingType == BuildingType.Mine))
@@ -235,3 +243,4 @@ public class SupplyChainManager : MonoBehaviour
         return buff;
     }
 }
+

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
@@ -20,10 +20,10 @@ public class BuildManager : MonoBehaviour
         else Destroy(gameObject);
     }
     
-    void Start()
+        void Start()
     {
         availableBuildings = Resources.LoadAll<BuildingDataSO>("Buildings")
-            .Where(b => b.buildingType != BuildingType.Mine && b.buildingType != BuildingType.Entrance && b.buildingType != BuildingType.Hall)
+            .Where(b => b.buildingType != BuildingType.Entrance && b.buildingType != BuildingType.Hall)
             .ToList();
     }
     
@@ -36,22 +36,25 @@ public class BuildManager : MonoBehaviour
             if (hall != null) hallLevel = hall.level;
         }
         
-        int allowed = 0;
+                int allowed = 0;
         
+        // Mines
+        if (buildingName.EndsWith("Mine")) allowed += 15;
+
         // Lv 1 base limits
         if (buildingName == "StoneFactory") allowed += 2;
         if (buildingName == "Road") allowed += 10;
         if (buildingName == "Slingshot") allowed += 2;
         if (buildingName == "HammerFactory") allowed += 5; // Give them 5 to build in village
         
-        // Lv 2: ?�기 ?�련??X 3, ?�력 ?�련??X 3
+        // Lv 2: ?占쎄린 ?占쎈젴??X 3, ?占쎈젰 ?占쎈젴??X 3
         if (hallLevel >= 2)
         {
             if (buildingName == "SlowEffect") allowed += 3; 
             if (buildingName == "DamageEffect") allowed += 3;
         }
         
-        // Lv 3: 궁수 X2, ?�살공장 X 2, ?�로 X 10
+        // Lv 3: 沅곸닔 X2, ?占쎌궡怨듭옣 X 2, ?占쎈줈 X 10
         if (hallLevel >= 3)
         {
             if (buildingName == "Archer") allowed += 2;
@@ -59,7 +62,7 @@ public class BuildManager : MonoBehaviour
             if (buildingName == "Road") allowed += 10;
         }
         
-        // Lv 4: 총알 공장 X 3, ?�로 X 15, �?X1
+        // Lv 4: 珥앹븣 怨듭옣 X 3, ?占쎈줈 X 15, 占?X1
         if (hallLevel >= 4)
         {
             if (buildingName == "AmmoFactory") allowed += 3;
@@ -67,7 +70,7 @@ public class BuildManager : MonoBehaviour
             if (buildingName == "Gun") allowed += 1;
         }
         
-        // Lv 5: 공장 버프 X3, ?�?�버??X2, �?X3
+        // Lv 5: 怨듭옣 踰꾪봽 X3, ?占?占쎈쾭??X2, 占?X3
         if (hallLevel >= 5)
         {
             if (buildingName == "FactoryBuff") allowed += 3;
@@ -103,9 +106,15 @@ public class BuildManager : MonoBehaviour
         
         if (_isPlacing && _buildingToPlace != null)
         {
-            if (Input.GetKeyDown(KeyCode.R))
+                        if (Input.GetKeyDown(KeyCode.R))
             {
-                currentDirection = (Direction)(((int)currentDirection + 1) % 4);
+                if (_buildingToPlace.buildingType == BuildingType.Road ||
+                    _buildingToPlace.buildingType == BuildingType.Factory ||
+                    _buildingToPlace.buildingType == BuildingType.Smeltery ||
+                    _buildingToPlace.buildingType == BuildingType.Mine)
+                {
+                    currentDirection = (Direction)(((int)currentDirection + 1) % 4);
+                }
             }
             
             if (Input.GetMouseButtonDown(0))
@@ -170,4 +179,8 @@ public class BuildManager : MonoBehaviour
         return GridManager.Instance.IsValidCoordinate(posX, posY, _buildingToPlace);
     }
 }
+
+
+
+
 
