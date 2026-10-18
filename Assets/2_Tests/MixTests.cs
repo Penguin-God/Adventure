@@ -3,11 +3,11 @@ using NUnit.Framework;
 
 public class CraftingTests
 {
-    IEnumerable<MixRecipe> CreateRecipes(params MixRecipe[] customRecipes) => new List<MixRecipe> { new(new[] { "물", "밀가루" }, "반죽") };
+    IEnumerable<MixRecipe> CreateRecipes() => new List<MixRecipe> { new(new[] { "물", "밀가루" }, "반죽") };
 
-    void 재료_섞기_검증(string? excpted, params string[] ingredients)
+    void 재료_섞기_검증(string? expected, params string[] ingredients)
     {
-        Assert.AreEqual(excpted, CraftingSystem.Mix(ingredients, CreateRecipes()));
+        Assert.AreEqual(expected, CraftingSystem.Mix(ingredients, CreateRecipes()));
     }
 
     [Test]
