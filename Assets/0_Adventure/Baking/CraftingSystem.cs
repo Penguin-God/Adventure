@@ -1,29 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public record CraftingRecipe(IReadOnlyCollection<string> Ingredients, string Result);
+public record MixRecipe(IReadOnlyCollection<string> Ingredients, string Result);
 
-public sealed class CraftingSystem
+public static class CraftingSystem
 {
-    private readonly IReadOnlyList<CraftingRecipe> _recipes;
-
-    public CraftingSystem(IEnumerable<CraftingRecipe> recipes)
+    public static string? Mix(IEnumerable<string> ingredients, IEnumerable<MixRecipe> mixRecipe)
     {
-        _recipes = recipes?.ToList() ?? throw new ArgumentNullException(nameof(recipes));
-    }
-
-    public string? Mix(IEnumerable<string> ingredients)
-    {
-        if (ingredients == null)
-        {
-            return null;
-        }
-
-        var inputSet = new HashSet<string>(ingredients);
-
-        return _recipes
-            .FirstOrDefault(recipe => recipe.Ingredients.Count == inputSet.Count && recipe.Ingredients.All(inputSet.Contains))
-            ?.Result;
+        return mixRecipe.FirstOrDefault(Equal)?.Result;
+        bool Equal(MixRecipe recipe) => recipe.Ingredients.Count == ingredients.Count() && recipe.Ingredients.All(ingredients.Contains);
     }
 }
