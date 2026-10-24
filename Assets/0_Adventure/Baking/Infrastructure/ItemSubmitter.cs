@@ -3,11 +3,13 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class ItemSubmitter : MonoBehaviour
 {
-    [SerializeField] LevelManager levelManager;
+    [SerializeField] LevelTracker npcLevelTracker;
     [SerializeField] string targetItem = "빵";
     [SerializeField] bool consumeOnSuccess = true;
 
-    PlayerInventory? nearbyPlayer;
+    PlayerInventory nearbyPlayer;
+
+    void Awake() => npcLevelTracker = GetComponent<LevelTracker>();
 
     void Update()
     {
@@ -15,19 +17,20 @@ public class ItemSubmitter : MonoBehaviour
 
         if (!nearbyPlayer.HasItem)
         {
-            Debug.Log($"[{gameObject.name}] 제출할 아이템이 없습니다. (필요: {targetItem})");
+            Debug.Log($"[{gameObject.name}] 줄 수 있는 음식이 없습니다.");
             return;
         }
 
         if (nearbyPlayer.CurrentItem == targetItem)
         {
-            Debug.Log($"[{gameObject.name}] 제출 성공: {targetItem}");
-            levelManager.AddExpByItem(targetItem);
+            var item = nearbyPlayer.CurrentItem;
             if (consumeOnSuccess) nearbyPlayer.ClearItem();
+
+            npcLevelTracker.AddExpByItem(item);
         }
         else
         {
-            Debug.Log($"[{gameObject.name}] 오답! 제출한 아이템: {nearbyPlayer.CurrentItem}");
+            Debug.Log($"[{gameObject.name}] 원하는 음식이 아닙니다: {nearbyPlayer.CurrentItem}");
         }
     }
 

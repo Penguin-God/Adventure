@@ -24,7 +24,7 @@ public struct TransformRecipeData
 
 public class CraftingManager : MonoBehaviour
 {
-    [SerializeField] LevelManager levelManager;
+    [SerializeField] LevelTracker playerLevelTracker;
     [SerializeField] List<MixRecipeData> mixRecipes = new();
     [SerializeField] List<TransformRecipeData> transformRecipes = new();
     [SerializeField] List<RecipeUnlockData> unlockSettings = new();
@@ -33,10 +33,11 @@ public class CraftingManager : MonoBehaviour
     {
         var unlockTable = unlockSettings.ToDictionary(x => x.resultItem, x => x.unlockLevel);
         var domainRecipes = mixRecipes.Select(r => r.ToDomain());
-        var availableRecipes = RecipeFilter.GetAvailable(domainRecipes, levelManager.Progress.Level, unlockTable);
+        var availableRecipes = RecipeFilter.GetAvailable(domainRecipes, playerLevelTracker.Progress.Level, unlockTable);
 
         var result = CraftingSystem.Mix(ingredients, availableRecipes);
-        Debug.Log(result != null ? $"[CraftingManager] 섞기 성공: {result}" : "[CraftingManager] 섞기 실패 (레시피 없음 또는 레벨 미달)");
+        if (result != null) playerLevelTracker.AddExpByItem(result);
+
         return result;
     }
 
@@ -44,10 +45,11 @@ public class CraftingManager : MonoBehaviour
     {
         var unlockTable = unlockSettings.ToDictionary(x => x.resultItem, x => x.unlockLevel);
         var domainRecipes = transformRecipes.Select(r => r.ToDomain());
-        var availableRecipes = RecipeFilter.GetAvailable(domainRecipes, levelManager.Progress.Level, unlockTable);
+        var availableRecipes = RecipeFilter.GetAvailable(domainRecipes, playerLevelTracker.Progress.Level, unlockTable);
 
         var result = CraftingSystem.Transform(ingredient, processType, availableRecipes);
-        Debug.Log(result != null ? $"[CraftingManager] 변환 성공: {ingredient} -> {result}" : $"[CraftingManager] 변환 실패 (레시피 없음 또는 레벨 미달)");
+        if (result != null) playerLevelTracker.AddExpByItem(result);
+
         return result;
     }
 }

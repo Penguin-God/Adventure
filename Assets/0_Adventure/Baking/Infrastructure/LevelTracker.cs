@@ -1,7 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
+using System;
 
 [Serializable]
 public struct ItemExpData
@@ -17,9 +18,9 @@ public struct RecipeUnlockData
     public int unlockLevel;
 }
 
-public class LevelManager : MonoBehaviour
+public class LevelTracker : MonoBehaviour
 {
-    [SerializeField] List<int> requiredExpTable;
+    [SerializeField] List<int> requiredExpTable = new() { 100, 200, 300 };
     [SerializeField] List<ItemExpData> itemExpSettings = new();
     [field: SerializeField] public LevelProgress Progress { get; private set; } = new(1, 0);
 
@@ -30,7 +31,7 @@ public class LevelManager : MonoBehaviour
 
         Progress = LevelSystem.AddExp(Progress, item, expTable, requiredExpTable);
 
-        Debug.Log($"[LevelManager] '{item}' 처리 -> 레벨: {Progress.Level}, 경험치: {Progress.CurrentExp}");
-        if (Progress.Level > prevLevel) Debug.Log($"[LevelManager] 레벨업! ({prevLevel} -> {Progress.Level})");
+        Debug.Log($"[{gameObject.name}] '{item}' 처리 -> 레벨: {Progress.Level} (Exp: {Progress.CurrentExp})");
+        if (Progress.Level > prevLevel) Debug.Log($"[{gameObject.name}] 레벨업! ({prevLevel} -> {Progress.Level})");
     }
 }
