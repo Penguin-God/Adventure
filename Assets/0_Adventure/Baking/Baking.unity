@@ -409,6 +409,56 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &448494090
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 448494091}
+  - component: {fileID: 448494092}
+  m_Layer: 0
+  m_Name: LevelManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &448494091
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448494090}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.63039, y: 0.03959, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &448494092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448494090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d03af8b69eede2442ba7cda00cb3b359, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Baking::LevelManager
+  requiredExpTable: 050000000a0000000f000000
+  itemExpSettings:
+  - item: "\uC218\uD50C\uB808 \uD32C\uCF00\uC774\uD06C"
+    exp: 0
+  - item: "\uC218\uD50C\uB808 \uCE58\uC988 \uCF00\uC774\uD06C"
+    exp: 0
 --- !u!1 &582532063
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,6 +656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49f752a4f608dde4a93218274e6abf94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Baking::CraftingManager
+  levelManager: {fileID: 0}
   mixRecipes:
   - ingredients:
     - "\uBB3C"
@@ -632,6 +683,7 @@ MonoBehaviour:
   - ingredient: "\uB9E5\uC8FC\uBE75 \uBC18\uC8FD"
     processType: 0
     result: "\uB9E5\uC8FC\uBE75"
+  unlockSettings: []
 --- !u!1 &1160661443
 GameObject:
   m_ObjectHideFlags: 0
@@ -1016,7 +1068,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eca61a7870263f4a801c1771d42c623, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Baking::ItemSubmitter
+  levelManager: {fileID: 448494092}
   targetItem: "\uBE75"
+  consumeOnSuccess: 1
 --- !u!61 &2044477678
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1143,8 +1197,9 @@ SceneRoots:
   m_Roots:
   - {fileID: 389696628}
   - {fileID: 1076520462}
+  - {fileID: 448494091}
+  - {fileID: 2005286632}
   - {fileID: 1160661445}
   - {fileID: 108843487}
-  - {fileID: 2005286632}
   - {fileID: 582532065}
   - {fileID: 2044477680}
