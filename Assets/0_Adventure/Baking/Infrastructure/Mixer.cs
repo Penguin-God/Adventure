@@ -47,6 +47,12 @@ public class Mixer : MonoBehaviour
                 Debug.Log("[믹서] 일치하는 레시피가 없어 섞지 못했습니다.");
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            currentIngredients.Clear();
+            Debug.Log("모든 재료를 초기화했습니다");
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)

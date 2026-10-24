@@ -4,7 +4,6 @@ using UnityEngine;
 public class ItemSubmitter : MonoBehaviour
 {
     [SerializeField] LevelTracker npcLevelTracker;
-    [SerializeField] string targetItem = "빵";
     [SerializeField] bool consumeOnSuccess = true;
 
     PlayerInventory nearbyPlayer;
@@ -21,17 +20,10 @@ public class ItemSubmitter : MonoBehaviour
             return;
         }
 
-        if (nearbyPlayer.CurrentItem == targetItem)
-        {
-            var item = nearbyPlayer.CurrentItem;
-            if (consumeOnSuccess) nearbyPlayer.ClearItem();
+        var item = nearbyPlayer.CurrentItem;
+        if (consumeOnSuccess) nearbyPlayer.ClearItem();
 
-            npcLevelTracker.AddExpByItem(item);
-        }
-        else
-        {
-            Debug.Log($"[{gameObject.name}] 원하는 음식이 아닙니다: {nearbyPlayer.CurrentItem}");
-        }
+        npcLevelTracker.AddExpByItem(item);
     }
 
     void OnTriggerEnter2D(Collider2D other)

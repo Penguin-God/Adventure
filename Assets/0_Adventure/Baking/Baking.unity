@@ -606,7 +606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49f752a4f608dde4a93218274e6abf94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Baking::CraftingManager
-  playerLevelTracker: {fileID: 0}
+  playerLevelTracker: {fileID: 2005286637}
   mixRecipes:
   - ingredients:
     - "\uBB3C"
@@ -619,10 +619,11 @@ MonoBehaviour:
     - "\uC124\uD0D5"
     result: "\uBE0C\uB77C\uC6B0\uB2C8 \uBC18\uC8FD"
   - ingredients:
-    - "\uB9E5\uC8FC"
+    - "\uACC4\uB780"
     - "\uBC00\uAC00\uB8E8"
     - "\uC124\uD0D5"
-    result: "\uB9E5\uC8FC\uBE75 \uBC18\uC8FD"
+    - "\uC6B0\uC720"
+    result: "\uC218\uD50C\uB808 \uD32C\uCF00\uC774\uD06C \uBC18\uC8FD"
   transformRecipes:
   - ingredient: "\uBC18\uC8FD"
     processType: 0
@@ -630,10 +631,12 @@ MonoBehaviour:
   - ingredient: "\uBE0C\uB77C\uC6B0\uB2C8 \uBC18\uC8FD"
     processType: 0
     result: "\uBE0C\uB77C\uC6B0\uB2C8"
-  - ingredient: "\uB9E5\uC8FC\uBE75 \uBC18\uC8FD"
+  - ingredient: "\uC218\uD50C\uB808 \uD32C\uCF00\uC774\uD06C \uBC18\uC8FD"
     processType: 0
-    result: "\uB9E5\uC8FC\uBE75"
-  unlockSettings: []
+    result: "\uC218\uD50C\uB808 \uD32C\uCF00\uC774\uD06C"
+  unlockSettings:
+  - resultItem: "\uC218\uD50C\uB808 \uD32C\uCF00\uC774\uD06C"
+    unlockLevel: 2
 --- !u!1 &1160661443
 GameObject:
   m_ObjectHideFlags: 0
@@ -791,7 +794,8 @@ MonoBehaviour:
   - "\uCD08\uCF5C\uB9BF"
   - "\uBC84\uD130"
   - "\uC124\uD0D5"
-  - "\uB9E5\uC8FC"
+  - "\uACC4\uB780"
+  - "\uC6B0\uC720"
   nearbyPlayer: {fileID: 0}
 --- !u!1 &2005286630
 GameObject:
@@ -1000,8 +1004,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61e999b6773d64c46a96e0c41b474016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Baking::LevelTracker
-  requiredExpTable: 0a0000000f00000014000000
-  itemExpSettings: []
+  requiredExpTable: 010000000300000005000000
+  itemExpSettings:
+  - item: "\uC218\uD50C\uB808 \uD32C\uCF00\uC774\uD06C"
+    exp: 2
 --- !u!1 &2044477676
 GameObject:
   m_ObjectHideFlags: 0
@@ -1169,8 +1175,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61e999b6773d64c46a96e0c41b474016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Baking::LevelTracker
-  requiredExpTable: 64000000c80000002c010000
-  itemExpSettings: []
+  requiredExpTable: 020000000400000005000000
+  itemExpSettings:
+  - item: "\uC218\uD50C\uB808 \uD32C\uCF00\uC774\uD06C"
+    exp: 3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
